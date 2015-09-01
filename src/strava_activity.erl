@@ -105,9 +105,10 @@ create(_Token, _Activity) ->
 %%--------------------------------------------------------------------
 -spec delete(strava:auth_token(), integer()) -> ok.
 
-delete(_Token, _Id) ->
-    %% TODO
-    ok.
+delete(Token, Id) ->
+    case strava_api:delete(Token, [<<"activities">>, Id]) of
+        ok -> ok
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
