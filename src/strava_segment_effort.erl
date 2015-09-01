@@ -23,3 +23,7 @@
 %% @end
 %%--------------------------------------------------------------------
 -spec segment_effort(strava:auth_token(), integer()) -> t().
+
+segment_effort(_Token, _Id) ->
+    %% TODO
+    #{}.
