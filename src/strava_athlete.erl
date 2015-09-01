@@ -15,10 +15,10 @@
 %%% Types
 %%%===================================================================
 
--spec athlete() :: map().
--spec stats() :: map().
+-type athlete() :: map().
+-type stats() :: map().
 
--spec t() :: athlete().
+-type t() :: athlete().
 
 %%%===================================================================
 %%% Athletes API functions
