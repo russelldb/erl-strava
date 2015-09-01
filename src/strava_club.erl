@@ -115,9 +115,10 @@ group_events(_Token, _Id) ->
 %%--------------------------------------------------------------------
 -spec join(strava:auth_token(), integer()) -> ok.
 
-join(_Token, _Id) ->
-    %% TODO
-    ok.
+join(Token, Id) ->
+    case strava_api:create(Token, [<<"clubs">>, Id, <<"join">>], #{}) of
+        {ok, _JSON} -> ok
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -126,9 +127,10 @@ join(_Token, _Id) ->
 %%--------------------------------------------------------------------
 -spec leave(strava:auth_token(), integer()) -> ok.
 
-leave(_Token, _Id) ->
-    %% TODO
-    ok.
+leave(Token, Id) ->
+    case strava_api:create(Token, [<<"clubs">>, Id, <<"leave">>], #{}) of
+        {ok, _JSON} -> ok
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
