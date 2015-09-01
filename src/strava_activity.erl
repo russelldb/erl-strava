@@ -1,7 +1,8 @@
 -module(strava_activity).
 
 %% Types
--export_type([activity/0, comment/0, lap/0, photo/0, t/0, zone/0]).
+-export_type([activity/0, comment/0, lap/0, photo/0,
+              t/0, type/0, zone/0]).
 
 %% Activities functions
 -export([activity/2, athletes/1, athletes/3, athletes_after/2,
@@ -23,6 +24,36 @@
 %%%===================================================================
 
 -type activity() :: map().
+-type type() :: alpine_ski
+              | backcountry_ski
+              | canoeing
+              | cross_country_skiing
+              | crossfit
+              | ebike_ride
+              | elliptical
+              | hike
+              | ice_skate
+              | inline_skate
+              | kayaking
+              | kitesurf
+              | nordic_ski
+              | ride
+              | rock_climbing
+              | roller_ski
+              | rowing
+              | run
+              | snowboard
+              | snowshoe
+              | stair_stepper
+              | stand_up_paddling
+              | surfing
+              | swim
+              | virtual_ride
+              | walk
+              | weight_training
+              | windsurf
+              | workout
+              | yoga.
 -type comment() :: map().
 -type lap() :: map().
 -type photo() :: map().
