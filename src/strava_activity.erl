@@ -291,9 +291,10 @@ photos(Token, Id, Page, PerPage) ->
 %%--------------------------------------------------------------------
 -spec athletes_args(strava:auth_token(), map()) -> [t()].
 
-athletes_args(_Token, _Args) ->
-    %% TODO
-    [].
+athletes_args(Token, Args) ->
+    case strava_api:read(Token, [<<"athlete">>, <<"activities">>], Args) of
+        {ok, JSON} -> lists:map(fun strava_json:to_activity/1, JSON)
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
