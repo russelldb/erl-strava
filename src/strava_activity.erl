@@ -326,9 +326,10 @@ laps_args(_Token, _Id, _Args) ->
 %%--------------------------------------------------------------------
 -spec related_args(strava:auth_token(), integer(), map()) -> [t()].
 
-related_args(_Token, _Id, _Args) ->
-    %% TODO
-    [].
+related_args(Token, Id, Args) ->
+    case strava_api:read(Token, [<<"activities">>, Id, <<"related">>], Args) of
+        {ok, JSON} -> lists:map(fun strava_json:to_activity/1, JSON)
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
