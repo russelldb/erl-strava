@@ -75,7 +75,7 @@ to_activity(Map) ->
               Ans#{binary_to_atom(K, latin1) => V};
          (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => to_resource_state(Int)};
          (<<"athlete">>, Term, Ans) -> Ans#{athlete => to_athlete(Term)};
-         (<<"type">>, Str, Ans) -> Ans#{type => Str}; % TODO
+         (<<"type">>, Str, Ans) -> Ans#{type => to_activity_type(Str)};
          (<<"start_date">>, Str, Ans) -> Ans#{start_date => to_datetime(Str)};
          (<<"start_date_local">>, Str, Ans) -> Ans#{start_date_local => to_datetime(Str)};
          (<<"start_latlng">>, List, Ans) -> Ans#{start_latlng => List}; % TODO
@@ -90,6 +90,43 @@ to_activity(Map) ->
          (<<"best_efforts">>, _Term, Ans) -> Ans;
          (_K, _V, Ans) -> Ans
       end, _Ans = #{}, Map).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_activity_type(binary()) -> strava_activity:type().
+
+to_activity_type(<<"AlpineSki">>) -> alpine_ski;
+to_activity_type(<<"BackcountrySki">>) -> backcountry_ski;
+to_activity_type(<<"Canoeing">>) -> canoeing;
+to_activity_type(<<"CrossCountrySkiing">>) -> cross_country_skiing;
+to_activity_type(<<"Crossfit">>) -> crossfit;
+to_activity_type(<<"EBikeRide">>) -> ebike_ride;
+to_activity_type(<<"Elliptical">>) -> elliptical;
+to_activity_type(<<"Hike">>) -> hike;
+to_activity_type(<<"IceSkate">>) -> ice_skate;
+to_activity_type(<<"InlineSkate">>) -> inline_skate;
+to_activity_type(<<"Kayaking">>) -> kayaking;
+to_activity_type(<<"Kitesurf">>) -> kitesurf;
+to_activity_type(<<"NordicSki">>) -> nordic_ski;
+to_activity_type(<<"Ride">>) -> ride;
+to_activity_type(<<"RockClimbing">>) -> rock_climbing;
+to_activity_type(<<"RollerSki">>) -> roller_ski;
+to_activity_type(<<"Rowing">>) -> rowing;
+to_activity_type(<<"Run">>) -> run;
+to_activity_type(<<"Snowboard">>) -> snowboard;
+to_activity_type(<<"Snowshoe">>) -> snowshoe;
+to_activity_type(<<"StairStepper">>) -> stair_stepper;
+to_activity_type(<<"StandUpPaddling">>) -> stand_up_paddling;
+to_activity_type(<<"Surfing">>) -> surfing;
+to_activity_type(<<"Swim">>) -> swim;
+to_activity_type(<<"VirtualRide">>) -> virtual_ride;
+to_activity_type(<<"Walk">>) -> walk;
+to_activity_type(<<"WeightTraining">>) -> weight_training;
+to_activity_type(<<"Windsurf">>) -> windsurf;
+to_activity_type(<<"Workout">>) -> workout;
+to_activity_type(<<"Yoga">>) -> yoga.
 
 %%--------------------------------------------------------------------
 %% @doc
