@@ -1,7 +1,7 @@
 -module(strava_athlete).
 
 %% Types
--export_type([athlete/0, stats/0, t/0]).
+-export_type([athlete/0, stats/0, t/0, totals/0]).
 
 %% Athletes API functions
 -export([athlete/1, athlete/2, koms/2, koms/4, stats/2,
@@ -18,6 +18,7 @@
 
 -type athlete() :: map().
 -type stats() :: map().
+-type totals() :: map().
 
 -type t() :: athlete().
 
