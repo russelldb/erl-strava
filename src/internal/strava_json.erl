@@ -162,7 +162,7 @@ to_athlete(Map) ->
          (<<"follower">>, Str, Ans) -> Ans#{follower => to_athlete_friend_status(Str)};
          (<<"created_at">>, Str, Ans) -> Ans#{created_at => to_datetime(Str)};
          (<<"updated_at">>, Str, Ans) -> Ans#{updated_at => to_datetime(Str)};
-         (<<"athlete_type">>, Int, Ans) -> Ans#{athlete_type => Int}; % TODO
+         (<<"athlete_type">>, Int, Ans) -> Ans#{athlete_type => to_athlete_type(Int)};
          (<<"measurement_preference">>, Str, Ans) -> Ans#{measurement_preference => Str}; % TODO
          (<<"clubs">>, List, Ans) -> Ans#{clubs => lists:map(fun to_club/1, List)};
          (<<"bikes">>, List, Ans) -> Ans#{bikes => lists:map(fun to_gear/1, List)};
@@ -234,6 +234,15 @@ to_athlete_totals(Map) ->
               Ans#{binary_to_atom(K, latin1) => V};
          (_K, _V, Ans) -> Ans
       end, _Ans = #{}, Map).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_athlete_type(integer()) -> strava_athlete:type().
+
+to_athlete_type(0) -> cyclist;
+to_athlete_type(1) -> runner.
 
 %%--------------------------------------------------------------------
 %% @doc
