@@ -55,7 +55,7 @@ athlete(_Token, _Id) ->
 -spec koms(strava:auth_token(), integer()) -> [strava_segment_effort:t()].
 
 koms(Token, Id) ->
-    koms(Token, Id, _Page = undefined, _PerPage = undefined).
+    koms_args(Token, Id, _Args = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -65,9 +65,9 @@ koms(Token, Id) ->
 -spec koms(strava:auth_token(), integer(), pos_integer(), pos_integer()) ->
                   [strava_segment_effort:t()].
 
-koms(_Token, _Id, _Page, _PerPage) ->
-    %% TODO
-    [].
+koms(Token, Id, Page, PerPage) ->
+    koms_args(Token, Id, _Args = #{page     => Page,
+                                   per_page => PerPage}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -103,7 +103,7 @@ update(_Token, _Athlete) ->
 -spec friends(strava:auth_token()) -> [t()].
 
 friends(Token) ->
-    friends(Token, _Page = undefined, _PerPage = undefined).
+    friends_args(Token, _Args = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -112,9 +112,9 @@ friends(Token) ->
 %%--------------------------------------------------------------------
 -spec friends(strava:auth_token(), pos_integer(), pos_integer()) -> [t()].
 
-friends(_Token, _Page, _PerPage) ->
-    %% TODO
-    [].
+friends(Token, Page, PerPage) ->
+    friends_args(Token, _Args = #{page     => Page,
+                                  per_page => PerPage}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -124,7 +124,7 @@ friends(_Token, _Page, _PerPage) ->
 -spec followers(strava:auth_token()) -> [t()].
 
 followers(Token) ->
-    followers(Token, _Page = undefined, _PerPage = undefined).
+    followers_args(Token, _Args = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -133,9 +133,9 @@ followers(Token) ->
 %%--------------------------------------------------------------------
 -spec followers(strava:auth_token(), pos_integer(), pos_integer()) -> [t()].
 
-followers(_Token, _Page, _PerPage) ->
-    %% TODO
-    [].
+followers(Token, Page, PerPage) ->
+    followers_args(Token, _Args = #{page     => Page,
+                                    per_page => PerPage}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -145,7 +145,7 @@ followers(_Token, _Page, _PerPage) ->
 -spec friends(strava:auth_token(), integer()) -> [t()].
 
 friends(Token, Id) ->
-    friends(Token, Id, _Page = undefined, _PerPage = undefined).
+    friends_args(Token, Id, _Args = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -154,9 +154,9 @@ friends(Token, Id) ->
 %%--------------------------------------------------------------------
 -spec friends(strava:auth_token(), integer(), pos_integer(), pos_integer()) -> [t()].
 
-friends(_Token, _Id, _Page, _PerPage) ->
-    %% TODO
-    [].
+friends(Token, Id, Page, PerPage) ->
+    friends_args(Token, Id, _Args = #{page     => Page,
+                                      per_page => PerPage}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -166,7 +166,7 @@ friends(_Token, _Id, _Page, _PerPage) ->
 -spec followers(strava:auth_token(), integer()) -> [t()].
 
 followers(Token, Id) ->
-    followers(Token, Id, _Page = undefined, _PerPage = undefined).
+    followers_args(Token, Id, _Args = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -175,9 +175,9 @@ followers(Token, Id) ->
 %%--------------------------------------------------------------------
 -spec followers(strava:auth_token(), integer(), pos_integer(), pos_integer()) -> [t()].
 
-followers(_Token, _Id, _Page, _PerPage) ->
-    %% TODO
-    [].
+followers(Token, Id, Page, PerPage) ->
+    followers_args(Token, Id, _Args = #{page     => Page,
+                                        per_page => PerPage}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -187,7 +187,7 @@ followers(_Token, _Id, _Page, _PerPage) ->
 -spec both_following(strava:auth_token(), integer()) -> [t()].
 
 both_following(Token, Id) ->
-    both_following(Token, Id, _Page = undefined, _PerPage = undefined).
+    both_following_args(Token, Id, _Args = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -196,6 +196,76 @@ both_following(Token, Id) ->
 %%--------------------------------------------------------------------
 -spec both_following(strava:auth_token(), integer(), pos_integer(), pos_integer()) -> [t()].
 
-both_following(_Token, _Id, _Page, _PerPage) ->
+both_following(Token, Id, Page, PerPage) ->
+    both_following_args(Token, Id, _Args = #{page     => Page,
+                                             per_page => PerPage}).
+
+%%%===================================================================
+%%% Internal functions
+%%%===================================================================
+
+%%--------------------------------------------------------------------
+%% @doc
+%% List athlete K/QOMs/CRs.
+%% @end
+%%--------------------------------------------------------------------
+-spec koms_args(strava:auth_token(), integer(), map()) -> [strava_segment_effort:t()].
+
+koms_args(_Token, _Id, _Args) ->
+    %% TODO
+    [].
+
+%%--------------------------------------------------------------------
+%% @doc
+%% List current athlete friends.
+%% @end
+%%--------------------------------------------------------------------
+-spec friends_args(strava:auth_token(), map()) -> [t()].
+
+friends_args(_Token, _Args) ->
+    %% TODO
+    [].
+
+%%--------------------------------------------------------------------
+%% @doc
+%% List athlete friends.
+%% @end
+%%--------------------------------------------------------------------
+-spec friends_args(strava:auth_token(), integer(), map()) -> [t()].
+
+friends_args(_Token, _Id, _Args) ->
+    %% TODO
+    [].
+
+%%--------------------------------------------------------------------
+%% @doc
+%% List current athlete followers.
+%% @end
+%%--------------------------------------------------------------------
+-spec followers_args(strava:auth_token(), map()) -> [t()].
+
+followers_args(_Token, _Args) ->
+    %% TODO
+    [].
+
+%%--------------------------------------------------------------------
+%% @doc
+%% List athlete followers.
+%% @end
+%%--------------------------------------------------------------------
+-spec followers_args(strava:auth_token(), integer(), map()) -> [t()].
+
+followers_args(_Token, _Id, _Args) ->
+    %% TODO
+    [].
+
+%%--------------------------------------------------------------------
+%% @doc
+%% List both following.
+%% @end
+%%--------------------------------------------------------------------
+-spec both_following_args(strava:auth_token(), integer(), map()) -> [t()].
+
+both_following_args(_Token, _Id, _Args) ->
     %% TODO
     [].
