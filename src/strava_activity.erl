@@ -186,11 +186,11 @@ related(Token, Id, Page, PerPage) ->
 %% Update an activity.
 %% @end
 %%--------------------------------------------------------------------
--spec update(strava:auth_token(), t()) -> ok.
+-spec update(strava:auth_token(), t()) -> t().
 
 update(_Token, _Activity) ->
     %% TODO
-    ok.
+    #{}.
 
 %%--------------------------------------------------------------------
 %% @doc
