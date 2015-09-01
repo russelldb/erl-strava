@@ -217,9 +217,20 @@ to_gear(Map) ->
               K =:= <<"description">> ->
               Ans#{binary_to_atom(K, latin1) => V};
          (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => Int}; % TODO
-         (<<"frame_type">>, Int, Ans) -> Ans#{frame_type => Int}; % TODO
+         (<<"frame_type">>, Int, Ans) -> Ans#{frame_type => to_gear_frame_type(Int)};
          (_K, _V, Ans) -> Ans
       end, _Ans = #{}, Map).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_gear_frame_type(integer()) -> strava_gear:frame_type().
+
+to_gear_frame_type(1) -> mtb;
+to_gear_frame_type(2) -> cross;
+to_gear_frame_type(3) -> road;
+to_gear_frame_type(4) -> time_trial.
 
 %%--------------------------------------------------------------------
 %% @doc
