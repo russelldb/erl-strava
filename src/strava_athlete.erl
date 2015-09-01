@@ -110,7 +110,7 @@ update(Token, Athlete) ->
 -spec friends(strava:auth_token()) -> [t()].
 
 friends(Token) ->
-    friends_args(Token, _Args = #{}).
+    friends_args(Token, _Id = undefined, _Args = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -120,8 +120,8 @@ friends(Token) ->
 -spec friends(strava:auth_token(), pos_integer(), pos_integer()) -> [t()].
 
 friends(Token, Page, PerPage) ->
-    friends_args(Token, _Args = #{page     => Page,
-                                  per_page => PerPage}).
+    friends_args(Token, _Id = undefined, _Args = #{page     => Page,
+                                                   per_page => PerPage}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -131,7 +131,7 @@ friends(Token, Page, PerPage) ->
 -spec followers(strava:auth_token()) -> [t()].
 
 followers(Token) ->
-    followers_args(Token, _Args = #{}).
+    followers_args(Token, _Id = undefined, _Args = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -141,8 +141,8 @@ followers(Token) ->
 -spec followers(strava:auth_token(), pos_integer(), pos_integer()) -> [t()].
 
 followers(Token, Page, PerPage) ->
-    followers_args(Token, _Args = #{page     => Page,
-                                    per_page => PerPage}).
+    followers_args(Token, _Id = undefined, _Args = #{page     => Page,
+                                                     per_page => PerPage}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -225,16 +225,6 @@ koms_args(Token, Id, Args) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List current athlete friends.
-%% @end
-%%--------------------------------------------------------------------
--spec friends_args(strava:auth_token(), map()) -> [t()].
-
-friends_args(Token, Args) ->
-    friends_args(Token, _Id = undefined, Args).
-
-%%--------------------------------------------------------------------
-%% @doc
 %% List athlete friends.
 %% @end
 %%--------------------------------------------------------------------
@@ -248,16 +238,6 @@ friends_args(Token, Id, Args) ->
     case strava_api:read(Token, Path, Args) of
         {ok, JSON} -> lists:map(fun strava_json:to_athlete/1, JSON)
     end.
-
-%%--------------------------------------------------------------------
-%% @doc
-%% List current athlete followers.
-%% @end
-%%--------------------------------------------------------------------
--spec followers_args(strava:auth_token(), map()) -> [t()].
-
-followers_args(Token, Args) ->
-    followers_args(Token, _Id = undefined, Args).
 
 %%--------------------------------------------------------------------
 %% @doc
