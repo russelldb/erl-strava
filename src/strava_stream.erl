@@ -32,21 +32,63 @@
 
 %%--------------------------------------------------------------------
 %% @doc
+%% Retrieve activity streams.
 %% @end
 %%--------------------------------------------------------------------
 -spec activity(strava:auth_token(), integer(), [stream_type()]) -> [t()].
--spec activity(strava:auth_token(), integer(), [stream_type()], map()) -> [t()].
+
+activity(Token, Id, Types) ->
+    activity(Token, Id, Types, _Options = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
+%% Retrieve activity streams.
+%% @end
+%%--------------------------------------------------------------------
+-spec activity(strava:auth_token(), integer(), [stream_type()], map()) -> [t()].
+
+activity(_Token, _Id, _Types, _Options) ->
+    %% TODO
+    [].
+
+%%--------------------------------------------------------------------
+%% @doc
+%% Retrieve effort streams.
 %% @end
 %%--------------------------------------------------------------------
 -spec effort(strava:auth_token(), integer(), [stream_type()]) -> [t()].
--spec effort(strava:auth_token(), integer(), [stream_type()], map()) -> [t()].
+
+effort(Token, Id, Types) ->
+    effort(Token, Id, Types, _Options = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
+%% Retrieve effort streams.
+%% @end
+%%--------------------------------------------------------------------
+-spec effort(strava:auth_token(), integer(), [stream_type()], map()) -> [t()].
+
+effort(_Token, _Id, _Types, _Options) ->
+    %% TODO
+    [].
+
+%%--------------------------------------------------------------------
+%% @doc
+%% Retrieve segment streams.
 %% @end
 %%--------------------------------------------------------------------
 -spec segment(strava:auth_token(), integer(), [stream_type()]) -> [t()].
+
+segment(Token, Id, Types) ->
+    segment(Token, Id, Types, _Options = #{}).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% Retrieve segment streams.
+%% @end
+%%--------------------------------------------------------------------
 -spec segment(strava:auth_token(), integer(), [stream_type()], map()) -> [t()].
+
+segment(_Token, _Id, _Types, _Options) ->
+    %% TODO
+    [].
