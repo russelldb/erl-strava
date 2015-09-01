@@ -70,9 +70,10 @@ activities_before(Token, Id, Time) ->
 %%--------------------------------------------------------------------
 -spec announcements(strava:auth_token(), integer()) -> [announcement()].
 
-announcements(_Token, _Id) ->
-    %% TODO
-    [].
+announcements(Token, Id) ->
+    case strava_api:read(Token, [<<"clubs">>, Id, <<"announcements">>], _Opts = #{}) of
+        {ok, JSON} -> lists:map(fun strava_json:to_club_announcement/1, JSON)
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
