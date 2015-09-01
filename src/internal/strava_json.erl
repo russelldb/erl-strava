@@ -73,7 +73,7 @@ to_activity(Map) ->
                  K =:= <<"calories">>;
                  K =:= <<"has_kudoed">> ->
               Ans#{binary_to_atom(K, latin1) => V};
-         (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => Int}; % TODO
+         (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => to_resource_state(Int)};
          (<<"athlete">>, Term, Ans) -> Ans#{athlete => to_athlete(Term)};
          (<<"type">>, Str, Ans) -> Ans#{type => Str}; % TODO
          (<<"start_date">>, Str, Ans) -> Ans#{start_date => to_datetime(Str)};
@@ -117,7 +117,7 @@ to_athlete(Map) ->
                  K =:= <<"ftp">>;
                  K =:= <<"weight">> ->
               Ans#{binary_to_atom(K, latin1) => V};
-         (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => Int}; % TODO
+         (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => to_resource_state(Int)};
          (<<"sex">>, Str, Ans) -> Ans#{sex => Str}; % TODO
          (<<"friend">>, Str, Ans) -> Ans#{friend => Str}; % TODO
          (<<"follower">>, Str, Ans) -> Ans#{follower => Str}; % TODO
@@ -193,7 +193,7 @@ to_club(Map) ->
                  K =:= <<"private">>;
                  K =:= <<"member_count">> ->
               Ans#{binary_to_atom(K, latin1) => V};
-         (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => Int}; % TODO
+         (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => to_resource_state(Int)};
          (<<"club_type">>, Str, Ans) -> Ans#{club_type => Str}; % TODO
          (<<"sport_type">>, Str, Ans) -> Ans#{sport_type => Str}; % TODO
          (_K, _V, Ans) -> Ans
@@ -225,7 +225,7 @@ to_gear(Map) ->
               K =:= <<"model_name">>;
               K =:= <<"description">> ->
               Ans#{binary_to_atom(K, latin1) => V};
-         (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => Int}; % TODO
+         (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => to_resource_state(Int)};
          (<<"frame_type">>, Int, Ans) -> Ans#{frame_type => to_gear_frame_type(Int)};
          (_K, _V, Ans) -> Ans
       end, _Ans = #{}, Map).
@@ -276,7 +276,7 @@ to_segment_effort(Map) ->
                  K =:= <<"pr_rank">>;
                  K =:= <<"hidden">> ->
               Ans#{binary_to_atom(K, latin1) => V};
-         (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => Int}; % TODO
+         (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => to_resource_state(Int)};
          (<<"activity">>, Term, Ans) -> Ans#{activity => to_activity(Term)};
          (<<"athlete">>, Term, Ans) -> Ans#{athlete => to_athlete(Term)};
          (<<"start_date">>, Str, Ans) -> Ans#{start_date => to_datetime(Str)};
@@ -312,7 +312,7 @@ to_segment(Map) ->
                  K =:= <<"hazardous">>;
                  K =:= <<"star_count">> ->
               Ans#{binary_to_atom(K, latin1) => V};
-         (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => Int}; % TODO
+         (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => to_resource_state(Int)};
          (<<"activity_type">>, Str, Ans) -> Ans#{activity_type => Str}; % TODO
          (<<"start_latlng">>, List, Ans) -> Ans#{start_latlng => List}; % TODO
          (<<"end_latlng">>, List, Ans) -> Ans#{end_latlng => List}; % TODO
