@@ -1,4 +1,4 @@
 .rebar/
-^rebar
+^rebar$
 deps/
 ebin/
