@@ -5,7 +5,8 @@
 
 %% From JSON map functions
 -export([to_activity/1, to_athlete/1, to_athlete_stats/1, to_club/1,
-         to_gear/1, to_segment/1, to_segment_effort/1, to_stream/1]).
+         to_club_announcement/1, to_gear/1, to_segment/1,
+         to_segment_effort/1, to_stream/1]).
 
 %% To JSON functions
 -export([from_athlete/1]).
@@ -268,6 +269,26 @@ to_club(Map) ->
          (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => to_resource_state(Int)};
          (<<"club_type">>, Str, Ans) -> Ans#{club_type => to_club_type(Str)};
          (<<"sport_type">>, Str, Ans) -> Ans#{sport_type => to_club_sport_type(Str)};
+         (_K, _V, Ans) -> Ans
+      end, _Ans = #{}, Map).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_club_announcement(map()) -> strava_club:announcement().
+
+to_club_announcement(Map) ->
+    maps:fold(
+      fun(_K, _V = null, Ans) -> Ans;           % Ignore null fields
+         (K, V, Ans)
+            when K =:= <<"id">>;
+                 K =:= <<"club_id">>;
+                 K =:= <<"message">> ->
+              Ans#{binary_to_atom(K, latin1) => V};
+         (<<"athlete">>, Term, Ans) -> Ans#{athlete => to_athlete(Term)};
+         (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => to_resource_state(Int)};
+         (<<"created_at">>, Str, Ans) -> Ans#{created_at => to_datetime(Str)};
          (_K, _V, Ans) -> Ans
       end, _Ans = #{}, Map).
 
