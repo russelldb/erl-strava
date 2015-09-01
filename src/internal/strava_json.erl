@@ -76,8 +76,8 @@ to_activity(Map) ->
          (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => Int}; % TODO
          (<<"athlete">>, Term, Ans) -> Ans#{athlete => to_athlete(Term)};
          (<<"type">>, Str, Ans) -> Ans#{type => Str}; % TODO
-         (<<"start_date">>, Str, Ans) -> Ans#{start_date => Str}; % TODO
-         (<<"start_date_local">>, Str, Ans) -> Ans#{start_date_local => Str}; % TODO
+         (<<"start_date">>, Str, Ans) -> Ans#{start_date => to_datetime(Str)};
+         (<<"start_date_local">>, Str, Ans) -> Ans#{start_date_local => to_datetime(Str)};
          (<<"start_latlng">>, List, Ans) -> Ans#{start_latlng => List}; % TODO
          (<<"end_latlng">>, List, Ans) -> Ans#{end_latlng => List}; % TODO
          (<<"photos">>, List, Ans) -> Ans#{photos => List}; % TODO
@@ -121,8 +121,8 @@ to_athlete(Map) ->
          (<<"sex">>, Str, Ans) -> Ans#{sex => Str}; % TODO
          (<<"friend">>, Str, Ans) -> Ans#{friend => Str}; % TODO
          (<<"follower">>, Str, Ans) -> Ans#{follower => Str}; % TODO
-         (<<"created_at">>, Str, Ans) -> Ans#{created_at => Str}; % TODO
-         (<<"updated_at">>, Str, Ans) -> Ans#{updated_at => Str}; % TODO
+         (<<"created_at">>, Str, Ans) -> Ans#{created_at => to_datetime(Str)};
+         (<<"updated_at">>, Str, Ans) -> Ans#{updated_at => to_datetime(Str)};
          (<<"athlete_type">>, Int, Ans) -> Ans#{athlete_type => Int}; % TODO
          (<<"measurement_preference">>, Str, Ans) -> Ans#{measurement_preference => Str}; % TODO
          (<<"clubs">>, List, Ans) -> Ans#{clubs => lists:map(fun to_club/1, List)};
@@ -269,8 +269,8 @@ to_segment_effort(Map) ->
          (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => Int}; % TODO
          (<<"activity">>, Term, Ans) -> Ans#{activity => to_activity(Term)};
          (<<"athlete">>, Term, Ans) -> Ans#{athlete => to_athlete(Term)};
-         (<<"start_date">>, Str, Ans) -> Ans#{start_date => Str}; % TODO
-         (<<"start_date_local">>, Str, Ans) -> Ans#{start_date_local => Str}; % TODO
+         (<<"start_date">>, Str, Ans) -> Ans#{start_date => to_datetime(Str)};
+         (<<"start_date_local">>, Str, Ans) -> Ans#{start_date_local => to_datetime(Str)};
          (<<"segment">>, Term, Ans) -> Ans#{segment => to_segment(Term)};
          (_K, _V, Ans) -> Ans
       end, _Ans = #{}, Map).
@@ -307,8 +307,8 @@ to_segment(Map) ->
          (<<"start_latlng">>, List, Ans) -> Ans#{start_latlng => List}; % TODO
          (<<"end_latlng">>, List, Ans) -> Ans#{end_latlng => List}; % TODO
          (<<"climb_category">>, Int, Ans) -> Ans#{climb_category => Int}; % TODO
-         (<<"created_at">>, Str, Ans) -> Ans#{created_at => Str}; % TODO
-         (<<"updated_at">>, Str, Ans) -> Ans#{updated_at => Str}; % TODO
+         (<<"created_at">>, Str, Ans) -> Ans#{created_at => to_datetime(Str)};
+         (<<"updated_at">>, Str, Ans) -> Ans#{updated_at => to_datetime(Str)};
          (<<"map">>, Term, Ans) -> Ans#{map => Term};             % TODO
          (_K, _V, Ans) -> Ans
       end, _Ans = #{}, Map).
