@@ -1,11 +1,14 @@
 -module(strava_json).
 
-%% To/from JSON map functions
+%% From JSON map functions
 -export([to_activity/1, to_athlete/1, to_club/1, to_gear/1,
          to_segment/1, to_segment_effort/1, to_stream/1]).
 
+%% To JSON functions
+-export([from_athlete/1]).
+
 %%%===================================================================
-%%% To/from JSON map functions
+%%% From JSON map functions
 %%%===================================================================
 
 %%--------------------------------------------------------------------
@@ -246,5 +249,27 @@ to_stream(Map) ->
          ({<<"series_type">>, Str}, Ans) -> Ans#{series_type => Str}; % TODO
          ({<<"original_size">>, Int}, Ans) -> Ans#{original_size => Int};
          ({<<"resolution">>, Str}, Ans) -> Ans#{resolution => Str}; % TODO
+         ({_K, _V}, Ans) -> Ans
+      end, _Ans = #{}, Map).
+
+%%%===================================================================
+%%% To JSON functions
+%%%===================================================================
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec from_athlete(strava_athlete:t()) -> map().
+
+from_athlete(Map) ->
+    maps:fold(
+      fun({K, V}, Ans)
+            when K =:= city;
+                 K =:= state;
+                 K =:= country;
+                 K =:= sex;
+                 K =:= weight ->
+              Ans#{atom_to_binary(K, latin1) => V};
          ({_K, _V}, Ans) -> Ans
       end, _Ans = #{}, Map).
