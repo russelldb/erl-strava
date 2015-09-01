@@ -12,6 +12,9 @@
          followers/3, followers/4, friends/1, friends/2, friends/3,
          friends/4]).
 
+%% To/from JSON functions
+-export([to_activity/1]).
+
 %%%===================================================================
 %%% Types
 %%%===================================================================
@@ -199,3 +202,47 @@ both_following(Token, Id) ->
 both_following(_Token, _Id, _Page, _PerPage) ->
     %% TODO
     [].
+
+%%%===================================================================
+%%% To/from JSON map functions
+%%%===================================================================
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_athlete(map()) -> t().
+
+to_athlete(Map) ->
+    maps:fold(
+      fun({K, V}, Ans)
+            when K =:= <<"id">>;
+                 K =:= <<"firstname">>;
+                 K =:= <<"lastname">>;
+                 K =:= <<"profile_medium">>;
+                 K =:= <<"profile">>;
+                 K =:= <<"city">>;
+                 K =:= <<"state">>;
+                 K =:= <<"country">>;
+                 K =:= <<"premium">>;
+                 K =:= <<"follower_count">>;
+                 K =:= <<"friend_count">>;
+                 K =:= <<"mutual_friend_count">>;
+                 K =:= <<"date_preference">>;
+                 K =:= <<"email">>;
+                 K =:= <<"ftp">>;
+                 K =:= <<"weight">> ->
+              Ans#{binary_to_atom(K, latin1) => V};
+         ({<<"resource_state">>, Int}, Ans) -> Ans#{resource_state => Int}; % TODO
+         ({<<"sex">>, Str}, Ans) -> Ans#{sex => Str}; % TODO
+         ({<<"friend">>, Str}, Ans) -> Ans#{friend => Str}; % TODO
+         ({<<"follower">>, Str}, Ans) -> Ans#{follower => Str}; % TODO
+         ({<<"created_at">>, Str}, Ans) -> Ans#{created_at => Str}; % TODO
+         ({<<"updated_at">>, Str}, Ans) -> Ans#{updated_at => Str}; % TODO
+         ({<<"athlete_type">>, Int}, Ans) -> Ans#{athlete_type => Int}; % TODO
+         ({<<"measurement_preference">>, Str}, Ans) -> Ans#{measurement_preference => Str}; % TODO
+         ({<<"clubs">>, List}, Ans) -> Ans#{clubs => lists:map(fun strava_club:to_club/1, List)};
+         ({<<"bikes">>, List}, Ans) -> Ans#{bikes => lists:map(fun strava_gear:to_gear/1, List)};
+         ({<<"shoes">>, List}, Ans) -> Ans#{shoes => lists:map(fun strava_gear:to_gear/1, List)};
+         ({_K, _V}, Ans) -> Ans
+      end, _Ans = #{}, Map).
