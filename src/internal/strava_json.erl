@@ -157,7 +157,7 @@ to_athlete(Map) ->
                  K =:= <<"weight">> ->
               Ans#{binary_to_atom(K, latin1) => V};
          (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => to_resource_state(Int)};
-         (<<"sex">>, Str, Ans) -> Ans#{sex => Str}; % TODO
+         (<<"sex">>, Str, Ans) -> Ans#{sex => to_athlete_sex(Str)};
          (<<"friend">>, Str, Ans) -> Ans#{friend => Str}; % TODO
          (<<"follower">>, Str, Ans) -> Ans#{follower => Str}; % TODO
          (<<"created_at">>, Str, Ans) -> Ans#{created_at => to_datetime(Str)};
@@ -169,6 +169,15 @@ to_athlete(Map) ->
          (<<"shoes">>, List, Ans) -> Ans#{shoes => lists:map(fun to_gear/1, List)};
          (_K, _V, Ans) -> Ans
       end, _Ans = #{}, Map).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_athlete_sex(binary()) -> strava_athlete:sex().
+
+to_athlete_sex(<<"F">>) -> female.
+to_athlete_sex(<<"M">>) -> male;
 
 %%--------------------------------------------------------------------
 %% @doc
