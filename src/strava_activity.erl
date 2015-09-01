@@ -53,7 +53,7 @@ activity(_Token, _Id) ->
 -spec athletes(strava:auth_token()) -> [t()].
 
 athletes(Token) ->
-    athletes(Token, _Args = #{}).
+    athletes_args(Token, _Args = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -63,8 +63,8 @@ athletes(Token) ->
 -spec athletes(strava:auth_token(), pos_integer(), pos_integer()) -> [t()].
 
 athletes(Token, Page, PerPage) ->
-    athletes(Token, _Args = #{page     => Page,
-                              per_page => PerPage}).
+    athletes_args(Token, _Args = #{page     => Page,
+                                   per_page => PerPage}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -74,7 +74,7 @@ athletes(Token, Page, PerPage) ->
 -spec athletes_after(strava:auth_token(), integer()) -> [t()].
 
 athletes_after(Token, Time) ->
-    athletes(Token, _Args = #{'after' => Time}).
+    athletes_args(Token, _Args = #{'after' => Time}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -84,7 +84,7 @@ athletes_after(Token, Time) ->
 -spec athletes_before(strava:auth_token(), integer()) -> [t()].
 
 athletes_before(Token, Time) ->
-    athletes(Token, _Args = #{before => Time}).
+    athletes_args(Token, _Args = #{before => Time}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -116,7 +116,7 @@ delete(_Token, _Id) ->
 -spec friends(strava:auth_token()) -> [t()].
 
 friends(Token) ->
-    friends(Token, _Args = #{}).
+    friends_args(Token, _Args = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -126,8 +126,8 @@ friends(Token) ->
 -spec friends(strava:auth_token(), pos_integer(), pos_integer()) -> [t()].
 
 friends(Token, Page, PerPage) ->
-    friends(Token, _Args = #{page     => Page,
-                             per_page => PerPage}).
+    friends_args(Token, _Args = #{page     => Page,
+                                  per_page => PerPage}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -137,7 +137,7 @@ friends(Token, Page, PerPage) ->
 -spec friends_before(strava:auth_token(), integer()) -> [t()].
 
 friends_before(Token, Time) ->
-    friends(Token, _Args = #{before => Time}).
+    friends_args(Token, _Args = #{before => Time}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -147,7 +147,7 @@ friends_before(Token, Time) ->
 -spec laps(strava:auth_token(), integer()) -> [lap()].
 
 laps(Token, Id) ->
-    laps(Token, Id, _Args = #{}).
+    laps_args(Token, Id, _Args = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -157,8 +157,8 @@ laps(Token, Id) ->
 -spec laps(strava:auth_token(), integer(), pos_integer(), pos_integer()) -> [lap()].
 
 laps(Token, Id, Page, PerPage) ->
-    laps(Token, Id, _Args = #{page     => Page,
-                              per_page => PerPage}).
+    laps_args(Token, Id, _Args = #{page     => Page,
+                                   per_page => PerPage}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -168,7 +168,7 @@ laps(Token, Id, Page, PerPage) ->
 -spec related(strava:auth_token(), integer()) -> [t()].
 
 related(Token, Id) ->
-    related(Token, Id, _Args = #{}).
+    related_args(Token, Id, _Args = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -178,8 +178,8 @@ related(Token, Id) ->
 -spec related(strava:auth_token(), integer(), pos_integer(), pos_integer()) -> [t()].
 
 related(Token, Id, Page, PerPage) ->
-    related(Token, Id, _Args = #{page     => Page,
-                                 per_page => PerPage}).
+    related_args(Token, Id, _Args = #{page     => Page,
+                                      per_page => PerPage}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -215,7 +215,7 @@ zones(_Token, _Id) ->
 -spec comments(strava:auth_token(), integer()) -> [comment()].
 
 comments(Token, Id) ->
-    comments(Token, Id, _Args = #{}).
+    comments_args(Token, Id, _Args = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -225,8 +225,8 @@ comments(Token, Id) ->
 -spec comments(strava:auth_token(), integer(), pos_integer(), pos_integer()) -> [comment()].
 
 comments(Token, Id, Page, PerPage) ->
-    comments(Token, Id, _Args = #{page     => Page,
-                                  per_page => PerPage}).
+    comments_args(Token, Id, _Args = #{page     => Page,
+                                       per_page => PerPage}).
 
 %%%===================================================================
 %%% Activity kudos functions
@@ -240,7 +240,7 @@ comments(Token, Id, Page, PerPage) ->
 -spec kudoers(strava:auth_token(), integer()) -> [strava_athlete:t()].
 
 kudoers(Token, Id) ->
-    kudoers(Token, Id, _Args = #{}).
+    kudoers_args(Token, Id, _Args = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -250,8 +250,8 @@ kudoers(Token, Id) ->
 -spec kudoers(strava:auth_token(), integer(), pos_integer(), pos_integer()) -> [strava_athlete:t()].
 
 kudoers(Token, Id, Page, PerPage) ->
-    kudoers(Token, Id, _Args = #{page     => Page,
-                                 per_page => PerPage}).
+    kudoers_args(Token, Id, _Args = #{page     => Page,
+                                      per_page => PerPage}).
 
 %%%===================================================================
 %%% Activity photos functions
@@ -265,7 +265,7 @@ kudoers(Token, Id, Page, PerPage) ->
 -spec photos(strava:auth_token(), integer()) -> [photo()].
 
 photos(Token, Id) ->
-    photos(Token, Id, _Args = #{}).
+    photos_args(Token, Id, _Args = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -275,8 +275,8 @@ photos(Token, Id) ->
 -spec photos(strava:auth_token(), integer(), pos_integer(), pos_integer()) -> [photo()].
 
 photos(Token, Id, Page, PerPage) ->
-    photos(Token, Id, _Args = #{page     => Page,
-                                per_page => PerPage}).
+    photos_args(Token, Id, _Args = #{page     => Page,
+                                     per_page => PerPage}).
 
 %%%===================================================================
 %%% Internal functions
@@ -287,9 +287,9 @@ photos(Token, Id, Page, PerPage) ->
 %% List athlete activities.
 %% @end
 %%--------------------------------------------------------------------
--spec athletes(strava:auth_token(), map()) -> [t()].
+-spec athletes_args(strava:auth_token(), map()) -> [t()].
 
-athletes(_Token, _Args) ->
+athletes_args(_Token, _Args) ->
     %% TODO
     [].
 
@@ -298,9 +298,9 @@ athletes(_Token, _Args) ->
 %% List friends’ activities.
 %% @end
 %%--------------------------------------------------------------------
--spec friends(strava:auth_token(), map()) -> [t()].
+-spec friends_args(strava:auth_token(), map()) -> [t()].
 
-friends(_Token, _Args) ->
+friends_args(_Token, _Args) ->
     %% TODO
     [].
 
@@ -309,9 +309,9 @@ friends(_Token, _Args) ->
 %% List activity laps.
 %% @end
 %%--------------------------------------------------------------------
--spec laps(strava:auth_token(), integer(), map()) -> [lap()].
+-spec laps_args(strava:auth_token(), integer(), map()) -> [lap()].
 
-laps(_Token, _Id, _Args) ->
+laps_args(_Token, _Id, _Args) ->
     %% TODO
     [].
 
@@ -320,9 +320,9 @@ laps(_Token, _Id, _Args) ->
 %% List related activities.
 %% @end
 %%--------------------------------------------------------------------
--spec related(strava:auth_token(), integer(), map()) -> [t()].
+-spec related_args(strava:auth_token(), integer(), map()) -> [t()].
 
-related(_Token, _Id, _Args) ->
+related_args(_Token, _Id, _Args) ->
     %% TODO
     [].
 
@@ -331,9 +331,9 @@ related(_Token, _Id, _Args) ->
 %% List activity comments.
 %% @end
 %%--------------------------------------------------------------------
--spec comments(strava:auth_token(), integer(), map()) -> [comment()].
+-spec comments_args(strava:auth_token(), integer(), map()) -> [comment()].
 
-comments(_Token, _Id, _Args) ->
+comments_args(_Token, _Id, _Args) ->
     %% TODO
     [].
 
@@ -342,9 +342,9 @@ comments(_Token, _Id, _Args) ->
 %% List activity kudoers.
 %% @end
 %%--------------------------------------------------------------------
--spec kudoers(strava:auth_token(), integer(), map()) -> [strava_athlete:t()].
+-spec kudoers_args(strava:auth_token(), integer(), map()) -> [strava_athlete:t()].
 
-kudoers(_Token, _Id, _Args) ->
+kudoers_args(_Token, _Id, _Args) ->
     %% TODO
     [].
 
@@ -353,8 +353,8 @@ kudoers(_Token, _Id, _Args) ->
 %% List photos.
 %% @end
 %%--------------------------------------------------------------------
--spec photos(strava:auth_token(), integer(), map()) -> [photo()].
+-spec photos_args(strava:auth_token(), integer(), map()) -> [photo()].
 
-photos(_Token, _Id, _Args) ->
+photos_args(_Token, _Id, _Args) ->
     %% TODO
     [].
