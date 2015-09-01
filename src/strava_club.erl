@@ -1,7 +1,8 @@
 -module(strava_club).
 
 %% Types
--export_type([announcement/0, club/0, group_event/0, t/0]).
+-export_type([announcement/0, club/0, group_event/0, sport_type/0,
+              t/0, type/0]).
 
 %% Clubs functions
 -export([activities/2, activities/4, activities_before/3,
@@ -15,6 +16,15 @@
 -type announcement() :: map().
 -type club() :: map().
 -type group_event() :: map().
+-type sport_type() :: cycling
+                    | running
+                    | triathlon
+                    | other.
+-type type() :: casual_club
+              | racing_team
+              | shop
+              | company
+              | other.
 
 -type t() :: club().
 
