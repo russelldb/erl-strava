@@ -6,6 +6,8 @@
 %% API
 -export([create/3, delete/2, read/3, update/3]).
 
+-include_lib("eunit/include/eunit.hrl").
+
 %%%===================================================================
 %%% Types
 %%%===================================================================
@@ -83,6 +85,40 @@ qs(Opts, Prefix) ->
                         http_uri:encode(strava_util:to_string(V))]}
           end, {Prefix, []}, Opts),
     iolist_to_binary(Ans).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec request(httpc:method(), strava:auth_token(), path(), options(),
+              httpc:content_type(), httpc:body()) ->
+                     {ok, binary()} | {error, pos_integer()}.
+
+request(Method, Token, Path, Opts, ContentType, Body) ->
+    URL = strava_util:to_string([url(Path), qs(Opts, $?)]),
+    Headers = [{"Authorization", strava_util:to_string([<<"Bearer ">>, Token])}],
+    Request = case Method of
+                  _ when Method =:= delete;
+                         Method =:= get ->
+                      {URL, Headers};
+                  _ when Method =:= post;
+                         Method =:= put ->
+                      {URL, Headers, ContentType, Body}
+              end,
+    ?debugVal({URL, Headers, ContentType, Body}),
+    case httpc:request(Method, Request, _HTTPOpts = [],
+                       _Opts = [{body_format, binary},
+                                {full_result, false}],
+                       strava)
+    of
+        {ok, {Status, ResBody}}
+          when Status >= 200, Status =< 299 ->
+            ?debugVal({Status, ResBody}),
+            {ok, ResBody};
+        {ok, {Status, ResBody}} ->
+            ?debugVal({Status, ResBody}),
+            {error, Status}
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
