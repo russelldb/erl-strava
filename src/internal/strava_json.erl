@@ -158,8 +158,8 @@ to_athlete(Map) ->
               Ans#{binary_to_atom(K, latin1) => V};
          (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => to_resource_state(Int)};
          (<<"sex">>, Str, Ans) -> Ans#{sex => to_athlete_sex(Str)};
-         (<<"friend">>, Str, Ans) -> Ans#{friend => Str}; % TODO
-         (<<"follower">>, Str, Ans) -> Ans#{follower => Str}; % TODO
+         (<<"friend">>, Str, Ans) -> Ans#{friend => to_athlete_friend_status(Str)};
+         (<<"follower">>, Str, Ans) -> Ans#{follower => to_athlete_friend_status(Str)};
          (<<"created_at">>, Str, Ans) -> Ans#{created_at => to_datetime(Str)};
          (<<"updated_at">>, Str, Ans) -> Ans#{updated_at => to_datetime(Str)};
          (<<"athlete_type">>, Int, Ans) -> Ans#{athlete_type => Int}; % TODO
@@ -169,6 +169,18 @@ to_athlete(Map) ->
          (<<"shoes">>, List, Ans) -> Ans#{shoes => lists:map(fun to_gear/1, List)};
          (_K, _V, Ans) -> Ans
       end, _Ans = #{}, Map).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_athlete_friend_status(binary()) -> strava_athlete:friend_status().
+
+to_athlete_friend_status(Text)
+  when Text =:= <<"pending">>;
+       Text =:= <<"accepted">>;
+       Text =:= <<"blocked">> ->
+    binary_to_atom(Text, latin1).
 
 %%--------------------------------------------------------------------
 %% @doc
