@@ -26,11 +26,23 @@
 %% POST multipart/form-data
 %% @end
 %%--------------------------------------------------------------------
--spec create(strava:auth_token(), path(), content()) -> {ok, content()} | {error, pos_integer()}.
+-spec create(strava:auth_token(), path(), content()) ->
+                    {ok, content()} | {error, pos_integer()}.
 
-create(_Token, _Path, _Content) ->
-    %% TODO
-    {error, -1}.
+create(Token, Path, Content) ->
+    {ContentType, Body} =
+        case Content of
+            _ when is_map(Content) ->
+                {"application/x-www-form-urlencoded", qs(Content, <<>>)};
+            _ when is_list(Content) ->
+                %% TODO
+                {"multipart/form-data", <<>>}
+        end,
+    Options = #{},
+    case request(post, Token, Path, Options, ContentType, Body) of
+        {ok, ResBody} -> {ok, jsx:decode(ResBody, [return_maps])};
+        Error -> Error
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -39,9 +51,14 @@ create(_Token, _Path, _Content) ->
 %%--------------------------------------------------------------------
 -spec delete(strava:auth_token(), path()) -> ok | {error, pos_integer()}.
 
-delete(_Token, _Path) ->
-    %% TODO
-    {error, -1}.
+delete(Token, Path) ->
+    Options = #{},
+    ContentType = "",
+    Body = <<>>,
+    case request(delete, Token, Path, Options, ContentType, Body) of
+        {ok, _ResBody} -> ok;
+        Error -> Error
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -50,9 +67,13 @@ delete(_Token, _Path) ->
 %%--------------------------------------------------------------------
 -spec read(strava:auth_token(), path(), options()) -> {ok, content()} | {error, pos_integer()}.
 
-read(_Token, _Path, _Options) ->
-    %% TODO
-    {error, -1}.
+read(Token, Path, Options) ->
+    ContentType = "",
+    Body = <<>>,
+    case request(get, Token, Path, Options, ContentType, Body) of
+        {ok, ResBody} -> {ok, jsx:decode(ResBody, [return_maps])};
+        Error -> Error
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -61,9 +82,14 @@ read(_Token, _Path, _Options) ->
 %%--------------------------------------------------------------------
 -spec update(strava:auth_token(), path(), content()) -> {ok, content()} | {error, pos_integer()}.
 
-update(_Token, _Path, _Content) ->
-    %% TODO
-    {error, -1}.
+update(Token, Path, Content) ->
+    Options = #{},
+    ContentType = "application/x-www-form-urlencoded",
+    Body = qs(Content, <<>>),
+    case request(put, Token, Path, Options, ContentType, Body) of
+        {ok, ResBody} -> {ok, jsx:decode(ResBody, [return_maps])};
+        Error -> Error
+    end.
 
 %%%===================================================================
 %%% Internal functions
