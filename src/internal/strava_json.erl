@@ -16,54 +16,56 @@
 
 to_activity(Map) ->
     maps:fold(
-      fun({<<"id">>, Int}, Ans) -> Ans#{id => Int};
+      fun({K, V}, Ans)
+            when K =:= <<"id">>;
+                 K =:= <<"external_id">>;
+                 K =:= <<"upload_id">>;
+                 K =:= <<"name">>;
+                 K =:= <<"description">>;
+                 K =:= <<"distance">>;
+                 K =:= <<"moving_time">>;
+                 K =:= <<"elapsed_time">>;
+                 K =:= <<"total_elevation_gain">>;
+                 K =:= <<"timezone">>;
+                 K =:= <<"location_city">>;
+                 K =:= <<"location_state">>;
+                 K =:= <<"location_country">>;
+                 K =:= <<"achievement_count">>;
+                 K =:= <<"kudos_count">>;
+                 K =:= <<"comment_count">>;
+                 K =:= <<"athlete_count">>;
+                 K =:= <<"photo_count">>;
+                 K =:= <<"total_photo_count">>;
+                 K =:= <<"trainer">>;
+                 K =:= <<"commute">>;
+                 K =:= <<"manual">>;
+                 K =:= <<"private">>;
+                 K =:= <<"flagged">>;
+                 K =:= <<"gear_id">>;
+                 K =:= <<"average_speed">>;
+                 K =:= <<"max_speed">>;
+                 K =:= <<"average_cadence">>;
+                 K =:= <<"average_temp">>;
+                 K =:= <<"average_watts">>;
+                 K =:= <<"weighted_average_watts">>;
+                 K =:= <<"kilojoules">>;
+                 K =:= <<"device_watts">>;
+                 K =:= <<"average_heartrate">>;
+                 K =:= <<"max_heartrate">>;
+                 K =:= <<"calories">>;
+                 K =:= <<"has_kudoed">> ->
+              Ans#{binary_to_atom(K, latin1) => V};
          ({<<"resource_state">>, Int}, Ans) -> Ans#{resource_state => Int}; % TODO
-         ({<<"external_id">>, Str}, Ans) -> Ans#{external_id => Str};
-         ({<<"upload_id">>, Int}, Ans) -> Ans#{upload_id => Int};
          ({<<"athlete">>, Term}, Ans) -> Ans#{athlete => to_athlete(Term)};
-         ({<<"name">>, Str}, Ans) -> Ans#{name => Str};
-         ({<<"description">>, Str}, Ans) -> Ans#{description => Str};
-         ({<<"distance">>, Num}, Ans) -> Ans#{distance => Num};
-         ({<<"moving_time">>, Int}, Ans) -> Ans#{moving_time => Int};
-         ({<<"elapsed_time">>, Int}, Ans) -> Ans#{elapsed_time => Int};
-         ({<<"total_elevation_gain">>, Num}, Ans) -> Ans#{total_elevation_gain => Num};
          ({<<"type">>, Str}, Ans) -> Ans#{type => Str}; % TODO
          ({<<"start_date">>, Str}, Ans) -> Ans#{start_date => Str}; % TODO
          ({<<"start_date_local">>, Str}, Ans) -> Ans#{start_date_local => Str}; % TODO
-         ({<<"timezone">>, Str}, Ans) -> Ans#{timezone => Str};
          ({<<"start_latlng">>, List}, Ans) -> Ans#{start_latlng => List}; % TODO
          ({<<"end_latlng">>, List}, Ans) -> Ans#{end_latlng => List}; % TODO
-         ({<<"location_city">>, Str}, Ans) -> Ans#{location_city => Str};
-         ({<<"location_state">>, Str}, Ans) -> Ans#{location_state => Str};
-         ({<<"location_country">>, Str}, Ans) -> Ans#{location_country => Str};
-         ({<<"achievement_count">>, Int}, Ans) -> Ans#{achievement_count => Int};
-         ({<<"kudos_count">>, Int}, Ans) -> Ans#{kudos_count => Int};
-         ({<<"comment_count">>, Int}, Ans) -> Ans#{comment_count => Int};
-         ({<<"athlete_count">>, Int}, Ans) -> Ans#{athlete_count => Int};
-         ({<<"photo_count">>, Int}, Ans) -> Ans#{photo_count => Int};
-         ({<<"total_photo_count">>, Int}, Ans) -> Ans#{total_photo_count => Int};
          ({<<"photos">>, List}, Ans) -> Ans#{photos => List}; % TODO
          ({<<"map">>, Term}, Ans) -> Ans#{map => Term};         % TODO
-         ({<<"trainer">>, Bool}, Ans) -> Ans#{trainer => Bool};
-         ({<<"commute">>, Bool}, Ans) -> Ans#{commute => Bool};
-         ({<<"manual">>, Bool}, Ans) -> Ans#{manual => Bool};
-         ({<<"private">>, Bool}, Ans) -> Ans#{private => Bool};
-         ({<<"flagged">>, Bool}, Ans) -> Ans#{flagged => Bool};
          ({<<"workout_type">>, Int}, Ans) -> Ans#{workout_type => Int}; % TODO
-         ({<<"gear_id">>, Int}, Ans) -> Ans#{gear_id => Int};
          ({<<"gear">>, Term}, Ans) -> Ans#{gear => to_gear(Term)}; % TODO
-         ({<<"average_speed">>, Num}, Ans) -> Ans#{average_speed => Num};
-         ({<<"max_speed">>, Num}, Ans) -> Ans#{max_speed => Num};
-         ({<<"average_cadence">>, Num}, Ans) -> Ans#{average_cadence => Num};
-         ({<<"average_temp">>, Num}, Ans) -> Ans#{average_temp => Num};
-         ({<<"average_watts">>, Num}, Ans) -> Ans#{average_watts => Num};
-         ({<<"weighted_average_watts">>, Num}, Ans) -> Ans#{weighted_average_watts => Num};
-         ({<<"kilojoules">>, Num}, Ans) -> Ans#{kilojoules => Num};
-         ({<<"device_watts">>, Bool}, Ans) -> Ans#{device_watts => Bool};
-         ({<<"average_heartrate">>, Num}, Ans) -> Ans#{average_heartrate => Num};
-         ({<<"max_heartrate">>, Int}, Ans) -> Ans#{max_heartrate => Int};
-         ({<<"calories">>, Num}, Ans) -> Ans#{calories => Num};
-         ({<<"has_kudoed">>, Bool}, Ans) -> Ans#{has_kudoed => Bool};
          ({<<"segment_efforts">>, List}, Ans) -> Ans#{segment_efforts => lists:map(fun to_segment_effort/1, List)};
          ({<<"splits_metric">>, _Term}, Ans) -> Ans;
          ({<<"splits_standard">>, _Term}, Ans) -> Ans;
