@@ -292,7 +292,7 @@ photos(Token, Id, Page, PerPage) ->
 -spec to_activity(map()) -> t().
 
 to_activity(Map) ->
-    maps:foldl(
+    maps:fold(
       fun({<<"id">>, Int}, Ans) -> Ans#{id => Int};
          ({<<"resource_state">>, Int}, Ans) -> Ans#{resource_state => Int}; % TODO
          ({<<"external_id">>, Str}, Ans) -> Ans#{external_id => Str};
