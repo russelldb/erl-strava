@@ -13,7 +13,7 @@
          friends/4]).
 
 %% To/from JSON functions
--export([to_activity/1]).
+-export([to_athlete/1]).
 
 %%%===================================================================
 %%% Types
