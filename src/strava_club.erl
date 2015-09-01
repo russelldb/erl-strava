@@ -138,7 +138,7 @@ leave(_Token, _Id) ->
 -spec members(strava:auth_token(), integer()) -> [strava_athlete:t()].
 
 members(Token, Id) ->
-    members(Token, Id, _Page = undefined, _PerPage = undefined).
+    members_args(Token, Id, _Args = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -147,9 +147,9 @@ members(Token, Id) ->
 %%--------------------------------------------------------------------
 -spec members(strava:auth_token(), integer(), pos_integer(), pos_integer()) -> [strava_athlete:t()].
 
-members(_Token, _Id, _Page, _PerPage) ->
-    %% TODO
-    [].
+members(Token, Id, Page, PerPage) ->
+    members_args(Token, Id, _Args = #{page     => Page,
+                                      per_page => PerPage}).
 
 %%%===================================================================
 %%% Internal functions
@@ -166,4 +166,17 @@ members(_Token, _Id, _Page, _PerPage) ->
 activities_args(Token, Id, Args) ->
     case strava_api:read(Token, [<<"clubs">>, Id, <<"activities">>], Args) of
         {ok, JSON} -> lists:map(fun strava_json:to_activity/1, JSON)
+    end.
+
+%%--------------------------------------------------------------------
+%% @doc
+%% List club members.
+%% @end
+%%--------------------------------------------------------------------
+-spec members_args(strava:auth_token(), integer(), map()) ->
+                          [strava_athlete:t()].
+
+members_args(Token, Id, Args) ->
+    case strava_api:read(Token, [<<"clubs">>, Id, <<"members">>], Args) of
+        {ok, JSON} -> lists:map(fun strava_json:to_athlete/1, JSON)
     end.
