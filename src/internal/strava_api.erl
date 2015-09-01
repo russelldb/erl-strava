@@ -71,6 +71,23 @@ update(_Token, _Path, _Content) ->
 %% @doc
 %% @end
 %%--------------------------------------------------------------------
+-spec qs(options(), binary()) -> binary().
+
+qs(Opts, Prefix) ->
+    {_Prefix1, Ans} =
+        maps:fold(
+          fun(K, V, {Sep, Ans}) ->
+                  {$&, [Ans, Sep,
+                        http_uri:encode(strava_util:to_string(K)),
+                        $=,
+                        http_uri:encode(strava_util:to_string(V))]}
+          end, {Prefix, []}, Opts),
+    iolist_to_binary(Ans).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
 -spec url(path()) -> binary().
 
 url(Path) ->
