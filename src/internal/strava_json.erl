@@ -203,6 +203,15 @@ to_club(Map) ->
 %% @doc
 %% @end
 %%--------------------------------------------------------------------
+-spec to_datetime(binary()) -> calendar:datetime().
+
+to_datetime(Text) ->
+    {ok, Ans} = iso8601:parse_datetime(Text), Ans.
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
 -spec to_gear(map()) -> strava_gear:t().
 
 to_gear(Map) ->
