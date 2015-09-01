@@ -266,10 +266,37 @@ to_club(Map) ->
                  K =:= <<"member_count">> ->
               Ans#{binary_to_atom(K, latin1) => V};
          (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => to_resource_state(Int)};
-         (<<"club_type">>, Str, Ans) -> Ans#{club_type => Str}; % TODO
-         (<<"sport_type">>, Str, Ans) -> Ans#{sport_type => Str}; % TODO
+         (<<"club_type">>, Str, Ans) -> Ans#{club_type => to_club_type(Str)};
+         (<<"sport_type">>, Str, Ans) -> Ans#{sport_type => to_club_sport_type(Str)};
          (_K, _V, Ans) -> Ans
       end, _Ans = #{}, Map).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_club_sport_type(binary()) -> strava_club:sport_type().
+
+to_club_sport_type(Text)
+  when Text =:= <<"cycling">>;
+       Text =:= <<"running">>;
+       Text =:= <<"triathlon">>;
+       Text =:= <<"other">> ->
+    binary_to_atom(Text, latin1).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_club_type(binary()) -> strava_club:type().
+
+to_club_type(Text)
+  when Text =:= <<"casual_club">>;
+       Text =:= <<"racing_team">>;
+       Text =:= <<"shop">>;
+       Text =:= <<"company">>;
+       Text =:= <<"other">> ->
+    binary_to_atom(Text, latin1).
 
 %%--------------------------------------------------------------------
 %% @doc
