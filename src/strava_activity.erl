@@ -93,11 +93,11 @@ athletes_before(_Token, _Time) ->
 %% Create an activity.
 %% @end
 %%--------------------------------------------------------------------
--spec create(strava:auth_token(), t()) -> ok.
+-spec create(strava:auth_token(), t()) -> t().
 
 create(_Token, _Activity) ->
     %% TODO
-    ok.
+    #{}.
 
 %%--------------------------------------------------------------------
 %% @doc

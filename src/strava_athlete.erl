@@ -85,11 +85,11 @@ stats(_Token, _Id) ->
 %% Update current athlete.
 %% @end
 %%--------------------------------------------------------------------
--spec update(strava:auth_token(), t()) -> ok.
+-spec update(strava:auth_token(), t()) -> t().
 
 update(_Token, _Athlete) ->
     %% TODO
-    ok.
+    #{}.
 
 %%%===================================================================
 %%% Friends and followers API functions
