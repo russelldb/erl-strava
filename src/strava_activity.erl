@@ -94,9 +94,30 @@ athletes_before(Token, Time) ->
 %%--------------------------------------------------------------------
 -spec create(strava:auth_token(), t()) -> t().
 
-create(_Token, _Activity) ->
-    %% TODO
-    #{}.
+create(Token, Activity) ->
+    Content =
+        maps:fold(
+          fun(K, V, Ans)
+                when K =:= name;
+                     K =:= elapsed_time;
+                     K =:= description;
+                     K =:= distance ->
+                  Ans#{atom_to_binary(K, latin1) => V};
+             (K, V, Ans)
+                when K =:= private;
+                     K =:= trainer;
+                     K =:= commute ->
+                  Ans#{atom_to_binary(K, latin1) => case V of
+                                                        true -> 1;
+                                                        false -> 0
+                                                    end};
+             (type, Str, Ans) -> Ans#{<<"type">> => Str}; % TODO
+             (start_date_local, Str, Ans) -> Ans#{<<"start_date_local">> => Str}; % TODO
+             (_K, _V, Ans) -> Ans
+          end, _Ans = #{}, Activity),
+    case strava_api:create(Token, [<<"activities">>], Content) of
+        {ok, JSON} -> strava_json:to_activity(JSON)
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
