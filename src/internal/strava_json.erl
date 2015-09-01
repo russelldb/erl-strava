@@ -1,11 +1,26 @@
 -module(strava_json).
 
+%% Parse JSON
+-export([decode/1]).
+
 %% From JSON map functions
 -export([to_activity/1, to_athlete/1, to_athlete_stats/1, to_club/1,
          to_gear/1, to_segment/1, to_segment_effort/1, to_stream/1]).
 
 %% To JSON functions
 -export([from_athlete/1]).
+
+%%%===================================================================
+%%% Parse JSON
+%%%===================================================================
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec decode(binary()) -> term().
+
+decode(Text) -> jsx:decode(Text, [return_maps]).
 
 %%%===================================================================
 %%% From JSON map functions

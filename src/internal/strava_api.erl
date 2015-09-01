@@ -40,7 +40,7 @@ create(Token, Path, Content) ->
         end,
     Options = #{},
     case request(post, Token, Path, Options, ContentType, Body) of
-        {ok, ResBody} -> {ok, jsx:decode(ResBody, [return_maps])};
+        {ok, ResBody} -> {ok, strava_json:decode(ResBody)};
         Error -> Error
     end.
 
@@ -71,7 +71,7 @@ read(Token, Path, Options) ->
     ContentType = "",
     Body = <<>>,
     case request(get, Token, Path, Options, ContentType, Body) of
-        {ok, ResBody} -> {ok, jsx:decode(ResBody, [return_maps])};
+        {ok, ResBody} -> {ok, strava_json:decode(ResBody)};
         Error -> Error
     end.
 
@@ -87,7 +87,7 @@ update(Token, Path, Content) ->
     ContentType = "application/x-www-form-urlencoded",
     Body = qs(Content, <<>>),
     case request(put, Token, Path, Options, ContentType, Body) of
-        {ok, ResBody} -> {ok, jsx:decode(ResBody, [return_maps])};
+        {ok, ResBody} -> {ok, strava_json:decode(ResBody)};
         Error -> Error
     end.
 
