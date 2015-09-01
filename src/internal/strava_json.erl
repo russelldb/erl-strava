@@ -5,8 +5,8 @@
 
 %% From JSON map functions
 -export([to_activity/1, to_athlete/1, to_athlete_stats/1, to_club/1,
-         to_club_announcement/1, to_gear/1, to_segment/1,
-         to_segment_effort/1, to_stream/1]).
+         to_club_announcement/1, to_club_group_event/1, to_gear/1,
+         to_segment/1, to_segment_effort/1, to_stream/1]).
 
 %% To JSON functions
 -export([from_athlete/1]).
@@ -289,6 +289,35 @@ to_club_announcement(Map) ->
          (<<"athlete">>, Term, Ans) -> Ans#{athlete => to_athlete(Term)};
          (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => to_resource_state(Int)};
          (<<"created_at">>, Str, Ans) -> Ans#{created_at => to_datetime(Str)};
+         (_K, _V, Ans) -> Ans
+      end, _Ans = #{}, Map).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_club_group_event(map()) -> strava_club:group_event().
+
+to_club_group_event(Map) ->
+    maps:fold(
+      fun(_K, _V = null, Ans) -> Ans;           % Ignore null fields
+         (K, V, Ans)
+            when K =:= <<"id">>;
+                 K =:= <<"title">>;
+                 K =:= <<"description">>;
+                 K =:= <<"club_id">>;
+                 K =:= <<"route_id">>;
+                 K =:= <<"woman_only">>;
+                 K =:= <<"private">>;
+                 K =:= <<"address">> ->
+              Ans#{binary_to_atom(K, latin1) => V};
+         (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => to_resource_state(Int)};
+         (<<"organizing_athlete">>, Term, Ans) -> Ans#{organizing_athlete => to_athlete(Term)};
+         (<<"activity_type">>, Str, Ans) -> Ans#{activity_type => Str}; % TODO
+         (<<"created_at">>, Str, Ans) -> Ans#{created_at => to_datetime(Str)};
+         (<<"skill_levels">>, Int, Ans) -> Ans#{skill_levels => Int}; % TODO
+         (<<"terrain">>, Int, Ans) -> Ans#{terrain => Int}; % TODO
+         (<<"upcoming_occurrences">>, List, Ans) -> Ans#{upcoming_occurrences => lists:map(fun to_datetime/1, List)};
          (_K, _V, Ans) -> Ans
       end, _Ans = #{}, Map).
 
