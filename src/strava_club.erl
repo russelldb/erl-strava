@@ -28,8 +28,31 @@
 %% @end
 %%--------------------------------------------------------------------
 -spec activities(strava:auth_token(), integer()) -> [strava_activity:t()].
+
+activities(Token, Id) ->
+    activities(Token, Id, _Page = undefined, _PerPage = undefined).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% List club activities.
+%% @end
+%%--------------------------------------------------------------------
 -spec activities(strava:auth_token(), integer(), pos_integer(), pos_integer()) -> [strava_activity:t()].
+
+activities(_Token, _Id, _Page, _PerPage) ->
+    %% TODO
+    [].
+
+%%--------------------------------------------------------------------
+%% @doc
+%% List club activities.
+%% @end
+%%--------------------------------------------------------------------
 -spec activities_before(strava:auth_token(), integer(), integer()) -> [strava_activity:t()].
+
+activities_before(_Token, _Id, _Time) ->
+    %% TODO
+    [].
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -38,12 +61,20 @@
 %%--------------------------------------------------------------------
 -spec announcements(strava:auth_token(), integer()) -> [announcement()].
 
+announcements(_Token, _Id) ->
+    %% TODO
+    [].
+
 %%--------------------------------------------------------------------
 %% @doc
 %% List athlete clubs.
 %% @end
 %%--------------------------------------------------------------------
 -spec athletes(strava:auth_token()) -> [t()].
+
+athletes(_Token) ->
+    %% TODO
+    [].
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -52,12 +83,20 @@
 %%--------------------------------------------------------------------
 -spec club(strava:auth_token(), integer()) -> t().
 
+club(_Token, _Id) ->
+    %% TODO
+    #{}.
+
 %%--------------------------------------------------------------------
 %% @doc
 %% List club group events.
 %% @end
 %%--------------------------------------------------------------------
 -spec group_events(strava:auth_token(), integer()) -> [group_event()].
+
+group_events(_Token, _Id) ->
+    %% TODO
+    [].
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -66,6 +105,10 @@
 %%--------------------------------------------------------------------
 -spec join(strava:auth_token(), integer()) -> ok.
 
+join(_Token, _Id) ->
+    %% TODO
+    ok.
+
 %%--------------------------------------------------------------------
 %% @doc
 %% Leave a club.
@@ -73,10 +116,27 @@
 %%--------------------------------------------------------------------
 -spec leave(strava:auth_token(), integer()) -> ok.
 
+leave(_Token, _Id) ->
+    %% TODO
+    ok.
+
 %%--------------------------------------------------------------------
 %% @doc
 %% List club members.
 %% @end
 %%--------------------------------------------------------------------
 -spec members(strava:auth_token(), integer()) -> [strava_athlete:t()].
+
+members(Token, Id) ->
+    members(Token, Id, _Page = undefined, _PerPage = undefined).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% List club members.
+%% @end
+%%--------------------------------------------------------------------
 -spec members(strava:auth_token(), integer(), pos_integer(), pos_integer()) -> [strava_athlete:t()].
+
+members(_Token, _Id, _Page, _PerPage) ->
+    %% TODO
+    [].
