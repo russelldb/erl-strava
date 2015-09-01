@@ -18,6 +18,9 @@
 %% Activity photos functions
 -export([photos/2, photos/4]).
 
+%% To/from JSON functions
+-export([to_activity/1]).
+
 %%%===================================================================
 %%% Types
 %%%===================================================================
@@ -277,6 +280,74 @@ photos(Token, Id) ->
 photos(Token, Id, Page, PerPage) ->
     photos(Token, Id, _Args = #{page     => Page,
                                 per_page => PerPage}).
+
+%%%===================================================================
+%%% To/from JSON map functions
+%%%===================================================================
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_activity(map()) -> t().
+
+to_activity(Map) ->
+    maps:foldl(
+      fun({<<"id">>, Int}, Ans) -> Ans#{id => Int};
+         ({<<"resource_state">>, Int}, Ans) -> Ans#{resource_state => Int}; % TODO
+         ({<<"external_id">>, Str}, Ans) -> Ans#{external_id => Str};
+         ({<<"upload_id">>, Int}, Ans) -> Ans#{upload_id => Int};
+         ({<<"athlete">>, Term}, Ans) -> Ans#{athlete => strava_athlete:to_athlete(Term)};
+         ({<<"name">>, Str}, Ans) -> Ans#{name => Str};
+         ({<<"description">>, Str}, Ans) -> Ans#{description => Str};
+         ({<<"distance">>, Num}, Ans) -> Ans#{distance => Num};
+         ({<<"moving_time">>, Int}, Ans) -> Ans#{moving_time => Int};
+         ({<<"elapsed_time">>, Int}, Ans) -> Ans#{elapsed_time => Int};
+         ({<<"total_elevation_gain">>, Num}, Ans) -> Ans#{total_elevation_gain => Num};
+         ({<<"type">>, Str}, Ans) -> Ans#{type => Str}; % TODO
+         ({<<"start_date">>, Str}, Ans) -> Ans#{start_date => Str}; % TODO
+         ({<<"start_date_local">>, Str}, Ans) -> Ans#{start_date_local => Str}; % TODO
+         ({<<"timezone">>, Str}, Ans) -> Ans#{timezone => Str};
+         ({<<"start_latlng">>, List}, Ans) -> Ans#{start_latlng => List}; % TODO
+         ({<<"end_latlng">>, List}, Ans) -> Ans#{end_latlng => List}; % TODO
+         ({<<"location_city">>, Str}, Ans) -> Ans#{location_city => Str};
+         ({<<"location_state">>, Str}, Ans) -> Ans#{location_state => Str};
+         ({<<"location_country">>, Str}, Ans) -> Ans#{location_country => Str};
+         ({<<"achievement_count">>, Int}, Ans) -> Ans#{achievement_count => Int};
+         ({<<"kudos_count">>, Int}, Ans) -> Ans#{kudos_count => Int};
+         ({<<"comment_count">>, Int}, Ans) -> Ans#{comment_count => Int};
+         ({<<"athlete_count">>, Int}, Ans) -> Ans#{athlete_count => Int};
+         ({<<"photo_count">>, Int}, Ans) -> Ans#{photo_count => Int};
+         ({<<"total_photo_count">>, Int}, Ans) -> Ans#{total_photo_count => Int};
+         ({<<"photos">>, List}, Ans) -> Ans#{photos => List}; % TODO
+         ({<<"map">>, Term}, Ans) -> Ans#{map => Term};         % TODO
+         ({<<"trainer">>, Bool}, Ans) -> Ans#{trainer => Bool};
+         ({<<"commute">>, Bool}, Ans) -> Ans#{commute => Bool};
+         ({<<"manual">>, Bool}, Ans) -> Ans#{manual => Bool};
+         ({<<"private">>, Bool}, Ans) -> Ans#{private => Bool};
+         ({<<"flagged">>, Bool}, Ans) -> Ans#{flagged => Bool};
+         ({<<"workout_type">>, Int}, Ans) -> Ans#{workout_type => Int}; % TODO
+         ({<<"gear_id">>, Int}, Ans) -> Ans#{gear_id => Int};
+         ({<<"gear">>, Term}, Ans) -> Ans#{gear => strava_gear:to_gear(Term)}; % TODO
+         ({<<"average_speed">>, Num}, Ans) -> Ans#{average_speed => Num};
+         ({<<"max_speed">>, Num}, Ans) -> Ans#{max_speed => Num};
+         ({<<"average_cadence">>, Num}, Ans) -> Ans#{average_cadence => Num};
+         ({<<"average_temp">>, Num}, Ans) -> Ans#{average_temp => Num};
+         ({<<"average_watts">>, Num}, Ans) -> Ans#{average_watts => Num};
+         ({<<"weighted_average_watts">>, Num}, Ans) -> Ans#{weighted_average_watts => Num};
+         ({<<"kilojoules">>, Num}, Ans) -> Ans#{kilojoules => Num};
+         ({<<"device_watts">>, Bool}, Ans) -> Ans#{device_watts => Bool};
+         ({<<"average_heartrate">>, Num}, Ans) -> Ans#{average_heartrate => Num};
+         ({<<"max_heartrate">>, Int}, Ans) -> Ans#{max_heartrate => Int};
+         ({<<"calories">>, Num}, Ans) -> Ans#{calories => Num};
+         ({<<"has_kudoed">>, Bool}, Ans) -> Ans#{has_kudoed => Bool};
+         ({<<"segment_efforts">>, List}, Ans) ->
+              Ans#{segment_efforts => lists:map(fun strava_segment_effort:to_segment_effort/1, List)};
+         ({<<"splits_metric">>, _Term}, Ans) -> Ans;
+         ({<<"splits_standard">>, _Term}, Ans) -> Ans;
+         ({<<"best_efforts">>, _Term}, Ans) -> Ans;
+         ({_K, _V}, Ans) -> Ans
+      end, _Ans = #{}, Map).
 
 %%%===================================================================
 %%% Internal functions
