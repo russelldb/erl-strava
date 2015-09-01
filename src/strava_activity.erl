@@ -211,9 +211,25 @@ related(Token, Id, Page, PerPage) ->
 %%--------------------------------------------------------------------
 -spec update(strava:auth_token(), t()) -> t().
 
-update(_Token, _Activity) ->
-    %% TODO
-    #{}.
+update(Token, Activity) ->
+    #{id := Id} = Activity,
+    Content =
+        maps:fold(
+          fun(K, V, Ans)
+                when K =:= name;
+                     K =:= private;
+                     K =:= commute;
+                     K =:= trainer;
+                     K =:= description ->
+                  Ans#{atom_to_binary(K, latin1) => V};
+             (type, Str, Ans) -> Ans#{<<"type">> => Str}; % TODO
+             (gear_id, undefined, Ans) -> Ans#{<<"gear_id">> => <<"none">>};
+             (gear_id, Int, Ans) -> Ans#{<<"gear_id">> => Int};
+             (_K, _V, Ans) -> Ans
+          end, _Ans = #{}, Activity),
+    case strava_api:update(Token, [<<"activities">>, Id], Content) of
+        {ok, JSON} -> strava_json:to_activity(JSON)
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
