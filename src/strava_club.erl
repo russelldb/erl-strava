@@ -8,9 +8,6 @@
          announcements/2, athletes/1, club/2, group_events/2, join/2,
          leave/2, members/2, members/4]).
 
-%% To/from JSON functions
--export([to_club/1]).
-
 %%%===================================================================
 %%% Types
 %%%===================================================================
@@ -143,33 +140,3 @@ members(Token, Id) ->
 members(_Token, _Id, _Page, _PerPage) ->
     %% TODO
     [].
-
-%%%===================================================================
-%%% To/from JSON map functions
-%%%===================================================================
-
-%%--------------------------------------------------------------------
-%% @doc
-%% @end
-%%--------------------------------------------------------------------
--spec to_club(map()) -> t().
-
-to_club(Map) ->
-    maps:fold(
-      fun({K, V}, Ans)
-            when K =:= <<"id">>;
-                 K =:= <<"name">>;
-                 K =:= <<"profile_medium">>;
-                 K =:= <<"profile">>;
-                 K =:= <<"description">>;
-                 K =:= <<"city">>;
-                 K =:= <<"state">>;
-                 K =:= <<"country">>;
-                 K =:= <<"private">>;
-                 K =:= <<"member_count">> ->
-              Ans#{binary_to_atom(K, latin1) => V};
-         ({<<"resource_state">>, Int}, Ans) -> Ans#{resource_state => Int}; % TODO
-         ({<<"club_type">>, Str}, Ans) -> Ans#{club_type => Str}; % TODO
-         ({<<"sport_type">>, Str}, Ans) -> Ans#{sport_type => Str}; % TODO
-         ({_K, _V}, Ans) -> Ans
-      end, _Ans = #{}, Map).

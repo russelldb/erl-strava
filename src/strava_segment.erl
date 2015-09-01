@@ -8,9 +8,6 @@
          explore/4, leaderboard/2, leaderboard/3, leaderboard/4,
          leaderboard/5, segment/2, starred/1, starred/3]).
 
-%% To/from JSON functions
--export([to_segment/1]).
-
 %%%===================================================================
 %%% Types
 %%%===================================================================
@@ -159,45 +156,3 @@ starred(Token) ->
 starred(_Token, _Page, _PerPage) ->
     %% TODO
     [].
-
-%%%===================================================================
-%%% To/from JSON functions
-%%%===================================================================
-
-%%--------------------------------------------------------------------
-%% @doc
-%% @end
-%%--------------------------------------------------------------------
--spec to_segment(map()) -> t().
-
-to_segment(Map) ->
-    maps:fold(
-      fun({K, V}, Ans)
-            when K =:= <<"id">>;
-                 K =:= <<"name">>;
-                 K =:= <<"distance">>;
-                 K =:= <<"average_grade">>;
-                 K =:= <<"maximum_grade">>;
-                 K =:= <<"elevation_high">>;
-                 K =:= <<"elevation_low">>;
-                 K =:= <<"city">>;
-                 K =:= <<"state">>;
-                 K =:= <<"country">>;
-                 K =:= <<"private">>;
-                 K =:= <<"starred">>;
-                 K =:= <<"total_elevation_gain">>;
-                 K =:= <<"effort_count">>;
-                 K =:= <<"athlete_count">>;
-                 K =:= <<"hazardous">>;
-                 K =:= <<"star_count">> ->
-              Ans#{binary_to_atom(K, latin1) => V};
-         ({<<"resource_state">>, Int}, Ans) -> Ans#{resource_state => Int}; % TODO
-         ({<<"activity_type">>, Str}, Ans) -> Ans#{activity_type => Str}; % TODO
-         ({<<"start_latlng">>, List}, Ans) -> Ans#{start_latlng => List}; % TODO
-         ({<<"end_latlng">>, List}, Ans) -> Ans#{end_latlng => List}; % TODO
-         ({<<"climb_category">>, Int}, Ans) -> Ans#{climb_category => Int}; % TODO
-         ({<<"created_at">>, Str}, Ans) -> Ans#{created_at => Str}; % TODO
-         ({<<"updated_at">>, Str}, Ans) -> Ans#{updated_at => Str}; % TODO
-         ({<<"map">>, Term}, Ans) -> Ans#{map => Term};             % TODO
-         ({_K, _V}, Ans) -> Ans
-      end, _Ans = #{}, Map).
