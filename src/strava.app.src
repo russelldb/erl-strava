@@ -1,0 +1,7 @@
+%% -*- mode: erlang -*-
+
+{application, strava,
+ [{description, "Client library for Strava v3 API"},
+  {vsn, "0.0.1"},
+  {modules, []},
+  {applications, [inets, jsx, kernel, ssl, stdlib]}]}.
