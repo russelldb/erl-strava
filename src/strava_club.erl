@@ -93,9 +93,10 @@ athletes(_Token) ->
 %%--------------------------------------------------------------------
 -spec club(strava:auth_token(), integer()) -> t().
 
-club(_Token, _Id) ->
-    %% TODO
-    #{}.
+club(Token, Id) ->
+    case strava_api:read(Token, [<<"clubs">>, Id], _Opts = #{}) of
+        {ok, JSON} -> strava_json:to_club(JSON)
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
