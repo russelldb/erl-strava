@@ -106,9 +106,10 @@ club(Token, Id) ->
 %%--------------------------------------------------------------------
 -spec group_events(strava:auth_token(), integer()) -> [group_event()].
 
-group_events(_Token, _Id) ->
-    %% TODO
-    [].
+group_events(Token, Id) ->
+    case strava_api:read(Token, [<<"clubs">>, Id, <<"group_events">>], _Opts = #{}) of
+        {ok, JSON} -> lists:map(fun strava_json:to_club_group_event/1, JSON)
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
