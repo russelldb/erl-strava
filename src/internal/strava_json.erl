@@ -78,8 +78,8 @@ to_activity(Map) ->
          (<<"type">>, Str, Ans) -> Ans#{type => to_activity_type(Str)};
          (<<"start_date">>, Str, Ans) -> Ans#{start_date => to_datetime(Str)};
          (<<"start_date_local">>, Str, Ans) -> Ans#{start_date_local => to_datetime(Str)};
-         (<<"start_latlng">>, List, Ans) -> Ans#{start_latlng => List}; % TODO
-         (<<"end_latlng">>, List, Ans) -> Ans#{end_latlng => List}; % TODO
+         (<<"start_latlng">>, List, Ans) -> Ans#{start_latlng => to_position(List)};
+         (<<"end_latlng">>, List, Ans) -> Ans#{end_latlng => to_position(List)};
          (<<"photos">>, List, Ans) -> Ans#{photos => List}; % TODO
          (<<"map">>, Term, Ans) -> Ans#{map => Term};         % TODO
          (<<"workout_type">>, Int, Ans) -> Ans#{workout_type => Int}; % TODO
@@ -282,6 +282,14 @@ to_gear_frame_type(4) -> time_trial.
 %% @doc
 %% @end
 %%--------------------------------------------------------------------
+-spec to_position([number()]) -> strava:position().
+
+to_position([Lat, Lon]) -> {Lat, Lon}.
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
 -spec to_resource_state(integer()) -> strava:resource_state().
 
 to_resource_state(1) -> meta;
@@ -351,8 +359,8 @@ to_segment(Map) ->
               Ans#{binary_to_atom(K, latin1) => V};
          (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => to_resource_state(Int)};
          (<<"activity_type">>, Str, Ans) -> Ans#{activity_type => Str}; % TODO
-         (<<"start_latlng">>, List, Ans) -> Ans#{start_latlng => List}; % TODO
-         (<<"end_latlng">>, List, Ans) -> Ans#{end_latlng => List}; % TODO
+         (<<"start_latlng">>, List, Ans) -> Ans#{start_latlng => to_position(List)};
+         (<<"end_latlng">>, List, Ans) -> Ans#{end_latlng => to_position(List)};
          (<<"climb_category">>, Int, Ans) -> Ans#{climb_category => Int}; % TODO
          (<<"created_at">>, Str, Ans) -> Ans#{created_at => to_datetime(Str)};
          (<<"updated_at">>, Str, Ans) -> Ans#{updated_at => to_datetime(Str)};
