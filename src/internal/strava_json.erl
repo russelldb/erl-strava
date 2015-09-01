@@ -188,8 +188,8 @@ to_athlete_friend_status(Text)
 %%--------------------------------------------------------------------
 -spec to_athlete_sex(binary()) -> strava_athlete:sex().
 
-to_athlete_sex(<<"F">>) -> female.
-to_athlete_sex(<<"M">>) -> male;
+to_athlete_sex(<<"F">>) -> female;
+to_athlete_sex(<<"M">>) -> male.
 
 %%--------------------------------------------------------------------
 %% @doc
