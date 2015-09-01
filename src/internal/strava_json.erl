@@ -245,6 +245,16 @@ to_gear_frame_type(4) -> time_trial.
 %% @doc
 %% @end
 %%--------------------------------------------------------------------
+-spec to_resource_state(integer()) -> strava:resource_state().
+
+to_resource_state(1) -> meta;
+to_resource_state(2) -> summary;
+to_resource_state(3) -> detailed.
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
 -spec to_segment_effort(map()) -> strava_segment_effort:t().
 
 to_segment_effort(Map) ->
