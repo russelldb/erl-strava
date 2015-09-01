@@ -83,7 +83,7 @@ to_activity(Map) ->
          (<<"photos">>, List, Ans) -> Ans#{photos => List}; % TODO
          (<<"map">>, Term, Ans) -> Ans#{map => Term};         % TODO
          (<<"workout_type">>, Int, Ans) -> Ans#{workout_type => Int}; % TODO
-         (<<"gear">>, Term, Ans) -> Ans#{gear => to_gear(Term)}; % TODO
+         (<<"gear">>, Term, Ans) -> Ans#{gear => to_gear(Term)};
          (<<"segment_efforts">>, List, Ans) -> Ans#{segment_efforts => lists:map(fun to_segment_effort/1, List)};
          (<<"splits_metric">>, _Term, Ans) -> Ans;
          (<<"splits_standard">>, _Term, Ans) -> Ans;
