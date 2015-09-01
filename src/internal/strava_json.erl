@@ -2,7 +2,7 @@
 
 %% To/from JSON map functions
 -export([to_activity/1, to_athlete/1, to_club/1, to_gear/1,
-         to_segment/1, to_segment_effort/1]).
+         to_segment/1, to_segment_effort/1, to_stream/1]).
 
 %%%===================================================================
 %%% To/from JSON map functions
@@ -250,5 +250,21 @@ to_segment(Map) ->
          ({<<"created_at">>, Str}, Ans) -> Ans#{created_at => Str}; % TODO
          ({<<"updated_at">>, Str}, Ans) -> Ans#{updated_at => Str}; % TODO
          ({<<"map">>, Term}, Ans) -> Ans#{map => Term};             % TODO
+         ({_K, _V}, Ans) -> Ans
+      end, _Ans = #{}, Map).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_stream(map()) -> strava_stream:t().
+
+to_stream(Map) ->
+    maps:fold(
+      fun({<<"type">>, Str}, Ans) -> Ans#{type => Str}; % TODO
+         ({<<"data">>, List}, Ans) -> Ans#{data => List}; % TODO
+         ({<<"series_type">>, Str}, Ans) -> Ans#{series_type => Str}; % TODO
+         ({<<"original_size">>, Int}, Ans) -> Ans#{original_size => Int};
+         ({<<"resolution">>, Str}, Ans) -> Ans#{resolution => Str}; % TODO
          ({_K, _V}, Ans) -> Ans
       end, _Ans = #{}, Map).
