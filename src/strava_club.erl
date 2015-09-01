@@ -81,9 +81,10 @@ announcements(_Token, _Id) ->
 %%--------------------------------------------------------------------
 -spec athletes(strava:auth_token()) -> [t()].
 
-athletes(_Token) ->
-    %% TODO
-    [].
+athletes(Token) ->
+    case strava_api:read(Token, [<<"athlete">>, <<"clubs">>], _Opts = #{}) of
+        {ok, JSON} -> lists:map(fun strava_json:to_club/1, JSON)
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
