@@ -41,9 +41,10 @@
 %%--------------------------------------------------------------------
 -spec activity(strava:auth_token(), integer()) -> t().
 
-activity(_Token, _Id) ->
-    %% TODO
-    #{}.
+activity(Token, Id) ->
+    case strava_api:read(Token, [<<"activities">>, Id], _Opts = #{}) of
+        {ok, JSON} -> strava_json:to_activity(JSON)
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
