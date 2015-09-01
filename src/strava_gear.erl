@@ -25,6 +25,7 @@
 %%--------------------------------------------------------------------
 -spec gear(strava:auth_token(), binary()) -> t().
 
-gear(_Token, _Id) ->
-    %% TODO
-    #{}.
+gear(Token, Id) ->
+    case strava_api:read(Token, [<<"gear">>, Id], _Opts = #{}) of
+        {ok, JSON} -> strava_json:to_gear(JSON)
+    end.
