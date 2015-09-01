@@ -34,7 +34,8 @@ decode(Text) -> jsx:decode(Text, [return_maps]).
 
 to_activity(Map) ->
     maps:fold(
-      fun(K, V, Ans)
+      fun(_K, _V = null, Ans) -> Ans;           % Ignore null fields
+         (K, V, Ans)
             when K =:= <<"id">>;
                  K =:= <<"external_id">>;
                  K =:= <<"upload_id">>;
@@ -136,7 +137,8 @@ to_activity_type(<<"Yoga">>) -> yoga.
 
 to_athlete(Map) ->
     maps:fold(
-      fun(K, V, Ans)
+      fun(_K, _V = null, Ans) -> Ans;           % Ignore null fields
+         (K, V, Ans)
             when K =:= <<"id">>;
                  K =:= <<"firstname">>;
                  K =:= <<"lastname">>;
@@ -176,7 +178,8 @@ to_athlete(Map) ->
 
 to_athlete_stats(Map) ->
     maps:fold(
-      fun(K, V, Ans)
+      fun(_K, _V = null, Ans) -> Ans;           % Ignore null fields
+         (K, V, Ans)
             when K =:= <<"biggest_ride_distance">>;
                  K =:= <<"biggest_climb_elevation_gain">> ->
               Ans#{binary_to_atom(K, latin1) => V};
@@ -199,7 +202,8 @@ to_athlete_stats(Map) ->
 
 to_athlete_totals(Map) ->
     maps:fold(
-      fun(K, V, Ans)
+      fun(_K, _V = null, Ans) -> Ans;           % Ignore null fields
+         (K, V, Ans)
             when K =:= <<"achievement_count">>;
                  K =:= <<"count">>;
                  K =:= <<"distance">>;
@@ -218,7 +222,8 @@ to_athlete_totals(Map) ->
 
 to_club(Map) ->
     maps:fold(
-      fun(K, V, Ans)
+      fun(_K, _V = null, Ans) -> Ans;           % Ignore null fields
+         (K, V, Ans)
             when K =:= <<"id">>;
                  K =:= <<"name">>;
                  K =:= <<"profile_medium">>;
@@ -253,7 +258,8 @@ to_datetime(Text) ->
 
 to_gear(Map) ->
     maps:fold(
-      fun(K, V, Ans)
+      fun(_K, _V = null, Ans) -> Ans;           % Ignore null fields
+         (K, V, Ans)
          when K =:= <<"id">>;
               K =:= <<"primary">>;
               K =:= <<"name">>;
@@ -304,7 +310,8 @@ to_resource_state(3) -> detailed.
 
 to_segment_effort(Map) ->
     maps:fold(
-      fun(K, V, Ans)
+      fun(_K, _V = null, Ans) -> Ans;           % Ignore null fields
+         (K, V, Ans)
             when K =:= <<"id">>;
                  K =:= <<"name">>;
                  K =:= <<"elapsed_time">>;
@@ -338,7 +345,8 @@ to_segment_effort(Map) ->
 
 to_segment(Map) ->
     maps:fold(
-      fun(K, V, Ans)
+      fun(_K, _V = null, Ans) -> Ans;           % Ignore null fields
+         (K, V, Ans)
             when K =:= <<"id">>;
                  K =:= <<"name">>;
                  K =:= <<"distance">>;
@@ -376,7 +384,8 @@ to_segment(Map) ->
 
 to_stream(Map) ->
     maps:fold(
-      fun(<<"type">>, Str, Ans) -> Ans#{type => Str}; % TODO
+      fun(_K, _V = null, Ans) -> Ans;                   % Ignore null fields
+         (<<"type">>, Str, Ans) -> Ans#{type => Str}; % TODO
          (<<"data">>, List, Ans) -> Ans#{data => List}; % TODO
          (<<"series_type">>, Str, Ans) -> Ans#{series_type => Str}; % TODO
          (<<"original_size">>, Int, Ans) -> Ans#{original_size => Int};
