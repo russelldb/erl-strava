@@ -349,9 +349,10 @@ comments_args(_Token, _Id, _Args) ->
 %%--------------------------------------------------------------------
 -spec kudoers_args(strava:auth_token(), integer(), map()) -> [strava_athlete:t()].
 
-kudoers_args(_Token, _Id, _Args) ->
-    %% TODO
-    [].
+kudoers_args(Token, Id, Args) ->
+    case strava_api:read(Token, [<<"activities">>, Id, <<"kudos">>], Args) of
+        {ok, JSON} -> lists:map(fun strava_json:to_athlete/1, JSON)
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
