@@ -40,7 +40,7 @@
 -spec activities(strava:auth_token(), integer()) -> [strava_activity:t()].
 
 activities(Token, Id) ->
-    activities(Token, Id, _Page = undefined, _PerPage = undefined).
+    activities_args(Token, Id, _Args = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -49,9 +49,9 @@ activities(Token, Id) ->
 %%--------------------------------------------------------------------
 -spec activities(strava:auth_token(), integer(), pos_integer(), pos_integer()) -> [strava_activity:t()].
 
-activities(_Token, _Id, _Page, _PerPage) ->
-    %% TODO
-    [].
+activities(Token, Id, Page, PerPage) ->
+    activities_args(Token, Id, _Args = #{page     => Page,
+                                         per_page => PerPage}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -60,9 +60,8 @@ activities(_Token, _Id, _Page, _PerPage) ->
 %%--------------------------------------------------------------------
 -spec activities_before(strava:auth_token(), integer(), integer()) -> [strava_activity:t()].
 
-activities_before(_Token, _Id, _Time) ->
-    %% TODO
-    [].
+activities_before(Token, Id, Time) ->
+    activities_args(Token, Id, _Args = #{before => Time}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -151,3 +150,20 @@ members(Token, Id) ->
 members(_Token, _Id, _Page, _PerPage) ->
     %% TODO
     [].
+
+%%%===================================================================
+%%% Internal functions
+%%%===================================================================
+
+%%--------------------------------------------------------------------
+%% @doc
+%% List club activities.
+%% @end
+%%--------------------------------------------------------------------
+-spec activities_args(strava:auth_token(), integer(), map()) ->
+                             [strava_activity:t()].
+
+activities_args(Token, Id, Args) ->
+    case strava_api:read(Token, [<<"clubs">>, Id, <<"activities">>], Args) of
+        {ok, JSON} -> lists:map(fun strava_json:to_activity/1, JSON)
+    end.
