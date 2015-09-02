@@ -255,7 +255,7 @@ update(Token, Activity) ->
                      K =:= trainer;
                      K =:= description ->
                   Ans#{atom_to_binary(K, latin1) => V};
-             (type, Str, Ans) -> Ans#{<<"type">> => Str}; % TODO
+             (type, Type, Ans) -> Ans#{<<"type">> => strava_json:from_activity_type(Type)};
              (gear_id, undefined, Ans) -> Ans#{<<"gear_id">> => <<"none">>};
              (gear_id, Int, Ans) -> Ans#{<<"gear_id">> => Int};
              (_K, _V, Ans) -> Ans
