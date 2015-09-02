@@ -142,8 +142,10 @@ create(Token, Activity) ->
                                                         true -> 1;
                                                         false -> 0
                                                     end};
-             (type, Str, Ans) -> Ans#{<<"type">> => Str}; % TODO
-             (start_date_local, Str, Ans) -> Ans#{<<"start_date_local">> => Str}; % TODO
+             (type, Type, Ans) ->
+                  Ans#{<<"type">> => strava_json:from_activity_type(Type)};
+             (start_date_local, Date, Ans) ->
+                  Ans#{<<"start_date_local">> => strava_json:from_datetime(Date)};
              (_K, _V, Ans) -> Ans
           end, _Ans = #{}, Activity),
     case strava_api:create(Token, [<<"activities">>], Content) of
