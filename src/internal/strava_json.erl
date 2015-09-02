@@ -688,13 +688,57 @@ to_segment_leaderboard_entry(Map) ->
 to_stream(Map) ->
     maps:fold(
       fun(_K, _V = null, Ans) -> Ans;                   % Ignore null fields
-         (<<"type">>, Str, Ans) -> Ans#{type => Str}; % TODO
-         (<<"data">>, List, Ans) -> Ans#{data => List}; % TODO
-         (<<"series_type">>, Str, Ans) -> Ans#{series_type => Str}; % TODO
+         (<<"type">>, Str, Ans) -> Ans#{type => to_stream_type(Str)};
+         (<<"data">>, List, Ans) -> Ans#{data => lists:map(fun to_stream_data/1, List)};
+         (<<"series_type">>, Str, Ans) -> Ans#{series_type =>
+                                                   case Str of
+                                                       <<"time">> -> time;
+                                                       <<"distance">> -> distance
+                                                   end};
          (<<"original_size">>, Int, Ans) -> Ans#{original_size => Int};
-         (<<"resolution">>, Str, Ans) -> Ans#{resolution => Str}; % TODO
+         (<<"resolution">>, Str, Ans) -> Ans#{resolution =>
+                                                  case Str of
+                                                      <<"low">> -> low;
+                                                      <<"medium">> -> medium;
+                                                      <<"high">> -> high
+                                                  end};
          (_K, _V, Ans) -> Ans
       end, _Ans = #{}, Map).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_stream_data(boolean() | number() | [number()]) ->
+                            boolean() | number() | strava:latlng().
+
+to_stream_data([Lat, Lon])
+  when is_number(Lat), is_number(Lon) ->
+    {Lat, Lon};
+
+to_stream_data(Term)
+  when is_boolean(Term); is_number(Term) ->
+    Term.
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_stream_type(binary()) -> strava_stream:type().
+
+to_stream_type(Term)
+  when Term =:= <<"time">>;
+       Term =:= <<"latlng">>;
+       Term =:= <<"distance">>;
+       Term =:= <<"altitude">>;
+       Term =:= <<"velocity_smooth">>;
+       Term =:= <<"heartrate">>;
+       Term =:= <<"cadence">>;
+       Term =:= <<"watts">>;
+       Term =:= <<"temp">>;
+       Term =:= <<"moving">>;
+       Term =:= <<"grade_smooth">> ->
+    binary_to_atom(Term, latin1).
 
 %%%===================================================================
 %%% To JSON functions
