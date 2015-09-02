@@ -9,7 +9,7 @@
          to_athlete_stats/1, to_club/1, to_club_announcement/1,
          to_club_group_event/1, to_gear/1, to_segment/1,
          to_segment_climb_category/1, to_segment_effort/1,
-         to_segment_leaderboard/1, to_stream/1]).
+         to_segment_leaderboard/1, to_stream/1, to_upload_status/1]).
 
 %% To JSON functions
 -export([from_activity_type/1, from_athlete/1, from_athlete_sex/1,
@@ -739,6 +739,25 @@ to_stream_type(Term)
        Term =:= <<"moving">>;
        Term =:= <<"grade_smooth">> ->
     binary_to_atom(Term, latin1).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_upload_status(map()) -> strava_upload:status().
+
+to_upload_status(Map) ->
+    maps:fold(
+      fun(_K, _V = null, Ans) -> Ans;           % Ignore null fields
+         (K, V, Ans)
+            when K =:= <<"id">>;
+                 K =:= <<"external_id">>;
+                 K =:= <<"activity_id">>;
+                 K =:= <<"status">>;
+                 K =:= <<"error">> ->
+              Ans#{binary_to_atom(K, latin1) => V};
+         (_K, _V, Ans) -> Ans
+      end, _Ans = #{}, Map).
 
 %%%===================================================================
 %%% To JSON functions
