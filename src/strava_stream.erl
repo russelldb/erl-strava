@@ -47,9 +47,8 @@ activity(Token, Id, Types) ->
 %%--------------------------------------------------------------------
 -spec activity(strava_auth:token(), integer(), [type()], map()) -> [t()].
 
-activity(_Token, _Id, _Types, _Options) ->
-    %% TODO
-    [].
+activity(Token, Id, Types, Options) ->
+    streams(Token, [<<"activities">>, Id, <<"streams">>], Types, Options).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -68,9 +67,8 @@ effort(Token, Id, Types) ->
 %%--------------------------------------------------------------------
 -spec effort(strava_auth:token(), integer(), [type()], map()) -> [t()].
 
-effort(_Token, _Id, _Types, _Options) ->
-    %% TODO
-    [].
+effort(Token, Id, Types, Options) ->
+    streams(Token, [<<"segment_efforts">>, Id, <<"streams">>], Types, Options).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -89,6 +87,38 @@ segment(Token, Id, Types) ->
 %%--------------------------------------------------------------------
 -spec segment(strava_auth:token(), integer(), [type()], map()) -> [t()].
 
-segment(_Token, _Id, _Types, _Options) ->
-    %% TODO
-    [].
+segment(Token, Id, Types, Options) ->
+    streams(Token, [<<"segments">>, Id, <<"streams">>], Types, Options).
+
+%%%===================================================================
+%%% Internal functions
+%%%===================================================================
+
+%%--------------------------------------------------------------------
+%% @doc
+%% Retrieve segment streams.
+%% @end
+%%--------------------------------------------------------------------
+-spec streams(strava_auth:token(), strava_api:path(), [type()], map()) ->
+                     [t()].
+
+streams(Token, Path, Types, Opts) ->
+    Path1 = Path ++
+        [string:join(lists:map(fun strava_util:to_string/1, Types), ",")],
+    Opts1 = maps:fold(
+              fun(K, V, Ans)
+                    when K =:= resolution,
+                         V =:= low orelse
+                         V =:= medium orelse
+                         V =:= high ->
+                      Ans#{K => V};
+                 (K, V, Ans)
+                    when K =:= series_type,
+                         V =:= time orelse
+                         V =:= distance ->
+                      Ans#{K => V};
+                 (_K, _V, Ans) -> Ans
+              end, _Ans = #{}, Opts),
+    case strava_api:read(Token, Path1, Opts1) of
+        {ok, JSON} -> lists:map(fun strava_json:to_stream/1, JSON)
+    end.
