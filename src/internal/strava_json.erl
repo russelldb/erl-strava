@@ -8,7 +8,8 @@
          to_activity_photo/1, to_activity_zones/1, to_athlete/1,
          to_athlete_stats/1, to_club/1, to_club_announcement/1,
          to_club_group_event/1, to_gear/1, to_segment/1,
-         to_segment_effort/1, to_stream/1]).
+         to_segment_climb_category/1, to_segment_effort/1,
+         to_stream/1]).
 
 %% To JSON functions
 -export([from_activity_type/1, from_athlete/1, from_datetime/1]).
@@ -603,15 +604,37 @@ to_segment(Map) ->
                  K =:= <<"star_count">> ->
               Ans#{binary_to_atom(K, latin1) => V};
          (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => to_resource_state(Int)};
-         (<<"activity_type">>, Str, Ans) -> Ans#{activity_type => Str}; % TODO
+         (<<"activity_type">>, Str, Ans) -> Ans#{activity_type => to_segment_activity_type(Str)};
          (<<"start_latlng">>, List, Ans) -> Ans#{start_latlng => to_position(List)};
          (<<"end_latlng">>, List, Ans) -> Ans#{end_latlng => to_position(List)};
-         (<<"climb_category">>, Int, Ans) -> Ans#{climb_category => Int}; % TODO
+         (<<"climb_category">>, Int, Ans) -> Ans#{climb_category => to_segment_climb_category(Int)};
          (<<"created_at">>, Str, Ans) -> Ans#{created_at => to_datetime(Str)};
          (<<"updated_at">>, Str, Ans) -> Ans#{updated_at => to_datetime(Str)};
          (<<"map">>, Term, Ans) -> Ans#{map => Term};             % TODO
          (_K, _V, Ans) -> Ans
       end, _Ans = #{}, Map).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_segment_activity_type(binary()) -> strava_segment:activity_type().
+
+to_segment_activity_type(<<"Ride">>) -> ride;
+to_segment_activity_type(<<"Run">>) -> run.
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_segment_climb_category(integer()) -> strava_segment:climb_category().
+
+to_segment_climb_category(0) -> undefined;
+to_segment_climb_category(1) -> 4;
+to_segment_climb_category(2) -> 3;
+to_segment_climb_category(3) -> 2;
+to_segment_climb_category(4) -> 1;
+to_segment_climb_category(5) -> hc.
 
 %%--------------------------------------------------------------------
 %% @doc
