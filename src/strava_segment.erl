@@ -145,7 +145,7 @@ segment(Token, Id) ->
 -spec starred(strava_auth:token()) -> [t()].
 
 starred(Token) ->
-    starred(Token, _Page = undefined, _PerPage = undefined).
+    starred_args(Token, _Args = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -154,9 +154,9 @@ starred(Token) ->
 %%--------------------------------------------------------------------
 -spec starred(strava_auth:token(), pos_integer(), pos_integer()) -> [t()].
 
-starred(_Token, _Page, _PerPage) ->
-    %% TODO
-    [].
+starred(Token, Page, PerPage) ->
+    starred_args(Token, _Args = #{page     => Page,
+                                  per_page => PerPage}).
 
 %%%===================================================================
 %%% Internal functions
@@ -186,4 +186,19 @@ efforts_args(Token, Id, Args) ->
               end, _Ans = #{}, Args),
     case strava_api:read(Token, [<<"segments">>, Id, <<"all_efforts">>], Args1) of
         {ok, JSON} -> lists:map(fun strava_json:to_segment_effort/1, JSON)
+    end.
+
+%%--------------------------------------------------------------------
+%% @doc
+%% List starred segments.
+%% @end
+%%--------------------------------------------------------------------
+-spec starred_args(strava_auth:token(), map()) -> [t()].
+
+starred_args(Token, Args) ->
+    Args1 = maps:filter(fun(K, _V) ->
+                                K =:= page orelse K =:= per_page
+                        end, Args),
+    case strava_api:read(Token, [<<"segments">>, <<"starred">>], Args1) of
+        {ok, JSON} -> lists:map(fun strava_json:to_segment/1, JSON)
     end.
