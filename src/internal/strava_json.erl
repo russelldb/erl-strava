@@ -5,9 +5,10 @@
 
 %% From JSON map functions
 -export([to_activity/1, to_activity_comment/1, to_activity_lap/1,
-         to_activity_photo/1, to_athlete/1, to_athlete_stats/1,
-         to_club/1, to_club_announcement/1, to_club_group_event/1,
-         to_gear/1, to_segment/1, to_segment_effort/1, to_stream/1]).
+         to_activity_photo/1, to_activity_zones/1, to_athlete/1,
+         to_athlete_stats/1, to_club/1, to_club_announcement/1,
+         to_club_group_event/1, to_gear/1, to_segment/1,
+         to_segment_effort/1, to_stream/1]).
 
 %% To JSON functions
 -export([from_activity_type/1, from_athlete/1, from_datetime/1]).
@@ -215,6 +216,49 @@ to_activity_type(<<"WeightTraining">>) -> weight_training;
 to_activity_type(<<"Windsurf">>) -> windsurf;
 to_activity_type(<<"Workout">>) -> workout;
 to_activity_type(<<"Yoga">>) -> yoga.
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_activity_zones(map()) -> strava_activity:zones().
+
+to_activity_zones(Map) ->
+    maps:fold(
+      fun(_K, _V = null, Ans) -> Ans;           % Ignore null fields
+         (K, V, Ans)
+            when K =:= <<"score">>;
+                 K =:= <<"sensor_based">>;
+                 K =:= <<"points">>;
+                 K =:= <<"custom_zones">>;
+                 K =:= <<"max">> ->
+              Ans#{binary_to_atom(K, latin1) => V};
+         (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => to_resource_state(Int)};
+         (<<"type">>, Str, Ans) -> Ans#{type => case Str of
+                                                    <<"heartrate">> -> heartrate;
+                                                    <<"power">> -> power
+                                                end};
+         (<<"distribution_buckets">>, List, Ans) -> Ans#{distribution_buckets =>
+                                                             lists:map(fun to_activity_zones_bucket/1, List)};
+         (_K, _V, Ans) -> Ans
+      end, _Ans = #{}, Map).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_activity_zones_bucket(map()) -> strava_activity:zones_bucket().
+
+to_activity_zones_bucket(Map) ->
+    maps:fold(
+      fun(_K, _V = null, Ans) -> Ans;           % Ignore null fields
+         (K, V, Ans)
+            when K =:= <<"min">>;
+                 K =:= <<"max">>;
+                 K =:= <<"time">> ->
+              Ans#{binary_to_atom(K, latin1) => V};
+         (_K, _V, Ans) -> Ans
+      end, _Ans = #{}, Map).
 
 %%--------------------------------------------------------------------
 %% @doc
