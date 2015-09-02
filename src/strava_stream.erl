@@ -15,14 +15,14 @@
 -type type() :: altitude
               | cadence
               | distance
-              | grade
-              | heart_rate
+              | grade_smooth
+              | heartrate
+              | latlng
               | moving
-              | position
-              | power
-              | temperature
+              | temp
               | time
-              | velocity.
+              | velocity_smooth
+              | watts.
 
 -type t() :: stream().
 
