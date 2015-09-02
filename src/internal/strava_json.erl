@@ -155,9 +155,29 @@ to_activity_lap(Map) ->
 %%--------------------------------------------------------------------
 -spec to_activity_photo(map()) -> strava_activity:photo().
 
-to_activity_photo(_Map) ->
-    %% TODO
-    #{}.
+to_activity_photo(Map) ->
+    maps:fold(
+      fun(_K, _V = null, Ans) -> Ans;           % Ignore null fields
+         (K, V, Ans)
+            when K =:= <<"unique_id">>;
+                 K =:= <<"activity_id">>;
+                 K =:= <<"caption">>;
+                 K =:= <<"id">>;
+                 K =:= <<"ref">>;
+                 K =:= <<"uid">>;
+                 K =:= <<"type">> ->
+              Ans#{binary_to_atom(K, latin1) => V};
+         (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => to_resource_state(Int)};
+         (<<"urls">>, List, Ans) -> Ans#{urls => List};
+         (<<"source">>, Int, Ans) -> Ans#{source => case Int of
+                                                        1 -> strava;
+                                                        2 -> instagram
+                                                    end};
+         (<<"uploaded_at">>, Str, Ans) -> Ans#{uploaded_at => to_datetime(Str)};
+         (<<"created_at">>, Str, Ans) -> Ans#{created_at => to_datetime(Str)};
+         (<<"location">>, List, Ans) -> Ans#{location => to_position(List)};
+         (_K, _V, Ans) -> Ans
+      end, _Ans = #{}, Map).
 
 %%--------------------------------------------------------------------
 %% @doc
