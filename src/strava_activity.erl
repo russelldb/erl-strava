@@ -2,7 +2,7 @@
 
 %% Types
 -export_type([activity/0, comment/0, lap/0, photo/0,
-              t/0, type/0, zones/0]).
+              t/0, type/0, zones/0, zones_bucket/0]).
 
 %% Activities functions
 -export([activity/2, athletes/1, athletes/3, athletes_after/2,
@@ -58,6 +58,7 @@
 -type lap() :: map().
 -type photo() :: map().
 -type zones() :: map().
+-type zones_bucket() :: map().
 
 -type t() :: activity().
 
