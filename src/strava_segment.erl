@@ -68,7 +68,7 @@ efforts(_Token, _Id, _Filter, _Page, _PerPage) ->
 %% Segment explorer.
 %% @end
 %%--------------------------------------------------------------------
--spec explore(strava:auth_token(), strava:geo_point(), strava:geo_point()) -> [t()].
+-spec explore(strava:auth_token(), strava:position(), strava:position()) -> [t()].
 
 explore(Token, SW, NE) ->
     explore(Token, SW, NE, _Filter = #{}).
@@ -78,7 +78,7 @@ explore(Token, SW, NE) ->
 %% Segment explorer.
 %% @end
 %%--------------------------------------------------------------------
--spec explore(strava:auth_token(), strava:geo_point(), strava:geo_point(), map()) -> [t()].
+-spec explore(strava:auth_token(), strava:position(), strava:position(), map()) -> [t()].
 
 explore(_Token, _SW, _NE, _Filter) ->
     %% TODO
