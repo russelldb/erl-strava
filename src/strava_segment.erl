@@ -29,7 +29,7 @@
 -spec efforts(strava_auth:token(), integer()) -> [strava_segment_effort:t()].
 
 efforts(Token, Id) ->
-    efforts(Token, Id, _Page = undefined, _PerPage = undefined).
+    efforts_args(Token, Id, _Args = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -38,9 +38,9 @@ efforts(Token, Id) ->
 %%--------------------------------------------------------------------
 -spec efforts(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> [strava_segment_effort:t()].
 
-efforts(_Token, _Id, _Page, _PerPage) ->
-    %% TODO
-    [].
+efforts(Token, Id, Page, PerPage) ->
+    efforts_args(Token, Id, _Args = #{page     => Page,
+                                      per_page => PerPage}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -50,7 +50,7 @@ efforts(_Token, _Id, _Page, _PerPage) ->
 -spec efforts(strava_auth:token(), integer(), map()) -> [strava_segment_effort:t()].
 
 efforts(Token, Id, Filter) ->
-    efforts(Token, Id, Filter, _Page = undefined, _PerPage = undefined).
+    efforts_args(Token, Id, _Args = Filter).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -59,9 +59,9 @@ efforts(Token, Id, Filter) ->
 %%--------------------------------------------------------------------
 -spec efforts(strava_auth:token(), integer(), map(), pos_integer(), pos_integer()) -> [strava_segment_effort:t()].
 
-efforts(_Token, _Id, _Filter, _Page, _PerPage) ->
-    %% TODO
-    [].
+efforts(Token, Id, Filter, Page, PerPage) ->
+    efforts_args(Token, Id, _Args = Filter#{page     => Page,
+                                            per_page => PerPage}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -156,3 +156,33 @@ starred(Token) ->
 starred(_Token, _Page, _PerPage) ->
     %% TODO
     [].
+
+%%%===================================================================
+%%% Internal functions
+%%%===================================================================
+
+%%--------------------------------------------------------------------
+%% @doc
+%% Retrieve an array of segment efforts.
+%% @end
+%%--------------------------------------------------------------------
+-spec efforts_args(strava_auth:token(), integer(), map()) ->
+                          [strava_segment_effort:t()].
+
+efforts_args(Token, Id, Args) ->
+    Args1 = maps:fold(
+              fun(K, V, Ans)
+                    when K =:= id;
+                         K =:= athlete_id;
+                         K =:= page;
+                         K =:= per_page ->
+                      Ans#{K => V};
+                 (K, V, Ans)
+                    when K =:= start_date_local;
+                         K =:= end_date_local ->
+                      Ans#{K => strava_json:from_datetime(V)};
+                 (_K, _V, Ans) -> Ans
+              end, _Ans = #{}, Args),
+    case strava_api:read(Token, [<<"segments">>, Id, <<"all_efforts">>], Args1) of
+        {ok, JSON} -> lists:map(fun strava_json:to_segment_effort/1, JSON)
+    end.
