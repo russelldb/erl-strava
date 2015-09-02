@@ -9,7 +9,7 @@
          to_athlete_stats/1, to_club/1, to_club_announcement/1,
          to_club_group_event/1, to_gear/1, to_segment/1,
          to_segment_climb_category/1, to_segment_effort/1,
-         to_stream/1]).
+         to_segment_leaderboard/1, to_stream/1]).
 
 %% To JSON functions
 -export([from_activity_type/1, from_athlete/1, from_athlete_sex/1,
@@ -636,6 +636,48 @@ to_segment_climb_category(2) -> 3;
 to_segment_climb_category(3) -> 2;
 to_segment_climb_category(4) -> 1;
 to_segment_climb_category(5) -> hc.
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_segment_leaderboard(map()) -> strava_segment:leaderboard().
+
+to_segment_leaderboard(Map) ->
+    maps:fold(
+      fun(_K, _V = null, Ans) -> Ans;           % Ignore null fields
+         (<<"entry_count">>, Int, Ans) -> Ans#{entry_count => Int};
+         (<<"entries">>, List, Ans) -> Ans#{entries => lists:map(fun to_segment_leaderboard_entry/1, List)};
+         (_K, _V, Ans) -> Ans
+      end, _Ans = #{}, Map).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_segment_leaderboard_entry(map()) -> map().
+
+to_segment_leaderboard_entry(Map) ->
+    maps:fold(
+      fun(_K, _V = null, Ans) -> Ans;           % Ignore null fields
+         (K, V, Ans)
+            when K =:= <<"athlete_name">>;
+                 K =:= <<"athlete_id">>;
+                 K =:= <<"average_hr">>;
+                 K =:= <<"average_watts">>;
+                 K =:= <<"distance">>;
+                 K =:= <<"elapsed_time">>;
+                 K =:= <<"moving_time">>;
+                 K =:= <<"activity_id">>;
+                 K =:= <<"effort_id">>;
+                 K =:= <<"rank">>;
+                 K =:= <<"athlete_profile">> ->
+              Ans#{binary_to_atom(K, latin1) => V};
+         (<<"athlete_gender">>, Str, Ans) -> Ans#{athlete_gender => to_athlete_sex(Str)};
+         (<<"start_date">>, Str, Ans) -> Ans#{start_date => to_datetime(Str)};
+         (<<"start_date_local">>, Str, Ans) -> Ans#{start_date_local => to_datetime(Str)};
+         (_K, _V, Ans) -> Ans
+      end, _Ans = #{}, Map).
 
 %%--------------------------------------------------------------------
 %% @doc
