@@ -12,8 +12,8 @@
          to_stream/1]).
 
 %% To JSON functions
--export([from_activity_type/1, from_athlete/1, from_datetime/1,
-         from_segment_climb_category/1]).
+-export([from_activity_type/1, from_athlete/1, from_athlete_sex/1,
+         from_datetime/1, from_segment_climb_category/1]).
 
 %%%===================================================================
 %%% Parse JSON
@@ -707,11 +707,20 @@ from_athlete(Map) ->
             when K =:= city;
                  K =:= state;
                  K =:= country;
-                 K =:= sex;
                  K =:= weight ->
               Ans#{atom_to_binary(K, latin1) => V};
+         (sex, Term, Ans) -> Ans#{sex => from_athlete_sex(Term)};
          (_K, _V, Ans) -> Ans
       end, _Ans = #{}, Map).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec from_athlete_sex(strava_athlete:sex()) -> binary().
+
+from_athlete_sex(male) -> <<"M">>;
+from_athlete_sex(female) -> <<"F">>.
 
 %%--------------------------------------------------------------------
 %% @doc
