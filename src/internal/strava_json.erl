@@ -100,9 +100,19 @@ to_activity(Map) ->
 %%--------------------------------------------------------------------
 -spec to_activity_comment(map()) -> strava_activity:comment().
 
-to_activity_comment(_Map) ->
-    %% TODO
-    #{}.
+to_activity_comment(Map) ->
+    maps:fold(
+      fun(_K, _V = null, Ans) -> Ans;           % Ignore null fields
+         (K, V, Ans)
+            when K =:= <<"id">>;
+                 K =:= <<"activity_id">>;
+                 K =:= <<"text">> ->
+              Ans#{binary_to_atom(K, latin1) => V};
+         (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => to_resource_state(Int)};
+         (<<"athlete">>, Term, Ans) -> Ans#{athlete => to_athlete(Term)};
+         (<<"created_at">>, Str, Ans) -> Ans#{created_at => to_datetime(Str)};
+         (_K, _V, Ans) -> Ans
+      end, _Ans = #{}, Map).
 
 %%--------------------------------------------------------------------
 %% @doc
