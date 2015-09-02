@@ -86,14 +86,7 @@ to_activity(Map) ->
          (<<"start_date_local">>, Str, Ans) -> Ans#{start_date_local => to_datetime(Str)};
          (<<"start_latlng">>, List, Ans) -> Ans#{start_latlng => to_latlng(List)};
          (<<"end_latlng">>, List, Ans) -> Ans#{end_latlng => to_latlng(List)};
-         (<<"photos">>, Term, Ans) -> Ans#{photos =>
-                                               maps:fold(
-                                                 fun(_K, _V = null, Ans) -> Ans;
-                                                    (count, Int, Ans) -> Ans#{count => Int};
-                                                    (primary, Term, Ans) -> Ans#{primary => to_activity_photo(Term)};
-                                                    (_K, _V, Ans) -> Ans
-                                                 end, _Ans = #{}, Term)
-                                          };
+         (<<"photos">>, Term, Ans) -> Ans#{photos => to_activity_photos_summary(Term)};
          (<<"map">>, Term, Ans) -> Ans#{map => Term};         % TODO
          (<<"workout_type">>, Int, Ans) -> Ans#{workout_type => Int}; % TODO
          (<<"gear">>, Term, Ans) -> Ans#{gear => to_gear(Term)};
@@ -186,6 +179,20 @@ to_activity_photo(Map) ->
          (<<"uploaded_at">>, Str, Ans) -> Ans#{uploaded_at => to_datetime(Str)};
          (<<"created_at">>, Str, Ans) -> Ans#{created_at => to_datetime(Str)};
          (<<"location">>, List, Ans) -> Ans#{location => to_latlng(List)};
+         (_K, _V, Ans) -> Ans
+      end, _Ans = #{}, Map).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_activity_photos_summary(map()) -> map().
+
+to_activity_photos_summary(Map) ->
+    maps:fold(
+      fun(_K, _V = null, Ans) -> Ans;
+         (<<"count">>, Int, Ans) -> Ans#{count => Int};
+         (<<"primary">>, Term, Ans) -> Ans#{primary => to_activity_photo(Term)};
          (_K, _V, Ans) -> Ans
       end, _Ans = #{}, Map).
 
