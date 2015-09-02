@@ -84,8 +84,8 @@ to_activity(Map) ->
          (<<"type">>, Str, Ans) -> Ans#{type => to_activity_type(Str)};
          (<<"start_date">>, Str, Ans) -> Ans#{start_date => to_datetime(Str)};
          (<<"start_date_local">>, Str, Ans) -> Ans#{start_date_local => to_datetime(Str)};
-         (<<"start_latlng">>, List, Ans) -> Ans#{start_latlng => to_position(List)};
-         (<<"end_latlng">>, List, Ans) -> Ans#{end_latlng => to_position(List)};
+         (<<"start_latlng">>, List, Ans) -> Ans#{start_latlng => to_latlng(List)};
+         (<<"end_latlng">>, List, Ans) -> Ans#{end_latlng => to_latlng(List)};
          (<<"photos">>, List, Ans) -> Ans#{photos => List}; % TODO
          (<<"map">>, Term, Ans) -> Ans#{map => Term};         % TODO
          (<<"workout_type">>, Int, Ans) -> Ans#{workout_type => Int}; % TODO
@@ -178,7 +178,7 @@ to_activity_photo(Map) ->
                                                     end};
          (<<"uploaded_at">>, Str, Ans) -> Ans#{uploaded_at => to_datetime(Str)};
          (<<"created_at">>, Str, Ans) -> Ans#{created_at => to_datetime(Str)};
-         (<<"location">>, List, Ans) -> Ans#{location => to_position(List)};
+         (<<"location">>, List, Ans) -> Ans#{location => to_latlng(List)};
          (_K, _V, Ans) -> Ans
       end, _Ans = #{}, Map).
 
@@ -527,9 +527,9 @@ to_gear_frame_type(4) -> time_trial.
 %% @doc
 %% @end
 %%--------------------------------------------------------------------
--spec to_position([number()]) -> strava:position().
+-spec to_latlng([number()]) -> strava:latlng().
 
-to_position([Lat, Lon]) -> {Lat, Lon}.
+to_latlng([Lat, Lon]) -> {Lat, Lon}.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -606,8 +606,8 @@ to_segment(Map) ->
               Ans#{binary_to_atom(K, latin1) => V};
          (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => to_resource_state(Int)};
          (<<"activity_type">>, Str, Ans) -> Ans#{activity_type => to_segment_activity_type(Str)};
-         (<<"start_latlng">>, List, Ans) -> Ans#{start_latlng => to_position(List)};
-         (<<"end_latlng">>, List, Ans) -> Ans#{end_latlng => to_position(List)};
+         (<<"start_latlng">>, List, Ans) -> Ans#{start_latlng => to_latlng(List)};
+         (<<"end_latlng">>, List, Ans) -> Ans#{end_latlng => to_latlng(List)};
          (<<"climb_category">>, Int, Ans) -> Ans#{climb_category => to_segment_climb_category(Int)};
          (<<"created_at">>, Str, Ans) -> Ans#{created_at => to_datetime(Str)};
          (<<"updated_at">>, Str, Ans) -> Ans#{updated_at => to_datetime(Str)};
