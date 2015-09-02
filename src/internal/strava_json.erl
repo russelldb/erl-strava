@@ -86,7 +86,14 @@ to_activity(Map) ->
          (<<"start_date_local">>, Str, Ans) -> Ans#{start_date_local => to_datetime(Str)};
          (<<"start_latlng">>, List, Ans) -> Ans#{start_latlng => to_latlng(List)};
          (<<"end_latlng">>, List, Ans) -> Ans#{end_latlng => to_latlng(List)};
-         (<<"photos">>, List, Ans) -> Ans#{photos => List}; % TODO
+         (<<"photos">>, Term, Ans) -> Ans#{photos =>
+                                               maps:fold(
+                                                 fun(_K, _V = null, Ans) -> Ans;
+                                                    (count, Int, Ans) -> Ans#{count => Int};
+                                                    (primary, Term, Ans) -> Ans#{primary => to_activity_photo(Term)};
+                                                    (_K, _V, Ans) -> Ans
+                                                 end, _Ans = #{}, Term)
+                                          };
          (<<"map">>, Term, Ans) -> Ans#{map => Term};         % TODO
          (<<"workout_type">>, Int, Ans) -> Ans#{workout_type => Int}; % TODO
          (<<"gear">>, Term, Ans) -> Ans#{gear => to_gear(Term)};
