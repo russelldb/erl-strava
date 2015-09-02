@@ -27,7 +27,7 @@
 %% Upload an activity.
 %% @end
 %%--------------------------------------------------------------------
--spec file(strava:auth_token(), data_type(), file:filename_all()) -> status().
+-spec file(strava_auth:token(), data_type(), file:filename_all()) -> status().
 
 file(Token, DataType, FileName) ->
     file(Token, DataType, FileName, _Options = #{}).
@@ -37,7 +37,7 @@ file(Token, DataType, FileName) ->
 %% Upload an activity.
 %% @end
 %%--------------------------------------------------------------------
--spec file(strava:auth_token(), data_type(), file:filename_all(), map()) -> status().
+-spec file(strava_auth:token(), data_type(), file:filename_all(), map()) -> status().
 
 file(_Token, _DataType, _FileName, _Options) ->
     %% TODO
@@ -48,7 +48,7 @@ file(_Token, _DataType, _FileName, _Options) ->
 %% Check upload status.
 %% @end
 %%--------------------------------------------------------------------
--spec status(strava:auth_token(), integer()) -> status().
+-spec status(strava_auth:token(), integer()) -> status().
 
 status(_Token, _Id) ->
     %% TODO

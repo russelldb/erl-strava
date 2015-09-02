@@ -35,7 +35,7 @@
 %% Retrieve current athlete.
 %% @end
 %%--------------------------------------------------------------------
--spec athlete(strava:auth_token()) -> t().
+-spec athlete(strava_auth:token()) -> t().
 
 athlete(Token) ->
     athlete(Token, _Id = undefined).
@@ -45,7 +45,7 @@ athlete(Token) ->
 %% Retrieve another athlete.
 %% @end
 %%--------------------------------------------------------------------
--spec athlete(strava:auth_token(), integer()) -> t().
+-spec athlete(strava_auth:token(), integer()) -> t().
 
 athlete(Token, Id) ->
     Path = case Id of
@@ -61,7 +61,7 @@ athlete(Token, Id) ->
 %% List athlete K/QOMs/CRs.
 %% @end
 %%--------------------------------------------------------------------
--spec koms(strava:auth_token(), integer()) -> [strava_segment_effort:t()].
+-spec koms(strava_auth:token(), integer()) -> [strava_segment_effort:t()].
 
 koms(Token, Id) ->
     koms_args(Token, Id, _Args = #{}).
@@ -71,7 +71,7 @@ koms(Token, Id) ->
 %% List athlete K/QOMs/CRs.
 %% @end
 %%--------------------------------------------------------------------
--spec koms(strava:auth_token(), integer(), pos_integer(), pos_integer()) ->
+-spec koms(strava_auth:token(), integer(), pos_integer(), pos_integer()) ->
                   [strava_segment_effort:t()].
 
 koms(Token, Id, Page, PerPage) ->
@@ -83,7 +83,7 @@ koms(Token, Id, Page, PerPage) ->
 %% Totals and stats.
 %% @end
 %%--------------------------------------------------------------------
--spec stats(strava:auth_token(), integer()) -> stats().
+-spec stats(strava_auth:token(), integer()) -> stats().
 
 stats(Token, Id) ->
     case strava_api:read(Token, [<<"athletes">>, Id, <<"stats">>], _Opts = #{}) of
@@ -95,7 +95,7 @@ stats(Token, Id) ->
 %% Update current athlete.
 %% @end
 %%--------------------------------------------------------------------
--spec update(strava:auth_token(), t()) -> t().
+-spec update(strava_auth:token(), t()) -> t().
 
 update(Token, Athlete) ->
     Content = strava_json:from_athlete(Athlete),
@@ -112,7 +112,7 @@ update(Token, Athlete) ->
 %% List current athlete friends.
 %% @end
 %%--------------------------------------------------------------------
--spec friends(strava:auth_token()) -> [t()].
+-spec friends(strava_auth:token()) -> [t()].
 
 friends(Token) ->
     friends_args(Token, _Id = undefined, _Args = #{}).
@@ -122,7 +122,7 @@ friends(Token) ->
 %% List current athlete friends.
 %% @end
 %%--------------------------------------------------------------------
--spec friends(strava:auth_token(), pos_integer(), pos_integer()) -> [t()].
+-spec friends(strava_auth:token(), pos_integer(), pos_integer()) -> [t()].
 
 friends(Token, Page, PerPage) ->
     friends_args(Token, _Id = undefined, _Args = #{page     => Page,
@@ -133,7 +133,7 @@ friends(Token, Page, PerPage) ->
 %% List current athlete followers.
 %% @end
 %%--------------------------------------------------------------------
--spec followers(strava:auth_token()) -> [t()].
+-spec followers(strava_auth:token()) -> [t()].
 
 followers(Token) ->
     followers_args(Token, _Id = undefined, _Args = #{}).
@@ -143,7 +143,7 @@ followers(Token) ->
 %% List current athlete followers.
 %% @end
 %%--------------------------------------------------------------------
--spec followers(strava:auth_token(), pos_integer(), pos_integer()) -> [t()].
+-spec followers(strava_auth:token(), pos_integer(), pos_integer()) -> [t()].
 
 followers(Token, Page, PerPage) ->
     followers_args(Token, _Id = undefined, _Args = #{page     => Page,
@@ -154,7 +154,7 @@ followers(Token, Page, PerPage) ->
 %% List athlete friends.
 %% @end
 %%--------------------------------------------------------------------
--spec friends(strava:auth_token(), integer()) -> [t()].
+-spec friends(strava_auth:token(), integer()) -> [t()].
 
 friends(Token, Id) ->
     friends_args(Token, Id, _Args = #{}).
@@ -164,7 +164,7 @@ friends(Token, Id) ->
 %% List athlete friends.
 %% @end
 %%--------------------------------------------------------------------
--spec friends(strava:auth_token(), integer(), pos_integer(), pos_integer()) -> [t()].
+-spec friends(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> [t()].
 
 friends(Token, Id, Page, PerPage) ->
     friends_args(Token, Id, _Args = #{page     => Page,
@@ -175,7 +175,7 @@ friends(Token, Id, Page, PerPage) ->
 %% List athlete followers.
 %% @end
 %%--------------------------------------------------------------------
--spec followers(strava:auth_token(), integer()) -> [t()].
+-spec followers(strava_auth:token(), integer()) -> [t()].
 
 followers(Token, Id) ->
     followers_args(Token, Id, _Args = #{}).
@@ -185,7 +185,7 @@ followers(Token, Id) ->
 %% List athlete followers.
 %% @end
 %%--------------------------------------------------------------------
--spec followers(strava:auth_token(), integer(), pos_integer(), pos_integer()) -> [t()].
+-spec followers(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> [t()].
 
 followers(Token, Id, Page, PerPage) ->
     followers_args(Token, Id, _Args = #{page     => Page,
@@ -196,7 +196,7 @@ followers(Token, Id, Page, PerPage) ->
 %% List both following.
 %% @end
 %%--------------------------------------------------------------------
--spec both_following(strava:auth_token(), integer()) -> [t()].
+-spec both_following(strava_auth:token(), integer()) -> [t()].
 
 both_following(Token, Id) ->
     both_following_args(Token, Id, _Args = #{}).
@@ -206,7 +206,7 @@ both_following(Token, Id) ->
 %% List both following.
 %% @end
 %%--------------------------------------------------------------------
--spec both_following(strava:auth_token(), integer(), pos_integer(), pos_integer()) -> [t()].
+-spec both_following(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> [t()].
 
 both_following(Token, Id, Page, PerPage) ->
     both_following_args(Token, Id, _Args = #{page     => Page,
@@ -221,7 +221,7 @@ both_following(Token, Id, Page, PerPage) ->
 %% List athlete K/QOMs/CRs.
 %% @end
 %%--------------------------------------------------------------------
--spec koms_args(strava:auth_token(), integer(), map()) -> [strava_segment_effort:t()].
+-spec koms_args(strava_auth:token(), integer(), map()) -> [strava_segment_effort:t()].
 
 koms_args(Token, Id, Args) ->
     case strava_api:read(Token, [<<"athletes">>, Id, <<"koms">>], Args) of
@@ -233,7 +233,7 @@ koms_args(Token, Id, Args) ->
 %% List athlete friends.
 %% @end
 %%--------------------------------------------------------------------
--spec friends_args(strava:auth_token(), integer(), map()) -> [t()].
+-spec friends_args(strava_auth:token(), integer(), map()) -> [t()].
 
 friends_args(Token, Id, Args) ->
     Path = case Id of
@@ -249,7 +249,7 @@ friends_args(Token, Id, Args) ->
 %% List athlete followers.
 %% @end
 %%--------------------------------------------------------------------
--spec followers_args(strava:auth_token(), integer(), map()) -> [t()].
+-spec followers_args(strava_auth:token(), integer(), map()) -> [t()].
 
 followers_args(Token, Id, Args) ->
     Path = case Id of
@@ -265,7 +265,7 @@ followers_args(Token, Id, Args) ->
 %% List both following.
 %% @end
 %%--------------------------------------------------------------------
--spec both_following_args(strava:auth_token(), integer(), map()) -> [t()].
+-spec both_following_args(strava_auth:token(), integer(), map()) -> [t()].
 
 both_following_args(Token, Id, Args) ->
     Path = [<<"athletes">>, Id, <<"both-following">>],

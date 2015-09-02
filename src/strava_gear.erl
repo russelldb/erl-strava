@@ -24,7 +24,7 @@
 %% Retrieve gear.
 %% @end
 %%--------------------------------------------------------------------
--spec gear(strava:auth_token(), binary()) -> t().
+-spec gear(strava_auth:token(), binary()) -> t().
 
 gear(Token, Id) ->
     case strava_api:read(Token, [<<"gear">>, Id], _Opts = #{}) of

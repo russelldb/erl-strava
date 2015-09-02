@@ -26,7 +26,7 @@
 %% Retrieve an array of segment efforts.
 %% @end
 %%--------------------------------------------------------------------
--spec efforts(strava:auth_token(), integer()) -> [strava_segment_effort:t()].
+-spec efforts(strava_auth:token(), integer()) -> [strava_segment_effort:t()].
 
 efforts(Token, Id) ->
     efforts(Token, Id, _Page = undefined, _PerPage = undefined).
@@ -36,7 +36,7 @@ efforts(Token, Id) ->
 %% Retrieve an array of segment efforts.
 %% @end
 %%--------------------------------------------------------------------
--spec efforts(strava:auth_token(), integer(), pos_integer(), pos_integer()) -> [strava_segment_effort:t()].
+-spec efforts(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> [strava_segment_effort:t()].
 
 efforts(_Token, _Id, _Page, _PerPage) ->
     %% TODO
@@ -47,7 +47,7 @@ efforts(_Token, _Id, _Page, _PerPage) ->
 %% Retrieve an array of segment efforts.
 %% @end
 %%--------------------------------------------------------------------
--spec efforts(strava:auth_token(), integer(), map()) -> [strava_segment_effort:t()].
+-spec efforts(strava_auth:token(), integer(), map()) -> [strava_segment_effort:t()].
 
 efforts(Token, Id, Filter) ->
     efforts(Token, Id, Filter, _Page = undefined, _PerPage = undefined).
@@ -57,7 +57,7 @@ efforts(Token, Id, Filter) ->
 %% Retrieve an array of segment efforts.
 %% @end
 %%--------------------------------------------------------------------
--spec efforts(strava:auth_token(), integer(), map(), pos_integer(), pos_integer()) -> [strava_segment_effort:t()].
+-spec efforts(strava_auth:token(), integer(), map(), pos_integer(), pos_integer()) -> [strava_segment_effort:t()].
 
 efforts(_Token, _Id, _Filter, _Page, _PerPage) ->
     %% TODO
@@ -68,7 +68,7 @@ efforts(_Token, _Id, _Filter, _Page, _PerPage) ->
 %% Segment explorer.
 %% @end
 %%--------------------------------------------------------------------
--spec explore(strava:auth_token(), strava:position(), strava:position()) -> [t()].
+-spec explore(strava_auth:token(), strava:position(), strava:position()) -> [t()].
 
 explore(Token, SW, NE) ->
     explore(Token, SW, NE, _Filter = #{}).
@@ -78,7 +78,7 @@ explore(Token, SW, NE) ->
 %% Segment explorer.
 %% @end
 %%--------------------------------------------------------------------
--spec explore(strava:auth_token(), strava:position(), strava:position(), map()) -> [t()].
+-spec explore(strava_auth:token(), strava:position(), strava:position(), map()) -> [t()].
 
 explore(_Token, _SW, _NE, _Filter) ->
     %% TODO
@@ -89,7 +89,7 @@ explore(_Token, _SW, _NE, _Filter) ->
 %% Segment leaderboards.
 %% @end
 %%--------------------------------------------------------------------
--spec leaderboard(strava:auth_token(), integer()) -> leaderboard().
+-spec leaderboard(strava_auth:token(), integer()) -> leaderboard().
 
 leaderboard(Token, Id) ->
     leaderboard(Token, Id, _Page = undefined, _PerPage = undefined).
@@ -99,7 +99,7 @@ leaderboard(Token, Id) ->
 %% Segment leaderboards.
 %% @end
 %%--------------------------------------------------------------------
--spec leaderboard(strava:auth_token(), integer(), pos_integer(), pos_integer()) -> leaderboard().
+-spec leaderboard(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> leaderboard().
 
 leaderboard(Token, Id, Page, PerPage) ->
     leaderboard(Token, Id, _Filter = #{}, Page, PerPage).
@@ -109,7 +109,7 @@ leaderboard(Token, Id, Page, PerPage) ->
 %% Segment leaderboards.
 %% @end
 %%--------------------------------------------------------------------
--spec leaderboard(strava:auth_token(), integer(), map()) -> leaderboard().
+-spec leaderboard(strava_auth:token(), integer(), map()) -> leaderboard().
 
 leaderboard(Token, Id, Filter) ->
     leaderboard(Token, Id, Filter, _Page = undefined, _PerPage = undefined).
@@ -119,7 +119,7 @@ leaderboard(Token, Id, Filter) ->
 %% Segment leaderboards.
 %% @end
 %%--------------------------------------------------------------------
--spec leaderboard(strava:auth_token(), integer(), map(), pos_integer(), pos_integer()) -> leaderboard().
+-spec leaderboard(strava_auth:token(), integer(), map(), pos_integer(), pos_integer()) -> leaderboard().
 
 leaderboard(_Token, _Id, _Filter, _Page, _PerPage) ->
     %% TODO
@@ -130,7 +130,7 @@ leaderboard(_Token, _Id, _Filter, _Page, _PerPage) ->
 %% Retrieve a segment.
 %% @end
 %%--------------------------------------------------------------------
--spec segment(strava:auth_token(), integer()) -> t().
+-spec segment(strava_auth:token(), integer()) -> t().
 
 segment(_Token, _Id) ->
     %% TODO
@@ -141,7 +141,7 @@ segment(_Token, _Id) ->
 %% List starred segments.
 %% @end
 %%--------------------------------------------------------------------
--spec starred(strava:auth_token()) -> [t()].
+-spec starred(strava_auth:token()) -> [t()].
 
 starred(Token) ->
     starred(Token, _Page = undefined, _PerPage = undefined).
@@ -151,7 +151,7 @@ starred(Token) ->
 %% List starred segments.
 %% @end
 %%--------------------------------------------------------------------
--spec starred(strava:auth_token(), pos_integer(), pos_integer()) -> [t()].
+-spec starred(strava_auth:token(), pos_integer(), pos_integer()) -> [t()].
 
 starred(_Token, _Page, _PerPage) ->
     %% TODO

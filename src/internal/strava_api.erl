@@ -26,7 +26,7 @@
 %% POST multipart/form-data
 %% @end
 %%--------------------------------------------------------------------
--spec create(strava:auth_token(), path(), content()) ->
+-spec create(strava_auth:token(), path(), content()) ->
                     {ok, content()} | {error, pos_integer()}.
 
 create(Token, Path, Content) ->
@@ -49,7 +49,7 @@ create(Token, Path, Content) ->
 %% DELETE
 %% @end
 %%--------------------------------------------------------------------
--spec delete(strava:auth_token(), path()) -> ok | {error, pos_integer()}.
+-spec delete(strava_auth:token(), path()) -> ok | {error, pos_integer()}.
 
 delete(Token, Path) ->
     Options = #{},
@@ -65,7 +65,7 @@ delete(Token, Path) ->
 %% GET application/json
 %% @end
 %%--------------------------------------------------------------------
--spec read(strava:auth_token(), path(), options()) -> {ok, content()} | {error, pos_integer()}.
+-spec read(strava_auth:token(), path(), options()) -> {ok, content()} | {error, pos_integer()}.
 
 read(Token, Path, Options) ->
     ContentType = "",
@@ -80,7 +80,7 @@ read(Token, Path, Options) ->
 %% PUT application/x-www-form-urlencoded
 %% @end
 %%--------------------------------------------------------------------
--spec update(strava:auth_token(), path(), content()) -> {ok, content()} | {error, pos_integer()}.
+-spec update(strava_auth:token(), path(), content()) -> {ok, content()} | {error, pos_integer()}.
 
 update(Token, Path, Content) ->
     Options = #{},
@@ -116,7 +116,7 @@ qs(Opts, Prefix) ->
 %% @doc
 %% @end
 %%--------------------------------------------------------------------
--spec request(httpc:method(), strava:auth_token(), path(), options(),
+-spec request(httpc:method(), strava_auth:token(), path(), options(),
               httpc:content_type(), httpc:body()) ->
                      {ok, binary()} | {error, pos_integer()}.
 
