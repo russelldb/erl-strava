@@ -109,7 +109,7 @@ explore(Token, {SWLat, SWLon}, {NELat, NELon}, Filter) ->
 -spec leaderboard(strava_auth:token(), integer()) -> leaderboard().
 
 leaderboard(Token, Id) ->
-    leaderboard(Token, Id, _Page = undefined, _PerPage = undefined).
+    leaderboard_args(Token, Id, _Args = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -119,7 +119,8 @@ leaderboard(Token, Id) ->
 -spec leaderboard(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> leaderboard().
 
 leaderboard(Token, Id, Page, PerPage) ->
-    leaderboard(Token, Id, _Filter = #{}, Page, PerPage).
+    leaderboard_args(Token, Id, _Args = #{page =>     Page,
+                                          per_page => PerPage}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -129,7 +130,7 @@ leaderboard(Token, Id, Page, PerPage) ->
 -spec leaderboard(strava_auth:token(), integer(), map()) -> leaderboard().
 
 leaderboard(Token, Id, Filter) ->
-    leaderboard(Token, Id, Filter, _Page = undefined, _PerPage = undefined).
+    leaderboard_args(Token, Id, _Args = Filter).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -138,9 +139,9 @@ leaderboard(Token, Id, Filter) ->
 %%--------------------------------------------------------------------
 -spec leaderboard(strava_auth:token(), integer(), map(), pos_integer(), pos_integer()) -> leaderboard().
 
-leaderboard(_Token, _Id, _Filter, _Page, _PerPage) ->
-    %% TODO
-    [].
+leaderboard(Token, Id, Filter, Page, PerPage) ->
+    leaderboard_args(Token, Id, _Args = Filter#{page     => Page,
+                                                per_page => PerPage}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -202,6 +203,31 @@ efforts_args(Token, Id, Args) ->
               end, _Ans = #{}, Args),
     case strava_api:read(Token, [<<"segments">>, Id, <<"all_efforts">>], Args1) of
         {ok, JSON} -> lists:map(fun strava_json:to_segment_effort/1, JSON)
+    end.
+
+%%--------------------------------------------------------------------
+%% @doc
+%% Segment leaderboards.
+%% @end
+%%--------------------------------------------------------------------
+-spec leaderboard_args(strava_auth:token(), integer(), map()) -> leaderboard().
+
+leaderboard_args(Token, Id, Args) ->
+    Args1 = maps:fold(
+              fun(K, V, Ans)
+                    when K =:= page;
+                         K =:= per_page;
+                         K =:= context_entries;
+                         K =:= club_id;
+                         K =:= following ->
+                      Ans#{K => V};
+                 (gender, Term, Ans) -> Ans#{gender => strava_json:from_athlete_sex(Term)};
+                 (age_group, Term, Ans) -> Ans#{age_group => Term}; % TODO?
+                 (weight_class, Term, Ans) -> Ans#{weight_class => Term}; % TODO?
+                 (_K, _V, Ans) -> Ans
+              end, _Ans = #{}, Args),
+    case strava_api:read(Token, [<<"segments">>, Id, <<"leaderboard">>], Args1) of
+        {ok, JSON} -> strava_json:to_segment_leaderboard(JSON)
     end.
 
 %%--------------------------------------------------------------------
