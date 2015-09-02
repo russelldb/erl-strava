@@ -385,9 +385,10 @@ friends_args(Token, Args) ->
 %%--------------------------------------------------------------------
 -spec laps_args(strava:auth_token(), integer(), map()) -> [lap()].
 
-laps_args(_Token, _Id, _Args) ->
-    %% TODO
-    [].
+laps_args(Token, Id, Args) ->
+    case strava_api:read(Token, [<<"activities">>, Id, <<"laps">>], Args) of
+        {ok, JSON} -> lists:map(fun strava_json:to_activity_lap/1, JSON)
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
