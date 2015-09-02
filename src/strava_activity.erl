@@ -433,6 +433,8 @@ kudoers_args(Token, Id, Args) ->
 %%--------------------------------------------------------------------
 -spec photos_args(strava:auth_token(), integer(), map()) -> [photo()].
 
-photos_args(_Token, _Id, _Args) ->
-    %% TODO
-    [].
+photos_args(Token, Id, Args) ->
+    Args1 = Args#{photo_sources => true},
+    case strava_api:read(Token, [<<"activities">>, Id, <<"photos">>], Args1) of
+        {ok, JSON} -> lists:map(fun strava_json:to_activity_photo/1, JSON)
+    end.
