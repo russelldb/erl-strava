@@ -87,7 +87,7 @@ to_activity(Map) ->
          (<<"start_latlng">>, List, Ans) -> Ans#{start_latlng => to_latlng(List)};
          (<<"end_latlng">>, List, Ans) -> Ans#{end_latlng => to_latlng(List)};
          (<<"photos">>, Term, Ans) -> Ans#{photos => to_activity_photos_summary(Term)};
-         (<<"map">>, Term, Ans) -> Ans#{map => Term};         % TODO
+         (<<"map">>, Term, Ans) -> Ans#{map => to_map(Term)};
          (<<"workout_type">>, Int, Ans) -> Ans#{workout_type => Int}; % TODO
          (<<"gear">>, Term, Ans) -> Ans#{gear => to_gear(Term)};
          (<<"segment_efforts">>, List, Ans) -> Ans#{segment_efforts => lists:map(fun to_segment_effort/1, List)};
@@ -553,6 +553,24 @@ to_latlng([Lat, Lon]) -> {Lat, Lon}.
 %% @doc
 %% @end
 %%--------------------------------------------------------------------
+-spec to_map(map()) -> map().
+
+to_map(Map) ->
+    maps:fold(
+      fun(_K, _V = null, Ans) -> Ans;
+         (K, V, Ans)
+            when K =:= <<"id">>;
+                 K =:= <<"polyline">>;
+                 K =:= <<"summary_polyline">> ->
+              Ans#{binary_to_atom(K, latin1) => V};
+         (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => to_resource_state(Int)};
+         (_K, _V, Ans) -> Ans
+      end, _Ans = #{}, Map).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
 -spec to_resource_state(integer()) -> strava:resource_state().
 
 to_resource_state(1) -> meta;
@@ -629,7 +647,7 @@ to_segment(Map) ->
          (<<"climb_category">>, Int, Ans) -> Ans#{climb_category => to_segment_climb_category(Int)};
          (<<"created_at">>, Str, Ans) -> Ans#{created_at => to_datetime(Str)};
          (<<"updated_at">>, Str, Ans) -> Ans#{updated_at => to_datetime(Str)};
-         (<<"map">>, Term, Ans) -> Ans#{map => Term};             % TODO
+         (<<"map">>, Term, Ans) -> Ans#{map => to_map(Term)};
          (_K, _V, Ans) -> Ans
       end, _Ans = #{}, Map).
 
