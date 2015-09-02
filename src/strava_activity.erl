@@ -2,7 +2,7 @@
 
 %% Types
 -export_type([activity/0, comment/0, lap/0, photo/0,
-              t/0, type/0, zone/0]).
+              t/0, type/0, zones/0]).
 
 %% Activities functions
 -export([activity/2, athletes/1, athletes/3, athletes_after/2,
@@ -57,7 +57,7 @@
 -type comment() :: map().
 -type lap() :: map().
 -type photo() :: map().
--type zone() :: map().
+-type zones() :: map().
 
 -type t() :: activity().
 
@@ -269,7 +269,7 @@ update(Token, Activity) ->
 %% List activity zones.
 %% @end
 %%--------------------------------------------------------------------
--spec zones(strava:auth_token(), integer()) -> [zone()].
+-spec zones(strava:auth_token(), integer()) -> [zones()].
 
 zones(_Token, _Id) ->
     %% TODO
