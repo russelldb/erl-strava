@@ -83,9 +83,23 @@ explore(Token, SW, NE) ->
 %%--------------------------------------------------------------------
 -spec explore(strava_auth:token(), strava:position(), strava:position(), map()) -> [t()].
 
-explore(_Token, _SW, _NE, _Filter) ->
-    %% TODO
-    [].
+explore(Token, {SWLat, SWLon}, {NELat, NELon}, Filter) ->
+    Args0 = maps:fold(
+              fun(K, V, Ans)
+                    when K =:= min_cat;
+                         K =:= max_cat ->
+                      Ans#{K => strava_json:from_segment_climb_category(V)};
+                 (activity_type, ride, Ans) -> Ans#{activity_type => <<"riding">>};
+                 (activity_type, run, Ans) -> Ans#{activity_type => <<"running">>};
+                 (_K, _V, Ans) -> Ans
+              end, _Ans = #{}, Filter),
+    Args1 = Args0#{bounds => iolist_to_binary(
+                               io_lib:format("~f,~f,~f,~f",
+                                             [SWLat, SWLon, NELat, NELon])
+                              )},
+    case strava_api:read(Token, [<<"segments">>, <<"explore">>], Args1) of
+        {ok, JSON} -> lists:map(fun strava_json:to_segment/1, JSON)
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
