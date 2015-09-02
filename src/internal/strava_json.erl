@@ -4,9 +4,10 @@
 -export([decode/1]).
 
 %% From JSON map functions
--export([to_activity/1, to_athlete/1, to_athlete_stats/1, to_club/1,
-         to_club_announcement/1, to_club_group_event/1, to_gear/1,
-         to_segment/1, to_segment_effort/1, to_stream/1]).
+-export([to_activity/1, to_activity_comment/1, to_activity_lap/1,
+         to_activity_photo/1, to_athlete/1, to_athlete_stats/1,
+         to_club/1, to_club_announcement/1, to_club_group_event/1,
+         to_gear/1, to_segment/1, to_segment_effort/1, to_stream/1]).
 
 %% To JSON functions
 -export([from_activity_type/1, from_athlete/1, from_datetime/1]).
@@ -92,6 +93,36 @@ to_activity(Map) ->
          (<<"best_efforts">>, _Term, Ans) -> Ans;
          (_K, _V, Ans) -> Ans
       end, _Ans = #{}, Map).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_activity_comment(map()) -> strava_activity:comment().
+
+to_activity_comment(_Map) ->
+    %% TODO
+    #{}.
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_activity_lap(map()) -> strava_activity:lap().
+
+to_activity_lap(_Map) ->
+    %% TODO
+    #{}.
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_activity_photo(map()) -> strava_activity:photo().
+
+to_activity_photo(_Map) ->
+    %% TODO
+    #{}.
 
 %%--------------------------------------------------------------------
 %% @doc
