@@ -12,7 +12,8 @@
          to_stream/1]).
 
 %% To JSON functions
--export([from_activity_type/1, from_athlete/1, from_datetime/1]).
+-export([from_activity_type/1, from_athlete/1, from_datetime/1,
+         from_segment_climb_category/1]).
 
 %%%===================================================================
 %%% Parse JSON
@@ -720,3 +721,16 @@ from_athlete(Map) ->
 
 from_datetime(DateTime) ->
     iolist_to_binary(iso8601:format_datetime(DateTime)).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec from_segment_climb_category(strava_segment:climb_category()) -> integer().
+
+from_segment_climb_category(undefined) -> 0;
+from_segment_climb_category(4) -> 1;
+from_segment_climb_category(3) -> 2;
+from_segment_climb_category(2) -> 3;
+from_segment_climb_category(1) -> 4;
+from_segment_climb_category(hc) -> 5.
