@@ -272,9 +272,10 @@ update(Token, Activity) ->
 %%--------------------------------------------------------------------
 -spec zones(strava:auth_token(), integer()) -> [zones()].
 
-zones(_Token, _Id) ->
-    %% TODO
-    [].
+zones(Token, Id) ->
+    case strava_api:read(Token, [<<"activities">>, Id, <<"zones">>], _Opts = #{}) of
+        {ok, JSON} -> lists:map(fun strava_json:to_activity_zones/1, JSON)
+    end.
 
 %%%===================================================================
 %%% Activity comments functions
