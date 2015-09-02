@@ -190,8 +190,7 @@ starred(Token, Page, PerPage) ->
 efforts_args(Token, Id, Args) ->
     Args1 = maps:fold(
               fun(K, V, Ans)
-                    when K =:= id;
-                         K =:= athlete_id;
+                    when K =:= athlete_id;
                          K =:= page;
                          K =:= per_page ->
                       Ans#{K => V};
