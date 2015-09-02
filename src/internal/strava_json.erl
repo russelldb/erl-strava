@@ -303,7 +303,11 @@ to_athlete(Map) ->
          (<<"created_at">>, Str, Ans) -> Ans#{created_at => to_datetime(Str)};
          (<<"updated_at">>, Str, Ans) -> Ans#{updated_at => to_datetime(Str)};
          (<<"athlete_type">>, Int, Ans) -> Ans#{athlete_type => to_athlete_type(Int)};
-         (<<"measurement_preference">>, Str, Ans) -> Ans#{measurement_preference => Str}; % TODO
+         (<<"measurement_preference">>, Str, Ans) -> Ans#{measurement_preference =>
+                                                              case Str of
+                                                                  <<"feet">> -> feet;
+                                                                  <<"meters">> -> meters
+                                                              end};
          (<<"clubs">>, List, Ans) -> Ans#{clubs => lists:map(fun to_club/1, List)};
          (<<"bikes">>, List, Ans) -> Ans#{bikes => lists:map(fun to_gear/1, List)};
          (<<"shoes">>, List, Ans) -> Ans#{shoes => lists:map(fun to_gear/1, List)};
