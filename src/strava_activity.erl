@@ -409,9 +409,10 @@ related_args(Token, Id, Args) ->
 %%--------------------------------------------------------------------
 -spec comments_args(strava:auth_token(), integer(), map()) -> [comment()].
 
-comments_args(_Token, _Id, _Args) ->
-    %% TODO
-    [].
+comments_args(Token, Id, Args) ->
+    case strava_api:read(Token, [<<"activities">>, Id, <<"comments">>], Args) of
+        {ok, JSON} -> lists:map(fun strava_json:to_activity_comment/1, JSON)
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
