@@ -110,9 +110,34 @@ to_activity_comment(_Map) ->
 %%--------------------------------------------------------------------
 -spec to_activity_lap(map()) -> strava_activity:lap().
 
-to_activity_lap(_Map) ->
-    %% TODO
-    #{}.
+to_activity_lap(Map) ->
+    maps:fold(
+      fun(_K, _V = null, Ans) -> Ans;           % Ignore null fields
+         (K, V, Ans)
+            when K =:= <<"id">>;
+                 K =:= <<"name">>;
+                 K =:= <<"elapsed_time">>;
+                 K =:= <<"moving_time">>;
+                 K =:= <<"distance">>;
+                 K =:= <<"start_index">>;
+                 K =:= <<"end_index">>;
+                 K =:= <<"total_elevation_gain">>;
+                 K =:= <<"average_speed">>;
+                 K =:= <<"max_speed">>;
+                 K =:= <<"average_cadence">>;
+                 K =:= <<"average_watts">>;
+                 K =:= <<"device_watts">>;
+                 K =:= <<"average_heartrate">>;
+                 K =:= <<"max_heartrate">>;
+                 K =:= <<"lap_index">> ->
+              Ans#{binary_to_atom(K, latin1) => V};
+         (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => to_resource_state(Int)};
+         (<<"activity">>, Term, Ans) -> Ans#{activity => to_activity(Term)};
+         (<<"athlete">>, Term, Ans) -> Ans#{athlete => to_athlete(Term)};
+         (<<"start_date">>, Str, Ans) -> Ans#{start_date => to_datetime(Str)};
+         (<<"start_date_local">>, Str, Ans) -> Ans#{start_date_local => to_datetime(Str)};
+         (_K, _V, Ans) -> Ans
+      end, _Ans = #{}, Map).
 
 %%--------------------------------------------------------------------
 %% @doc
