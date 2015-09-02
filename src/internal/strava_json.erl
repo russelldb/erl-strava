@@ -9,7 +9,7 @@
          to_segment/1, to_segment_effort/1, to_stream/1]).
 
 %% To JSON functions
--export([from_athlete/1, from_datetime/1]).
+-export([from_activity_type/1, from_athlete/1, from_datetime/1]).
 
 %%%===================================================================
 %%% Parse JSON
@@ -503,6 +503,43 @@ to_stream(Map) ->
 %%%===================================================================
 %%% To JSON functions
 %%%===================================================================
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec from_activity_type(strava_activity:type()) -> binary().
+
+from_activity_type(alpine_ski) -> <<"AlpineSki">>;
+from_activity_type(backcountry_ski) -> <<"BackcountrySki">>;
+from_activity_type(canoeing) -> <<"Canoeing">>;
+from_activity_type(cross_country_skiing) -> <<"CrossCountrySkiing">>;
+from_activity_type(crossfit) -> <<"Crossfit">>;
+from_activity_type(ebike_ride) -> <<"EBikeRide">>;
+from_activity_type(elliptical) -> <<"Elliptical">>;
+from_activity_type(hike) -> <<"Hike">>;
+from_activity_type(ice_skate) -> <<"IceSkate">>;
+from_activity_type(inline_skate) -> <<"InlineSkate">>;
+from_activity_type(kayaking) -> <<"Kayaking">>;
+from_activity_type(kitesurf) -> <<"Kitesurf">>;
+from_activity_type(nordic_ski) -> <<"NordicSki">>;
+from_activity_type(ride) -> <<"Ride">>;
+from_activity_type(rock_climbing) -> <<"RockClimbing">>;
+from_activity_type(roller_ski) -> <<"RollerSki">>;
+from_activity_type(rowing) -> <<"Rowing">>;
+from_activity_type(run) -> <<"Run">>;
+from_activity_type(snowboard) -> <<"Snowboard">>;
+from_activity_type(snowshoe) -> <<"Snowshoe">>;
+from_activity_type(stair_stepper) -> <<"StairStepper">>;
+from_activity_type(stand_up_paddling) -> <<"StandUpPaddling">>;
+from_activity_type(surfing) -> <<"Surfing">>;
+from_activity_type(swim) -> <<"Swim">>;
+from_activity_type(virtual_ride) -> <<"VirtualRide">>;
+from_activity_type(walk) -> <<"Walk">>;
+from_activity_type(weight_training) -> <<"WeightTraining">>;
+from_activity_type(windsurf) -> <<"Windsurf">>;
+from_activity_type(workout) -> <<"Workout">>;
+from_activity_type(yoga) -> <<"Yoga">>.
 
 %%--------------------------------------------------------------------
 %% @doc
