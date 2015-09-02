@@ -50,6 +50,7 @@ file(_Token, _DataType, _FileName, _Options) ->
 %%--------------------------------------------------------------------
 -spec status(strava_auth:token(), integer()) -> status().
 
-status(_Token, _Id) ->
-    %% TODO
-    #{}.
+status(Token, Id) ->
+    case strava_api:read(Token, [<<"uploads">>, Id], _Opts = #{}) of
+        {ok, JSON} -> strava_json:to_upload_status(JSON)
+    end.
