@@ -9,7 +9,7 @@
          to_segment/1, to_segment_effort/1, to_stream/1]).
 
 %% To JSON functions
--export([from_athlete/1]).
+-export([from_athlete/1, from_datetime/1]).
 
 %%%===================================================================
 %%% Parse JSON
@@ -521,3 +521,12 @@ from_athlete(Map) ->
               Ans#{atom_to_binary(K, latin1) => V};
          (_K, _V, Ans) -> Ans
       end, _Ans = #{}, Map).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec from_datetime(calendar:datetime()) -> binary().
+
+from_datetime(DateTime) ->
+    iolist_to_binary(iso8601:format_datetime(DateTime)).
