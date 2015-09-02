@@ -1,7 +1,8 @@
 -module(strava_segment).
 
 %% Types
--export_type([leaderboard/0, segment/0, t/0]).
+-export_type([activity_type/0, climb_category/0, leaderboard/0,
+              segment/0, t/0]).
 
 %% Segment functions
 -export([efforts/2, efforts/3, efforts/4, efforts/5, explore/3,
@@ -12,6 +13,8 @@
 %%% Types
 %%%===================================================================
 
+-type activity_type() :: ride | run.
+-type climb_category() :: undefined | 4 | 3 | 2 | 1 | hc.
 -type leaderboard() :: map().
 -type segment() :: map().
 
