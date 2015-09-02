@@ -132,9 +132,10 @@ leaderboard(_Token, _Id, _Filter, _Page, _PerPage) ->
 %%--------------------------------------------------------------------
 -spec segment(strava_auth:token(), integer()) -> t().
 
-segment(_Token, _Id) ->
-    %% TODO
-    #{}.
+segment(Token, Id) ->
+    case strava_api:read(Token, [<<"segments">>, Id], _Args = #{}) of
+        {ok, JSON} -> strava_json:to_segment(JSON)
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
