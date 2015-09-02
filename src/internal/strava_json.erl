@@ -445,7 +445,7 @@ to_club_group_event(Map) ->
               Ans#{binary_to_atom(K, latin1) => V};
          (<<"resource_state">>, Int, Ans) -> Ans#{resource_state => to_resource_state(Int)};
          (<<"organizing_athlete">>, Term, Ans) -> Ans#{organizing_athlete => to_athlete(Term)};
-         (<<"activity_type">>, Str, Ans) -> Ans#{activity_type => Str}; % TODO
+         (<<"activity_type">>, Str, Ans) -> Ans#{activity_type => to_activity_type(Str)};
          (<<"created_at">>, Str, Ans) -> Ans#{created_at => to_datetime(Str)};
          (<<"skill_levels">>, Int, Ans) -> Ans#{skill_levels => Int}; % TODO
          (<<"terrain">>, Int, Ans) -> Ans#{terrain => Int}; % TODO
