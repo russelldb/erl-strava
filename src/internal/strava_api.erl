@@ -110,7 +110,7 @@ update(Token, Path, Content) ->
 %%--------------------------------------------------------------------
 -spec qs(options(), binary()) -> binary().
 
-qs(Opts, Prefix) ->
+qs(Options, Prefix) ->
     {_Prefix1, Ans} =
         maps:fold(
           fun(K, V, {Sep, Ans}) ->
@@ -118,7 +118,7 @@ qs(Opts, Prefix) ->
                         http_uri:encode(strava_util:to_string(K)),
                         $=,
                         http_uri:encode(strava_util:to_string(V))]}
-          end, {Prefix, []}, Opts),
+          end, {Prefix, []}, Options),
     iolist_to_binary(Ans).
 
 %%--------------------------------------------------------------------
@@ -129,8 +129,8 @@ qs(Opts, Prefix) ->
               httpc:content_type(), httpc:body()) ->
                      {ok, binary()} | {error, pos_integer()}.
 
-request(Method, Token, Path, Opts, ContentType, Body) ->
-    URL = strava_util:to_string([url(Path), qs(Opts, $?)]),
+request(Method, Token, Path, Options, ContentType, Body) ->
+    URL = strava_util:to_string([url(Path), qs(Options, $?)]),
     Headers = [{"Authorization", strava_util:to_string([<<"Bearer ">>, Token])}],
     Request = case Method of
                   _ when Method =:= delete;
@@ -141,9 +141,9 @@ request(Method, Token, Path, Opts, ContentType, Body) ->
                       {URL, Headers, ContentType, Body}
               end,
     ?debugVal({URL, Headers, ContentType, Body}),
-    case httpc:request(Method, Request, _HTTPOpts = [],
-                       _Opts = [{body_format, binary},
-                                {full_result, false}],
+    case httpc:request(Method, Request, _HTTPOptions = [],
+                       _Options = [{body_format, binary},
+                                   {full_result, false}],
                        strava)
     of
         {ok, {Status, ResBody}}
