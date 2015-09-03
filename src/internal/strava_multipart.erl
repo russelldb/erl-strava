@@ -42,7 +42,7 @@ form_data(Form) ->
 form_data(Form, Boundary) ->
     {strava_util:to_string(
        [<<"multipart/form-data; boundary=\"">>, Boundary, <<"\"">>]),
-     iolist_to_binary(
+     strava_util:to_binary(
        [lists:map(
           fun({Name, {ContentType, ContentEncoding, FileName}}) ->
                   {ok, FileData} = file:read_file(FileName),
