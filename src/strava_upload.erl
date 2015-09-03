@@ -63,11 +63,11 @@ file(Token, FileType, FileName, Options) ->
                 _ when FileType =:= fit;
                        FileType =:= tcx;
                        FileType =:= gpx ->
-                    {file, content_type(FileType), FileName};
+                    {file, {content_type(FileType), FileName}};
                 _ when FileType =:= 'fit.gz';
                        FileType =:= 'tcx.gz';
                        FileType =:= 'gpx.gz' ->
-                    {file, content_type(FileType), <<"gzip">>, FileName}
+                    {file, {content_type(FileType), <<"gzip">>, FileName}}
             end | maps:to_list(Options1)],
     case strava_api:create(Token, [<<"uploads">>], Form) of
         {ok, JSON} -> strava_json:to_upload_status(JSON)
