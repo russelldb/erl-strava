@@ -29,8 +29,8 @@
 %%--------------------------------------------------------------------
 -spec file(strava_auth:token(), data_type(), file:filename_all()) -> status().
 
-file(Token, DataType, FileName) ->
-    file(Token, DataType, FileName, _Options = #{}).
+file(Token, FileType, FileName) ->
+    file(Token, FileType, FileName, _Options = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -39,9 +39,39 @@ file(Token, DataType, FileName) ->
 %%--------------------------------------------------------------------
 -spec file(strava_auth:token(), data_type(), file:filename_all(), map()) -> status().
 
-file(_Token, _DataType, _FileName, _Options) ->
-    %% TODO
-    #{}.
+file(Token, FileType, FileName, Options) ->
+    Options1 =
+        maps:fold(
+          fun(K, V, Ans)
+                when K =:= activity_type;
+                     K =:= name;
+                     K =:= description;
+                     K =:= external_id ->
+                  Ans#{K => V};
+             (K, V, Ans)
+                when K =:= private;
+                     K =:= trainer;
+                     K =:= commute ->
+                  Ans#{K => case V of
+                                true -> 1;
+                                false -> 0
+                            end};
+             (_K, _V, Ans) -> Ans
+          end, _Ans = #{}, Options),
+    Form = [{data_type, FileType},
+            case FileType of
+                _ when FileType =:= fit;
+                       FileType =:= tcx;
+                       FileType =:= gpx ->
+                    {file, content_type(FileType), FileName};
+                _ when FileType =:= 'fit.gz';
+                       FileType =:= 'tcx.gz';
+                       FileType =:= 'gpx.gz' ->
+                    {file, content_type(FileType), <<"gzip">>, FileName}
+            end | maps:to_list(Options1)],
+    case strava_api:create(Token, [<<"uploads">>], Form) of
+        {ok, JSON} -> strava_json:to_upload_status(JSON)
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
