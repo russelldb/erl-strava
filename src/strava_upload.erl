@@ -54,3 +54,25 @@ status(Token, Id) ->
     case strava_api:read(Token, [<<"uploads">>, Id], _Opts = #{}) of
         {ok, JSON} -> strava_json:to_upload_status(JSON)
     end.
+
+%%%===================================================================
+%%% Internal functions
+%%%===================================================================
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec content_type(data_type()) -> binary().
+
+content_type(FileType)
+  when FileType =:= fit; FileType =:= 'fit.gz' ->
+    <<"application/vnd.ant.fit">>;
+
+content_type(FileType)
+  when FileType =:= tcx; FileType =:= 'tcx.gz' ->
+    <<"application/vnd.garmin.tcx+xml">>;
+
+content_type(FileType)
+  when FileType =:= gpx; FileType =:= 'gpx.gz' ->
+    <<"application/gpx+xml">>.
