@@ -28,7 +28,7 @@
 %% @doc
 %% @end
 %%--------------------------------------------------------------------
--spec form_data(multipart()) -> {iodata(), httpc:body()}.
+-spec form_data(multipart()) -> {httpc:content_type(), httpc:body()}.
 
 form_data(Form) ->
     form_data(Form, random_boundary()).
@@ -37,10 +37,11 @@ form_data(Form) ->
 %% @doc
 %% @end
 %%--------------------------------------------------------------------
--spec form_data(multipart(), iodata()) -> {iodata(), httpc:body()}.
+-spec form_data(multipart(), iodata()) -> {httpc:content_type(), httpc:body()}.
 
 form_data(Form, Boundary) ->
-    {[<<"multipart/form-data; boundary=\"">>, Boundary, <<"\"">>],
+    {strava_util:to_string(
+       [<<"multipart/form-data; boundary=\"">>, Boundary, <<"\"">>]),
      iolist_to_binary(
        [lists:map(
           fun({Name, {ContentType, ContentEncoding, FileName}}) ->
