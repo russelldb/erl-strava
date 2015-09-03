@@ -41,19 +41,20 @@ form_data(Form) ->
 
 form_data(Form, Boundary) ->
     {[<<"multipart/form-data; boundary=\"">>, Boundary, <<"\"">>],
-     [lists:map(
-        fun({Name, {ContentType, ContentEncoding, FileName}}) ->
-                {ok, FileData} = file:read_file(FileName),
-                part(Boundary, headers(Name, ContentType,
-                                       ContentEncoding, FileName), FileData);
-           ({Name, {ContentType, FileName}}) ->
-                {ok, FileData} = file:read_file(FileName),
-                part(Boundary, headers(Name, ContentType, FileName), FileData);
-           ({Name, Body}) ->
-                part(Boundary, headers(Name),
-                     [strava_util:to_binary(Body), <<"\r\n">>])
-        end, Form),
-      <<"--">>, Boundary, <<"--\r\n">>]}.
+     iolist_to_binary(
+       [lists:map(
+          fun({Name, {ContentType, ContentEncoding, FileName}}) ->
+                  {ok, FileData} = file:read_file(FileName),
+                  part(Boundary, headers(Name, ContentType,
+                                         ContentEncoding, FileName), FileData);
+             ({Name, {ContentType, FileName}}) ->
+                  {ok, FileData} = file:read_file(FileName),
+                  part(Boundary, headers(Name, ContentType, FileName), FileData);
+             ({Name, Body}) ->
+                  part(Boundary, headers(Name),
+                       [strava_util:to_binary(Body), <<"\r\n">>])
+          end, Form),
+        <<"--">>, Boundary, <<"--\r\n">>])}.
 
 %%%===================================================================
 %%% Internal functions
