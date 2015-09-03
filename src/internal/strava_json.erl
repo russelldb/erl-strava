@@ -88,7 +88,12 @@ to_activity(Map) ->
          (<<"end_latlng">>, List, Ans) -> Ans#{end_latlng => to_latlng(List)};
          (<<"photos">>, Term, Ans) -> Ans#{photos => to_activity_photos_summary(Term)};
          (<<"map">>, Term, Ans) -> Ans#{map => to_map(Term)};
-         (<<"workout_type">>, Int, Ans) -> Ans#{workout_type => Int}; % TODO
+         (<<"workout_type">>, Int, Ans) -> Ans#{workout_type => case Int of
+                                                                    0 -> default;
+                                                                    1 -> race;
+                                                                    2 -> long_run;
+                                                                    3 -> intervals
+                                                                end};
          (<<"gear">>, Term, Ans) -> Ans#{gear => to_gear(Term)};
          (<<"segment_efforts">>, List, Ans) -> Ans#{segment_efforts => lists:map(fun to_segment_effort/1, List)};
          (<<"splits_metric">>, _Term, Ans) -> Ans;
