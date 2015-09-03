@@ -74,7 +74,7 @@
 -spec activity(strava_auth:token(), integer()) -> t().
 
 activity(Token, Id) ->
-    case strava_api:read(Token, [<<"activities">>, Id], _Opts = #{}) of
+    case strava_api:read(Token, [<<"activities">>, Id]) of
         {ok, JSON} -> strava_json:to_activity(JSON)
     end.
 
@@ -273,7 +273,7 @@ update(Token, Activity) ->
 -spec zones(strava_auth:token(), integer()) -> [zones()].
 
 zones(Token, Id) ->
-    case strava_api:read(Token, [<<"activities">>, Id, <<"zones">>], _Opts = #{}) of
+    case strava_api:read(Token, [<<"activities">>, Id, <<"zones">>]) of
         {ok, JSON} -> lists:map(fun strava_json:to_activity_zones/1, JSON)
     end.
 

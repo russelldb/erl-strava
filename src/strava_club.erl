@@ -71,7 +71,7 @@ activities_before(Token, Id, Time) ->
 -spec announcements(strava_auth:token(), integer()) -> [announcement()].
 
 announcements(Token, Id) ->
-    case strava_api:read(Token, [<<"clubs">>, Id, <<"announcements">>], _Opts = #{}) of
+    case strava_api:read(Token, [<<"clubs">>, Id, <<"announcements">>]) of
         {ok, JSON} -> lists:map(fun strava_json:to_club_announcement/1, JSON)
     end.
 
@@ -83,7 +83,7 @@ announcements(Token, Id) ->
 -spec athletes(strava_auth:token()) -> [t()].
 
 athletes(Token) ->
-    case strava_api:read(Token, [<<"athlete">>, <<"clubs">>], _Opts = #{}) of
+    case strava_api:read(Token, [<<"athlete">>, <<"clubs">>]) of
         {ok, JSON} -> lists:map(fun strava_json:to_club/1, JSON)
     end.
 
@@ -95,7 +95,7 @@ athletes(Token) ->
 -spec club(strava_auth:token(), integer()) -> t().
 
 club(Token, Id) ->
-    case strava_api:read(Token, [<<"clubs">>, Id], _Opts = #{}) of
+    case strava_api:read(Token, [<<"clubs">>, Id]) of
         {ok, JSON} -> strava_json:to_club(JSON)
     end.
 
@@ -107,7 +107,7 @@ club(Token, Id) ->
 -spec group_events(strava_auth:token(), integer()) -> [group_event()].
 
 group_events(Token, Id) ->
-    case strava_api:read(Token, [<<"clubs">>, Id, <<"group_events">>], _Opts = #{}) of
+    case strava_api:read(Token, [<<"clubs">>, Id, <<"group_events">>]) of
         {ok, JSON} -> lists:map(fun strava_json:to_club_group_event/1, JSON)
     end.
 

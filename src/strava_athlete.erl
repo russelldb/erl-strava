@@ -52,7 +52,7 @@ athlete(Token, Id) ->
                undefined -> [<<"athlete">>];
                _SomeId -> [<<"athletes">>, Id]
            end,
-    case strava_api:read(Token, Path, _Opts = #{}) of
+    case strava_api:read(Token, Path) of
         {ok, JSON} -> strava_json:to_athlete(JSON)
     end.
 
@@ -86,7 +86,7 @@ koms(Token, Id, Page, PerPage) ->
 -spec stats(strava_auth:token(), integer()) -> stats().
 
 stats(Token, Id) ->
-    case strava_api:read(Token, [<<"athletes">>, Id, <<"stats">>], _Opts = #{}) of
+    case strava_api:read(Token, [<<"athletes">>, Id, <<"stats">>]) of
         {ok, JSON} -> strava_json:to_athlete_stats(JSON)
     end.
 

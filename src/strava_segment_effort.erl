@@ -25,6 +25,6 @@
 -spec segment_effort(strava_auth:token(), integer()) -> t().
 
 segment_effort(Token, Id) ->
-    case strava_api:read(Token, [<<"segment_efforts">>, Id], _Args = #{}) of
+    case strava_api:read(Token, [<<"segment_efforts">>, Id]) of
         {ok, JSON} -> strava_json:to_segment_effort(JSON)
     end.
