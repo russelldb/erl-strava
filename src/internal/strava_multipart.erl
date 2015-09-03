@@ -131,7 +131,8 @@ content_disposition(Name) ->
 -spec content_disposition(part_name(), file:filename_all()) -> iodata().
 
 content_disposition(Name, FileName) ->
-    [content_disposition(Name), <<"; filename=\"">>, FileName, <<"\"">>].
+    [content_disposition(Name), <<"; filename=\"">>,
+     filename:basename(FileName), <<"\"">>].
 
 %%--------------------------------------------------------------------
 %% @doc
