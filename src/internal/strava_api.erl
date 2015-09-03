@@ -12,7 +12,7 @@
 %%% Types
 %%%===================================================================
 
--type content() :: map() | [map()].
+-type content() :: map().
 -type options() :: map().
 -type path() :: [atom() | integer() | iodata()].
 
@@ -26,7 +26,7 @@
 %% POST multipart/form-data
 %% @end
 %%--------------------------------------------------------------------
--spec create(strava_auth:token(), path(), content()) ->
+-spec create(strava_auth:token(), path(), content() | strava_multipart:t()) ->
                     {ok, content()} | {error, pos_integer()}.
 
 create(Token, Path, Content) ->
@@ -35,8 +35,7 @@ create(Token, Path, Content) ->
             _ when is_map(Content) ->
                 {"application/x-www-form-urlencoded", qs(Content, <<>>)};
             _ when is_list(Content) ->
-                %% TODO
-                {"multipart/form-data", <<>>}
+                strava_multipart:form_data(Content)
         end,
     Options = #{},
     case request(post, Token, Path, Options, ContentType, Body) of
