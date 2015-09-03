@@ -116,10 +116,11 @@ part(Boundary, Headers, Content) ->
 %% Content disposition header for form field `Name'.
 %% @end
 %%--------------------------------------------------------------------
--spec content_disposition(iodata()) -> iodata().
+-spec content_disposition(part_name()) -> iodata().
 
 content_disposition(Name) ->
-    [<<"Content-Disposition: form-data; name=\"">>, Name, <<"\"">>].
+    [<<"Content-Disposition: form-data; name=\"">>,
+     strava_util:to_binary(Name), <<"\"">>].
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -127,7 +128,7 @@ content_disposition(Name) ->
 %% name `FileName'.
 %% @end
 %%--------------------------------------------------------------------
--spec content_disposition(iodata(), file:filename_all()) -> iodata().
+-spec content_disposition(part_name(), file:filename_all()) -> iodata().
 
 content_disposition(Name, FileName) ->
     [content_disposition(Name), <<"; filename=\"">>, FileName, <<"\"">>].
@@ -137,7 +138,7 @@ content_disposition(Name, FileName) ->
 %% Part headers for form field `Name'.
 %% @end
 %%--------------------------------------------------------------------
--spec headers(iodata()) -> iodata().
+-spec headers(part_name()) -> iodata().
 
 headers(Name) ->
     [content_disposition(Name), <<"\r\n">>].
@@ -147,7 +148,7 @@ headers(Name) ->
 %% Part headers for file form field `Name'.
 %% @end
 %%--------------------------------------------------------------------
--spec headers(iodata(), iodata(), file:filename_all()) -> iodata().
+-spec headers(part_name(), iodata(), file:filename_all()) -> iodata().
 
 headers(Name, ContentType, FileName) ->
     [content_disposition(Name, FileName), <<"\r\n">>,
@@ -158,7 +159,7 @@ headers(Name, ContentType, FileName) ->
 %% Part headers for encoded file form field `Name'.
 %% @end
 %%--------------------------------------------------------------------
--spec headers(iodata(), iodata(), iodata(), file:filename_all()) -> iodata().
+-spec headers(part_name(), iodata(), iodata(), file:filename_all()) -> iodata().
 
 headers(Name, ContentType, ContentEncoding, FileName) ->
     [headers(Name, ContentType, FileName),
