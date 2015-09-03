@@ -4,7 +4,7 @@
 -export_type([multipart/0, part_data/0, part_name/0, t/0]).
 
 %% API
--export([message/1, message/2]).
+-export([form_data/1, form_data/2]).
 
 %%%===================================================================
 %%% Types
@@ -16,13 +16,9 @@
                    | {_Type :: iodata(), file:filename_all()}
                    | {_Type :: iodata(), _Encoding :: iodata(), file:filename_all()}.
 
--type multipart() :: #{part_name() => part_data()}.
+-type multipart() :: [{part_name(), part_data()}].
 
 -type t() :: multipart().
-
-
--type body_state() :: {_Boundary :: iodata(), _PartList :: [{iodata(), part_data()}]}
-                    | undefined.
 
 %%%===================================================================
 %%% API
@@ -32,69 +28,32 @@
 %% @doc
 %% @end
 %%--------------------------------------------------------------------
--spec message(multipart()) -> {iodata(), httpc:body()}.
+-spec form_data(multipart()) -> {iodata(), httpc:body()}.
 
-message(Form) ->
-    message(Form, random_boundary()).
+form_data(Form) ->
+    form_data(Form, random_boundary()).
 
 %%--------------------------------------------------------------------
 %% @doc
 %% @end
 %%--------------------------------------------------------------------
--spec message(multipart(), iodata()) -> {iodata(), httpc:body()}.
+-spec form_data(multipart(), iodata()) -> {iodata(), httpc:body()}.
 
-message(Form, Boundary) ->
+form_data(Form, Boundary) ->
     {[<<"multipart/form-data; boundary=\"">>, Boundary, <<"\"">>],
-     {fun body/1, body_state(Boundary, Form)}}.
-
-%%%===================================================================
-%%% Body writing function
-%%%===================================================================
-
-%%--------------------------------------------------------------------
-%% @doc
-%% Body function for `httpc:request'.
-%% @end
-%%--------------------------------------------------------------------
--spec body(body_state()) -> {ok, iodata(), body_state()} | eof.
-
-body(_State = undefined) ->
-    eof;
-
-body({Boundary, _PartList = []}) ->
-    Data = [<<"--">>, Boundary, <<"--\r\n">>],
-    {ok, Data, _State = undefined};
-
-body({Boundary, [{Name, {ContentType, ContentEncoding, FileName}} | Rest]}) ->
-    {ok, FileData} = file:read_file(FileName),
-    Data = part(Boundary, headers(Name, ContentType,
-                                  ContentEncoding, FileName), FileData),
-    {ok, Data, _State = {Boundary, Rest}};
-
-body({Boundary, [{Name, {ContentType, FileName}} | Rest]}) ->
-    {ok, FileData} = file:read_file(FileName),
-    Data = part(Boundary, headers(Name, ContentType, FileName), FileData),
-    {ok, Data, _State = {Boundary, Rest}};
-
-body({Boundary, [{Name, Body} | Rest]}) ->
-    Data = part(Boundary, headers(Name),
-                [strava_util:to_binary(Body), <<"\r\n">>]),
-    {ok, Data, _State = {Boundary, Rest}}.
-
-%%--------------------------------------------------------------------
-%% @doc
-%% Create initial state for body function out of `Boundary' and
-%% `Form'.
-%% @end
-%%--------------------------------------------------------------------
--spec body_state(iodata(), multipart()) -> body_state().
-
-body_state(Boundary, Form) ->
-    {Boundary,
-     maps:fold(
-       fun(K, V, Ans) ->
-               [{strava_util:to_binary(K), V} | Ans]
-       end, Form)}.
+     [lists:map(
+        fun({Name, {ContentType, ContentEncoding, FileName}}) ->
+                {ok, FileData} = file:read_file(FileName),
+                part(Boundary, headers(Name, ContentType,
+                                       ContentEncoding, FileName), FileData);
+           ({Name, {ContentType, FileName}}) ->
+                {ok, FileData} = file:read_file(FileName),
+                part(Boundary, headers(Name, ContentType, FileName), FileData);
+           ({Name, Body}) ->
+                part(Boundary, headers(Name),
+                     [strava_util:to_binary(Body), <<"\r\n">>])
+        end, Form),
+      <<"--">>, Boundary, <<"--\r\n">>]}.
 
 %%%===================================================================
 %%% Internal functions
