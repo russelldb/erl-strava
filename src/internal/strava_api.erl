@@ -4,7 +4,7 @@
 -export_type([content/0, options/0, path/0]).
 
 %% API
--export([create/3, delete/2, read/3, update/3]).
+-export([create/3, delete/2, read/2, read/3, update/3]).
 
 -include_lib("eunit/include/eunit.hrl").
 
@@ -58,6 +58,16 @@ delete(Token, Path) ->
         {ok, _ResBody} -> ok;
         Error -> Error
     end.
+
+%%--------------------------------------------------------------------
+%% @doc
+%% GET application/json
+%% @end
+%%--------------------------------------------------------------------
+-spec read(strava_auth:token(), path()) -> {ok, content()} | {error, pos_integer()}.
+
+read(Token, Path) ->
+    read(Token, Path, _Options = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
