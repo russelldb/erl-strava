@@ -144,5 +144,5 @@ url(Suffix) ->
 -spec url(iodata(), strava_http:query()) -> strava_http:url().
 
 url(Suffix, Query) ->
-    [<<"https://www.strava.com/oauth/", Suffix,
-       (strava_http:qs(Query, $?))/bytes>>].
+    [<<"https://www.strava.com/oauth/">>, Suffix,
+     strava_http:qs(Query, $?)].
