@@ -76,9 +76,23 @@ deauthorize(Token) ->
 %%--------------------------------------------------------------------
 -spec token(integer(), binary(), binary()) -> {token(), strava_athlete:t()}.
 
-token(_ClientId, _ClientSecret, _Code) ->
-    %% TODO
-    {<<>>, #{}}.
+token(ClientId, ClientSecret, Code) ->
+    case strava_http:request(
+           _Method = post,
+           _Headers = [],
+           _URL = url(<<"token">>),
+           _Query = #{},
+           _ContentType = <<"application/x-www-form-urlencoded">>,
+           _Body = strava_http:qs(#{client_id     => ClientId,
+                                    client_secret => ClientSecret,
+                                    code          => Code})
+          )
+    of
+        {ok, _Status, ResBody} ->
+            #{<<"access_token">> := Token, <<"athlete">> := Athlete} =
+                strava_json:decode(ResBody),
+            {Token, strava_json:to_athlete(Athlete)}
+    end.
 
 %%%===================================================================
 %%% Internal functions
