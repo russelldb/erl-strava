@@ -126,7 +126,7 @@ authorize_url_opts(ClientId, RedirectUri, Options) ->
     Options2 = Options1#{client_id     => ClientId,
                          redirect_uri  => RedirectUri,
                          response_type => code},
-    url(<<"authorize">>, Options2).
+    iolist_to_binary(url(<<"authorize">>, Options2)).
 
 %%--------------------------------------------------------------------
 %% @doc
