@@ -103,5 +103,23 @@ authorize_url_opts(ClientId, RedirectUri, Options) ->
     Options2 = Options1#{client_id     => ClientId,
                          redirect_uri  => RedirectUri,
                          response_type => code},
-    <<"https://www.strava.com/oauth/authorize",
-      (strava_api:qs(Options2, $?))/bytes>>.
+    url(<<"authorize">>, Options2).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec url(iodata()) -> strava_http:url().
+
+url(Suffix) ->
+    url(Suffix, _Query = #{}).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec url(iodata(), strava_http:query()) -> strava_http:url().
+
+url(Suffix, Query) ->
+    [<<"https://www.strava.com/oauth/", Suffix,
+       (strava_http:qs(Query, $?))/bytes>>].
