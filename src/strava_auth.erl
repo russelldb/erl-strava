@@ -57,9 +57,18 @@ authorize_url(ClientId, RedirectUri, Scope, ApprovalPrompt, State) ->
 %%--------------------------------------------------------------------
 -spec deauthorize(token()) -> ok.
 
-deauthorize(_Token) ->
-    %% TODO
-    ok.
+deauthorize(Token) ->
+    case strava_http:request(
+           _Method = post,
+           _Headers = [{<<"Authorization">>, [<<"Bearer ">>, Token]}],
+           _URL = url(<<"deauthorize">>),
+           _Query = #{},
+           _ContentType = <<>>,
+           _Body = <<>>
+          )
+    of
+        {ok, _Status, _ResBody} -> ok
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
