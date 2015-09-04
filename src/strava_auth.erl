@@ -81,6 +81,27 @@ token(_ClientId, _ClientSecret, _Code) ->
 %%--------------------------------------------------------------------
 -spec authorize_url_opts(integer(), binary(), map()) -> binary().
 
-authorize_url_opts(_ClientId, _RedirectUri, _Options) ->
-    %% TODO
-    <<"https://www.strava.com/oauth/authorize">>.
+authorize_url_opts(ClientId, RedirectUri, Options) ->
+    Options1 = maps:fold(
+                 fun(approval_prompt, Atom, Ans) ->
+                         Ans#{approval_prompt =>
+                                  case Atom of
+                                      auto -> auto;
+                                      force -> force
+                                  end};
+                    (scope, Atom, Ans) ->
+                         Ans#{scope =>
+                                  case Atom of
+                                      public -> public;
+                                      write -> write;
+                                      view_private -> view_private;
+                                      view_private_write -> <<"view_private,write">>
+                                  end};
+                    (state, Str, Ans) -> Ans#{state => Str};
+                    (_K, _V, Ans) -> Ans
+                 end, _Ans = #{}, Options),
+    Options2 = Options1#{client_id     => ClientId,
+                         redirect_uri  => RedirectUri,
+                         response_type => code},
+    <<"https://www.strava.com/oauth/authorize",
+      (strava_api:qs(Options2, $?))/bytes>>.
