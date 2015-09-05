@@ -72,7 +72,7 @@ request(Method, Headers, URL, Query) ->
 
 request(Method, Headers, URL, Query, ContentType, Body) ->
     URL1 = strava_util:to_string([URL, qs(Query, $?)]),
-    Headers1 = lists:map(fun(K, V) ->
+    Headers1 = lists:map(fun({K, V}) ->
                                  {strava_util:to_string(K),
                                   strava_util:to_string(V)}
                          end, Headers),
