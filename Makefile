@@ -1,6 +1,6 @@
 PROJ = strava
 ERL ?= erl
-ERL_FLAGS ?= -pa ebin/ -pa deps/*/ebin/ -smp -config $(PROJ).config
+ERL_FLAGS ?= -pa ebin/ -pa deps/*/ebin/ -smp
 REBAR ?= ./rebar
 RM ?= rm -rf
 
