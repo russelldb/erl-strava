@@ -1,3 +1,9 @@
+%%%-------------------------------------------------------------------
+%%% @doc
+%%% @reference http://strava.github.io/api/v3/uploads/
+%%% @end
+%%% For copyright notice see LICENSE.
+%%%-------------------------------------------------------------------
 -module(strava_upload).
 
 %% Types
@@ -24,7 +30,8 @@
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Upload an activity.
+%% Upload an activity. The `Token' must have at least `write' scope.
+%% @see file/4
 %% @end
 %%--------------------------------------------------------------------
 -spec file(strava_auth:token(), data_type(), file:filename_all()) -> status().
@@ -34,7 +41,7 @@ file(Token, FileType, FileName) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Upload an activity.
+%% Upload an activity. For allowed `Options' see Strava documentation.
 %% @end
 %%--------------------------------------------------------------------
 -spec file(strava_auth:token(), data_type(), file:filename_all(), map()) -> status().
@@ -75,7 +82,8 @@ file(Token, FileType, FileName, Options) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Check upload status.
+%% Check upload status. Strava recommends polling no more than once a
+%% second The mean processing time is around 8 seconds.
 %% @end
 %%--------------------------------------------------------------------
 -spec status(strava_auth:token(), integer()) -> status().
