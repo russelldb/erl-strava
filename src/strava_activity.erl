@@ -78,8 +78,6 @@
 %% Retrieve an activity. Returns a detailed representation if the
 %% activity is owned by the requesting athlete. Returns a summary
 %% representation for all other requests.
-%%
-%% @reference http://strava.github.io/api/v3/activities/#get-details
 %% @end
 %%--------------------------------------------------------------------
 -spec activity(strava_auth:token(), integer()) -> t().
@@ -98,7 +96,6 @@ activity(Token, Id) ->
 %% @see athletes/3
 %% @see athletes_after/2
 %% @see athletes_before/2
-%% @reference http://strava.github.io/api/v3/activities/#get-activities
 %% @end
 %%--------------------------------------------------------------------
 -spec athletes(strava_auth:token()) -> [t()].
@@ -146,8 +143,6 @@ athletes_before(Token, Time) ->
 %% Create an activity. This function is for creating manually entered
 %% activities. For the list of relevant fields of `Activity' see
 %% Strava documentation. `Token' must have at least `write' scope.
-%%
-%% @reference http://strava.github.io/api/v3/activities/#create
 %% @end
 %%--------------------------------------------------------------------
 -spec create(strava_auth:token(), t()) -> t().
@@ -183,8 +178,6 @@ create(Token, Activity) ->
 %% @doc
 %% Delete an activity. The provided auth `Token' must of at least
 %% `write' scope.
-%%
-%% @reference http://strava.github.io/api/v3/activities/#delete
 %% @end
 %%--------------------------------------------------------------------
 -spec delete(strava_auth:token(), integer()) -> ok.
@@ -201,7 +194,6 @@ delete(Token, Id) ->
 %%
 %% @see friends/3
 %% @see friends_before/2
-%% @reference http://strava.github.io/api/v3/activities/#get-feed
 %% @end
 %%--------------------------------------------------------------------
 -spec friends(strava_auth:token()) -> [t()].
@@ -236,7 +228,6 @@ friends_before(Token, Time) ->
 %% List activity laps. Will return all laps for an activity.
 %%
 %% @see laps/4
-%% @reference http://strava.github.io/api/v3/activities/#laps
 %% @end
 %%--------------------------------------------------------------------
 -spec laps(strava_auth:token(), integer()) -> [lap()].
@@ -261,7 +252,6 @@ laps(Token, Id, Page, PerPage) ->
 %% as "with this group".
 %%
 %% @see related/4
-%% @reference http://strava.github.io/api/v3/activities/#get-related
 %% @end
 %%--------------------------------------------------------------------
 -spec related(strava_auth:token(), integer()) -> [t()].
@@ -285,8 +275,6 @@ related(Token, Id, Page, PerPage) ->
 %% Update an activity. The auth `Token' must have at least `write'
 %% scope. For the list of relevant fields of `Activity' see Strava
 %% documentation.
-%%
-%% @reference http://strava.github.io/api/v3/activities/#put-updates
 %% @end
 %%--------------------------------------------------------------------
 -spec update(strava_auth:token(), t()) -> t().
@@ -315,8 +303,6 @@ update(Token, Activity) ->
 %% @doc
 %% List activity zones. Heartrate and power zone distribution of the
 %% activity. The `Token' must be from a premium user.
-%%
-%% @reference http://strava.github.io/api/v3/activities/#zones
 %% @end
 %%--------------------------------------------------------------------
 -spec zones(strava_auth:token(), integer()) -> [zones()].
@@ -335,7 +321,6 @@ zones(Token, Id) ->
 %% List activity comments.
 %%
 %% @see comments/4
-%% @reference http://strava.github.io/api/v3/comments/#list
 %% @end
 %%--------------------------------------------------------------------
 -spec comments(strava_auth:token(), integer()) -> [comment()].
@@ -363,7 +348,6 @@ comments(Token, Id, Page, PerPage) ->
 %% List activity kudoers.
 %%
 %% @see kudoers/4
-%% @reference http://strava.github.io/api/v3/kudos/#list
 %% @end
 %%--------------------------------------------------------------------
 -spec kudoers(strava_auth:token(), integer()) -> [strava_athlete:t()].
@@ -391,7 +375,6 @@ kudoers(Token, Id, Page, PerPage) ->
 %% List photos.
 %%
 %% @see photos/4
-%% @reference http://strava.github.io/api/v3/photos/#list
 %% @end
 %%--------------------------------------------------------------------
 -spec photos(strava_auth:token(), integer()) -> [photo()].
