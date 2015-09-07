@@ -90,7 +90,7 @@ token(ClientId, ClientSecret, Code) ->
     of
         {ok, _Status, ResBody} ->
             #{<<"access_token">> := Token, <<"athlete">> := Athlete} =
-                strava_json:decode(ResBody),
+                jsx:decode(ResBody, [return_maps]),
             {Token, strava_json:to_athlete(Athlete)}
     end.
 
