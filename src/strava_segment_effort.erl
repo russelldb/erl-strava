@@ -1,3 +1,12 @@
+%%%-------------------------------------------------------------------
+%%% @doc
+%%% Types and functions related to Strava segment efforts. A segment
+%%% effort represents an athlete’s attempt at a segment. It can also
+%%% be thought of as a portion of a ride that covers a segment.
+%%% @reference http://strava.github.io/api/v3/efforts/
+%%% @end
+%%% For copyright notice see LICENSE.
+%%%-------------------------------------------------------------------
 -module(strava_segment_effort).
 
 %% Types
@@ -20,6 +29,8 @@
 
 %%--------------------------------------------------------------------
 %% @doc
+%% Retrieve a segment effort. The effort must be public or it must
+%% correspond to the current athlete.
 %% @end
 %%--------------------------------------------------------------------
 -spec segment_effort(strava_auth:token(), integer()) -> t().
