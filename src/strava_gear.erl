@@ -1,3 +1,11 @@
+%%%-------------------------------------------------------------------
+%%% @doc
+%%% Types and functions related to Strava gear. Gear represents
+%%% equipment used during an activity.
+%%% @reference http://strava.github.io/api/v3/gear/
+%%% @end
+%%% For copyright notice see LICENSE.
+%%%-------------------------------------------------------------------
 -module(strava_gear).
 
 %% Types
@@ -21,7 +29,8 @@
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Retrieve gear.
+%% Retrieve gear. The requesting athlete must own the gear. At this
+%% time it is not possible to view just anyone’s gear type and usage.
 %% @end
 %%--------------------------------------------------------------------
 -spec gear(strava_auth:token(), binary()) -> t().
