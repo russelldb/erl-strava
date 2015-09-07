@@ -1,3 +1,10 @@
+%%%-------------------------------------------------------------------
+%%% @doc
+%%% Types and functions related to Strava activities.
+%%% @reference http://strava.github.io/api/v3/activities/.
+%%% @end
+%%% For copyright notice see LICENSE.
+%%%-------------------------------------------------------------------
 -module(strava_activity).
 
 %% Types
@@ -68,7 +75,11 @@
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Retrieve an activity.
+%% Retrieve an activity. Returns a detailed representation if the
+%% activity is owned by the requesting athlete. Returns a summary
+%% representation for all other requests.
+%%
+%% @reference http://strava.github.io/api/v3/activities/#get-details
 %% @end
 %%--------------------------------------------------------------------
 -spec activity(strava_auth:token(), integer()) -> t().
@@ -80,7 +91,14 @@ activity(Token, Id) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List athlete activities.
+%% List athlete activities. Returns a list of activities for the
+%% authenticated user. Activities are in summary representations,
+%% sorted newest first.
+%%
+%% @see athletes/3
+%% @see athletes_after/2
+%% @see athletes_before/2
+%% @reference http://strava.github.io/api/v3/activities/#get-activities
 %% @end
 %%--------------------------------------------------------------------
 -spec athletes(strava_auth:token()) -> [t()].
@@ -90,7 +108,8 @@ athletes(Token) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List athlete activities.
+%% List athlete activities. Variant of `athlete/1' function with
+%% pagination.
 %% @end
 %%--------------------------------------------------------------------
 -spec athletes(strava_auth:token(), pos_integer(), pos_integer()) -> [t()].
@@ -101,7 +120,9 @@ athletes(Token, Page, PerPage) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List athlete activities.
+%% List athlete activities. Only activities whose `start_date' is
+%% after the specified POSIX timestamp will be returned. Activities
+%% will be sorted oldest first.
 %% @end
 %%--------------------------------------------------------------------
 -spec athletes_after(strava_auth:token(), integer()) -> [t()].
@@ -111,7 +132,8 @@ athletes_after(Token, Time) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List athlete activities.
+%% List athlete activities. Only activities whose `start_date' is
+%% before the specified POSIX timestamp will be returned.
 %% @end
 %%--------------------------------------------------------------------
 -spec athletes_before(strava_auth:token(), integer()) -> [t()].
@@ -121,7 +143,11 @@ athletes_before(Token, Time) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Create an activity.
+%% Create an activity. This function is for creating manually entered
+%% activities. For the list of relevant fields of `Activity' see
+%% Strava documentation. `Token' must have at least `write' scope.
+%%
+%% @reference http://strava.github.io/api/v3/activities/#create
 %% @end
 %%--------------------------------------------------------------------
 -spec create(strava_auth:token(), t()) -> t().
@@ -155,7 +181,10 @@ create(Token, Activity) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Delete an activity.
+%% Delete an activity. The provided auth `Token' must of at least
+%% `write' scope.
+%%
+%% @reference http://strava.github.io/api/v3/activities/#delete
 %% @end
 %%--------------------------------------------------------------------
 -spec delete(strava_auth:token(), integer()) -> ok.
@@ -167,7 +196,12 @@ delete(Token, Id) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List friends’ activities.
+%% List friends' activities. List the recent activities performed by
+%% the current athlete and those they are following.
+%%
+%% @see friends/3
+%% @see friends_before/2
+%% @reference http://strava.github.io/api/v3/activities/#get-feed
 %% @end
 %%--------------------------------------------------------------------
 -spec friends(strava_auth:token()) -> [t()].
@@ -177,7 +211,7 @@ friends(Token) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List friends’ activities.
+%% List friends’ activities. With pagination.
 %% @end
 %%--------------------------------------------------------------------
 -spec friends(strava_auth:token(), pos_integer(), pos_integer()) -> [t()].
@@ -188,7 +222,8 @@ friends(Token, Page, PerPage) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List friends’ activities.
+%% List friends’ activities. Only activities whose `start_date' is
+%% before the specified POSIX timestamp will be returned.
 %% @end
 %%--------------------------------------------------------------------
 -spec friends_before(strava_auth:token(), integer()) -> [t()].
@@ -198,7 +233,10 @@ friends_before(Token, Time) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List activity laps.
+%% List activity laps. Will return all laps for an activity.
+%%
+%% @see laps/4
+%% @reference http://strava.github.io/api/v3/activities/#laps
 %% @end
 %%--------------------------------------------------------------------
 -spec laps(strava_auth:token(), integer()) -> [lap()].
@@ -208,7 +246,7 @@ laps(Token, Id) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List activity laps.
+%% List activity laps. With pagination.
 %% @end
 %%--------------------------------------------------------------------
 -spec laps(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> [lap()].
@@ -219,7 +257,11 @@ laps(Token, Id, Page, PerPage) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List related activities.
+%% List related activities. Returns the activities that were matched
+%% as "with this group".
+%%
+%% @see related/4
+%% @reference http://strava.github.io/api/v3/activities/#get-related
 %% @end
 %%--------------------------------------------------------------------
 -spec related(strava_auth:token(), integer()) -> [t()].
@@ -229,7 +271,7 @@ related(Token, Id) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List related activities.
+%% List related activities. With pagination.
 %% @end
 %%--------------------------------------------------------------------
 -spec related(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> [t()].
@@ -240,7 +282,11 @@ related(Token, Id, Page, PerPage) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Update an activity.
+%% Update an activity. The auth `Token' must have at least `write'
+%% scope. For the list of relevant fields of `Activity' see Strava
+%% documentation.
+%%
+%% @reference http://strava.github.io/api/v3/activities/#put-updates
 %% @end
 %%--------------------------------------------------------------------
 -spec update(strava_auth:token(), t()) -> t().
@@ -267,7 +313,10 @@ update(Token, Activity) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List activity zones.
+%% List activity zones. Heartrate and power zone distribution of the
+%% activity. The `Token' must be from a premium user.
+%%
+%% @reference http://strava.github.io/api/v3/activities/#zones
 %% @end
 %%--------------------------------------------------------------------
 -spec zones(strava_auth:token(), integer()) -> [zones()].
@@ -284,6 +333,9 @@ zones(Token, Id) ->
 %%--------------------------------------------------------------------
 %% @doc
 %% List activity comments.
+%%
+%% @see comments/4
+%% @reference http://strava.github.io/api/v3/comments/#list
 %% @end
 %%--------------------------------------------------------------------
 -spec comments(strava_auth:token(), integer()) -> [comment()].
@@ -293,7 +345,7 @@ comments(Token, Id) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List activity comments.
+%% List activity comments. With pagination.
 %% @end
 %%--------------------------------------------------------------------
 -spec comments(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> [comment()].
@@ -309,6 +361,9 @@ comments(Token, Id, Page, PerPage) ->
 %%--------------------------------------------------------------------
 %% @doc
 %% List activity kudoers.
+%%
+%% @see kudoers/4
+%% @reference http://strava.github.io/api/v3/kudos/#list
 %% @end
 %%--------------------------------------------------------------------
 -spec kudoers(strava_auth:token(), integer()) -> [strava_athlete:t()].
@@ -318,7 +373,7 @@ kudoers(Token, Id) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List activity kudoers.
+%% List activity kudoers. With pagination.
 %% @end
 %%--------------------------------------------------------------------
 -spec kudoers(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> [strava_athlete:t()].
@@ -334,6 +389,9 @@ kudoers(Token, Id, Page, PerPage) ->
 %%--------------------------------------------------------------------
 %% @doc
 %% List photos.
+%%
+%% @see photos/4
+%% @reference http://strava.github.io/api/v3/photos/#list
 %% @end
 %%--------------------------------------------------------------------
 -spec photos(strava_auth:token(), integer()) -> [photo()].
@@ -343,7 +401,7 @@ photos(Token, Id) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List photos.
+%% List photos. With pagination.
 %% @end
 %%--------------------------------------------------------------------
 -spec photos(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> [photo()].
@@ -370,7 +428,7 @@ athletes_args(Token, Args) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List friends’ activities.
+%% List friends' activities.
 %% @end
 %%--------------------------------------------------------------------
 -spec friends_args(strava_auth:token(), map()) -> [t()].
