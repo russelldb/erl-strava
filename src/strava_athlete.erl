@@ -1,3 +1,10 @@
+%%%-------------------------------------------------------------------
+%%% @doc
+%%% Types and functions related to Strava athletes.
+%%% @reference http://strava.github.io/api/v3/athlete/
+%%% @end
+%%% For copyright notice see LICENSE.
+%%%-------------------------------------------------------------------
 -module(strava_athlete).
 
 %% Types
@@ -32,7 +39,10 @@
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Retrieve current athlete.
+%% Retrieve current athlete. Information about the currently
+%% authenticated athlete.
+%%
+%% @reference http://strava.github.io/api/v3/athlete/#get-details
 %% @end
 %%--------------------------------------------------------------------
 -spec athlete(strava_auth:token()) -> t().
@@ -42,7 +52,9 @@ athlete(Token) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Retrieve another athlete.
+%% Retrieve another athlete. Information about any athlete on Strava.
+%%
+%% @reference http://strava.github.io/api/v3/athlete/#get-another-details
 %% @end
 %%--------------------------------------------------------------------
 -spec athlete(strava_auth:token(), integer()) -> t().
@@ -58,7 +70,12 @@ athlete(Token, Id) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List athlete K/QOMs/CRs.
+%% List athlete K/QOMs/CRs. Returns an array of segment efforts
+%% representing overall KOMs/QOMs and course records held by the given
+%% athlete. Results are sorted by date, newest first.
+%%
+%% @see koms/4
+%% @reference http://strava.github.io/api/v3/athlete/#koms
 %% @end
 %%--------------------------------------------------------------------
 -spec koms(strava_auth:token(), integer()) -> [strava_segment_effort:t()].
@@ -68,7 +85,7 @@ koms(Token, Id) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List athlete K/QOMs/CRs.
+%% List athlete K/QOMs/CRs. With pagination.
 %% @end
 %%--------------------------------------------------------------------
 -spec koms(strava_auth:token(), integer(), pos_integer(), pos_integer()) ->
@@ -80,7 +97,12 @@ koms(Token, Id, Page, PerPage) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Totals and stats.
+%% Totals and stats. Returns recent (last 4 weeks), year to date and
+%% all time stats for a given athlete. Only available for the
+%% authenticated athlete. This is the recommended function when
+%% polling for athlete upload events.
+%%
+%% @reference http://strava.github.io/api/v3/athlete/#stats
 %% @end
 %%--------------------------------------------------------------------
 -spec stats(strava_auth:token(), integer()) -> stats().
@@ -92,7 +114,11 @@ stats(Token, Id) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Update current athlete.
+%% Update current athlete. The auth `Token' must have at least `write'
+%% scope. For the list of relevant fields of the `Athlete' see Strava
+%% documentation.
+%%
+%% @reference http://strava.github.io/api/v3/athlete/#update
 %% @end
 %%--------------------------------------------------------------------
 -spec update(strava_auth:token(), t()) -> t().
@@ -110,6 +136,9 @@ update(Token, Athlete) ->
 %%--------------------------------------------------------------------
 %% @doc
 %% List current athlete friends.
+%%
+%% @see friends/3
+%% @reference http://strava.github.io/api/v3/follow/#friends
 %% @end
 %%--------------------------------------------------------------------
 -spec friends(strava_auth:token()) -> [t()].
@@ -119,7 +148,7 @@ friends(Token) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List current athlete friends.
+%% List current athlete friends. With pagination.
 %% @end
 %%--------------------------------------------------------------------
 -spec friends(strava_auth:token(), pos_integer(), pos_integer()) -> [t()].
@@ -131,6 +160,9 @@ friends(Token, Page, PerPage) ->
 %%--------------------------------------------------------------------
 %% @doc
 %% List current athlete followers.
+%%
+%% @see followers/3
+%% @reference http://strava.github.io/api/v3/follow/#followers
 %% @end
 %%--------------------------------------------------------------------
 -spec followers(strava_auth:token()) -> [t()].
@@ -151,7 +183,11 @@ followers(Token, Page, PerPage) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List athlete friends.
+%% List any athlete friends. If the indicated athlete has blocked the
+%% authenticated athlete, the result will be an empty array.
+%%
+%% @see friends/4
+%% @reference http://strava.github.io/api/v3/follow/#friends
 %% @end
 %%--------------------------------------------------------------------
 -spec friends(strava_auth:token(), integer()) -> [t()].
@@ -161,7 +197,7 @@ friends(Token, Id) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List athlete friends.
+%% List any athlete friends. With pagination.
 %% @end
 %%--------------------------------------------------------------------
 -spec friends(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> [t()].
@@ -172,7 +208,10 @@ friends(Token, Id, Page, PerPage) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List athlete followers.
+%% List any athlete followers. If the indicated athlete has blocked
+%% the authenticated athlete, the result will be an empty array.
+%%
+%% @reference http://strava.github.io/api/v3/follow/#followers
 %% @end
 %%--------------------------------------------------------------------
 -spec followers(strava_auth:token(), integer()) -> [t()].
@@ -182,7 +221,7 @@ followers(Token, Id) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List athlete followers.
+%% List any athlete followers. With pagination.
 %% @end
 %%--------------------------------------------------------------------
 -spec followers(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> [t()].
@@ -193,7 +232,11 @@ followers(Token, Id, Page, PerPage) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List both following.
+%% List both following. Retrieve the athletes who both the
+%% authenticated user and the indicated athlete are following.
+%%
+%% @see both_following/4
+%% @reference http://strava.github.io/api/v3/follow/#both
 %% @end
 %%--------------------------------------------------------------------
 -spec both_following(strava_auth:token(), integer()) -> [t()].
@@ -203,7 +246,7 @@ both_following(Token, Id) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List both following.
+%% List both following. With pagination.
 %% @end
 %%--------------------------------------------------------------------
 -spec both_following(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> [t()].
