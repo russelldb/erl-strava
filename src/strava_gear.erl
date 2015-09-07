@@ -28,5 +28,5 @@
 
 gear(Token, Id) ->
     case strava_api:read(Token, [<<"gear">>, Id]) of
-        {ok, JSON} -> strava_json:to_gear(JSON)
+        {ok, JSON} -> strava_repr:to_gear(JSON)
     end.

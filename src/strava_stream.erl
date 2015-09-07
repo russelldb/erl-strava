@@ -121,5 +121,5 @@ streams(Token, Path, Types, Options) ->
              (_K, _V, Ans) -> Ans
           end, _Ans = #{}, Options),
     case strava_api:read(Token, Path1, Options1) of
-        {ok, JSON} -> lists:map(fun strava_json:to_stream/1, JSON)
+        {ok, JSON} -> lists:map(fun strava_repr:to_stream/1, JSON)
     end.

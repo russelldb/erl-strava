@@ -72,7 +72,7 @@ activities_before(Token, Id, Time) ->
 
 announcements(Token, Id) ->
     case strava_api:read(Token, [<<"clubs">>, Id, <<"announcements">>]) of
-        {ok, JSON} -> lists:map(fun strava_json:to_club_announcement/1, JSON)
+        {ok, JSON} -> lists:map(fun strava_repr:to_club_announcement/1, JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -84,7 +84,7 @@ announcements(Token, Id) ->
 
 athletes(Token) ->
     case strava_api:read(Token, [<<"athlete">>, <<"clubs">>]) of
-        {ok, JSON} -> lists:map(fun strava_json:to_club/1, JSON)
+        {ok, JSON} -> lists:map(fun strava_repr:to_club/1, JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -96,7 +96,7 @@ athletes(Token) ->
 
 club(Token, Id) ->
     case strava_api:read(Token, [<<"clubs">>, Id]) of
-        {ok, JSON} -> strava_json:to_club(JSON)
+        {ok, JSON} -> strava_repr:to_club(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -108,7 +108,7 @@ club(Token, Id) ->
 
 group_events(Token, Id) ->
     case strava_api:read(Token, [<<"clubs">>, Id, <<"group_events">>]) of
-        {ok, JSON} -> lists:map(fun strava_json:to_club_group_event/1, JSON)
+        {ok, JSON} -> lists:map(fun strava_repr:to_club_group_event/1, JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -170,7 +170,7 @@ members(Token, Id, Page, PerPage) ->
 
 activities_args(Token, Id, Args) ->
     case strava_api:read(Token, [<<"clubs">>, Id, <<"activities">>], Args) of
-        {ok, JSON} -> lists:map(fun strava_json:to_activity/1, JSON)
+        {ok, JSON} -> lists:map(fun strava_repr:to_activity/1, JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -183,5 +183,5 @@ activities_args(Token, Id, Args) ->
 
 members_args(Token, Id, Args) ->
     case strava_api:read(Token, [<<"clubs">>, Id, <<"members">>], Args) of
-        {ok, JSON} -> lists:map(fun strava_json:to_athlete/1, JSON)
+        {ok, JSON} -> lists:map(fun strava_repr:to_athlete/1, JSON)
     end.

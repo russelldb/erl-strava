@@ -75,7 +75,7 @@
 
 activity(Token, Id) ->
     case strava_api:read(Token, [<<"activities">>, Id]) of
-        {ok, JSON} -> strava_json:to_activity(JSON)
+        {ok, JSON} -> strava_repr:to_activity(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -144,13 +144,13 @@ create(Token, Activity) ->
                                                         false -> 0
                                                     end};
              (type, Type, Ans) ->
-                  Ans#{<<"type">> => strava_json:from_activity_type(Type)};
+                  Ans#{<<"type">> => strava_repr:from_activity_type(Type)};
              (start_date_local, Date, Ans) ->
-                  Ans#{<<"start_date_local">> => strava_json:from_datetime(Date)};
+                  Ans#{<<"start_date_local">> => strava_repr:from_datetime(Date)};
              (_K, _V, Ans) -> Ans
           end, _Ans = #{}, Activity),
     case strava_api:create(Token, [<<"activities">>], Content) of
-        {ok, JSON} -> strava_json:to_activity(JSON)
+        {ok, JSON} -> strava_repr:to_activity(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -256,13 +256,13 @@ update(Token, Activity) ->
                      K =:= trainer;
                      K =:= description ->
                   Ans#{atom_to_binary(K, latin1) => V};
-             (type, Type, Ans) -> Ans#{<<"type">> => strava_json:from_activity_type(Type)};
+             (type, Type, Ans) -> Ans#{<<"type">> => strava_repr:from_activity_type(Type)};
              (gear_id, undefined, Ans) -> Ans#{<<"gear_id">> => <<"none">>};
              (gear_id, Int, Ans) -> Ans#{<<"gear_id">> => Int};
              (_K, _V, Ans) -> Ans
           end, _Ans = #{}, Activity),
     case strava_api:update(Token, [<<"activities">>, Id], Content) of
-        {ok, JSON} -> strava_json:to_activity(JSON)
+        {ok, JSON} -> strava_repr:to_activity(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -274,7 +274,7 @@ update(Token, Activity) ->
 
 zones(Token, Id) ->
     case strava_api:read(Token, [<<"activities">>, Id, <<"zones">>]) of
-        {ok, JSON} -> lists:map(fun strava_json:to_activity_zones/1, JSON)
+        {ok, JSON} -> lists:map(fun strava_repr:to_activity_zones/1, JSON)
     end.
 
 %%%===================================================================
@@ -365,7 +365,7 @@ photos(Token, Id, Page, PerPage) ->
 
 athletes_args(Token, Args) ->
     case strava_api:read(Token, [<<"athlete">>, <<"activities">>], Args) of
-        {ok, JSON} -> lists:map(fun strava_json:to_activity/1, JSON)
+        {ok, JSON} -> lists:map(fun strava_repr:to_activity/1, JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -377,7 +377,7 @@ athletes_args(Token, Args) ->
 
 friends_args(Token, Args) ->
     case strava_api:read(Token, [<<"activities">>, <<"following">>], Args) of
-        {ok, JSON} -> lists:map(fun strava_json:to_activity/1, JSON)
+        {ok, JSON} -> lists:map(fun strava_repr:to_activity/1, JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -389,7 +389,7 @@ friends_args(Token, Args) ->
 
 laps_args(Token, Id, Args) ->
     case strava_api:read(Token, [<<"activities">>, Id, <<"laps">>], Args) of
-        {ok, JSON} -> lists:map(fun strava_json:to_activity_lap/1, JSON)
+        {ok, JSON} -> lists:map(fun strava_repr:to_activity_lap/1, JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -401,7 +401,7 @@ laps_args(Token, Id, Args) ->
 
 related_args(Token, Id, Args) ->
     case strava_api:read(Token, [<<"activities">>, Id, <<"related">>], Args) of
-        {ok, JSON} -> lists:map(fun strava_json:to_activity/1, JSON)
+        {ok, JSON} -> lists:map(fun strava_repr:to_activity/1, JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -413,7 +413,7 @@ related_args(Token, Id, Args) ->
 
 comments_args(Token, Id, Args) ->
     case strava_api:read(Token, [<<"activities">>, Id, <<"comments">>], Args) of
-        {ok, JSON} -> lists:map(fun strava_json:to_activity_comment/1, JSON)
+        {ok, JSON} -> lists:map(fun strava_repr:to_activity_comment/1, JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -425,7 +425,7 @@ comments_args(Token, Id, Args) ->
 
 kudoers_args(Token, Id, Args) ->
     case strava_api:read(Token, [<<"activities">>, Id, <<"kudos">>], Args) of
-        {ok, JSON} -> lists:map(fun strava_json:to_athlete/1, JSON)
+        {ok, JSON} -> lists:map(fun strava_repr:to_athlete/1, JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -438,5 +438,5 @@ kudoers_args(Token, Id, Args) ->
 photos_args(Token, Id, Args) ->
     Args1 = Args#{photo_sources => true},
     case strava_api:read(Token, [<<"activities">>, Id, <<"photos">>], Args1) of
-        {ok, JSON} -> lists:map(fun strava_json:to_activity_photo/1, JSON)
+        {ok, JSON} -> lists:map(fun strava_repr:to_activity_photo/1, JSON)
     end.

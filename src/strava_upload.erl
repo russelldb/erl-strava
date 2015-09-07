@@ -70,7 +70,7 @@ file(Token, FileType, FileName, Options) ->
                     {file, {content_type(FileType), <<"gzip">>, FileName}}
             end | maps:to_list(Options1)],
     case strava_api:create(Token, [<<"uploads">>], Form) of
-        {ok, JSON} -> strava_json:to_upload_status(JSON)
+        {ok, JSON} -> strava_repr:to_upload_status(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -82,7 +82,7 @@ file(Token, FileType, FileName, Options) ->
 
 status(Token, Id) ->
     case strava_api:read(Token, [<<"uploads">>, Id]) of
-        {ok, JSON} -> strava_json:to_upload_status(JSON)
+        {ok, JSON} -> strava_repr:to_upload_status(JSON)
     end.
 
 %%%===================================================================

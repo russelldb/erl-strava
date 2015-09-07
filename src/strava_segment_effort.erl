@@ -26,5 +26,5 @@
 
 segment_effort(Token, Id) ->
     case strava_api:read(Token, [<<"segment_efforts">>, Id]) of
-        {ok, JSON} -> strava_json:to_segment_effort(JSON)
+        {ok, JSON} -> strava_repr:to_segment_effort(JSON)
     end.

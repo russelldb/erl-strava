@@ -53,7 +53,7 @@ athlete(Token, Id) ->
                _SomeId -> [<<"athletes">>, Id]
            end,
     case strava_api:read(Token, Path) of
-        {ok, JSON} -> strava_json:to_athlete(JSON)
+        {ok, JSON} -> strava_repr:to_athlete(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -87,7 +87,7 @@ koms(Token, Id, Page, PerPage) ->
 
 stats(Token, Id) ->
     case strava_api:read(Token, [<<"athletes">>, Id, <<"stats">>]) of
-        {ok, JSON} -> strava_json:to_athlete_stats(JSON)
+        {ok, JSON} -> strava_repr:to_athlete_stats(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -98,9 +98,9 @@ stats(Token, Id) ->
 -spec update(strava_auth:token(), t()) -> t().
 
 update(Token, Athlete) ->
-    Content = strava_json:from_athlete(Athlete),
+    Content = strava_repr:from_athlete(Athlete),
     case strava_api:update(Token, [<<"athlete">>], Content) of
-        {ok, JSON} -> strava_json:to_athlete(JSON)
+        {ok, JSON} -> strava_repr:to_athlete(JSON)
     end.
 
 %%%===================================================================
@@ -225,7 +225,7 @@ both_following(Token, Id, Page, PerPage) ->
 
 koms_args(Token, Id, Args) ->
     case strava_api:read(Token, [<<"athletes">>, Id, <<"koms">>], Args) of
-        {ok, JSON} -> lists:map(fun strava_json:to_segment_effort/1, JSON)
+        {ok, JSON} -> lists:map(fun strava_repr:to_segment_effort/1, JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -241,7 +241,7 @@ friends_args(Token, Id, Args) ->
                _SomeId -> [<<"athletes">>, Id, <<"friends">>]
            end,
     case strava_api:read(Token, Path, Args) of
-        {ok, JSON} -> lists:map(fun strava_json:to_athlete/1, JSON)
+        {ok, JSON} -> lists:map(fun strava_repr:to_athlete/1, JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -257,7 +257,7 @@ followers_args(Token, Id, Args) ->
                _SomeId -> [<<"athletes">>, Id, <<"followers">>]
            end,
     case strava_api:read(Token, Path, Args) of
-        {ok, JSON} -> lists:map(fun strava_json:to_athlete/1, JSON)
+        {ok, JSON} -> lists:map(fun strava_repr:to_athlete/1, JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -270,5 +270,5 @@ followers_args(Token, Id, Args) ->
 both_following_args(Token, Id, Args) ->
     Path = [<<"athletes">>, Id, <<"both-following">>],
     case strava_api:read(Token, Path, Args) of
-        {ok, JSON} -> lists:map(fun strava_json:to_athlete/1, JSON)
+        {ok, JSON} -> lists:map(fun strava_repr:to_athlete/1, JSON)
     end.

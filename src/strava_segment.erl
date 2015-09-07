@@ -88,7 +88,7 @@ explore(Token, {SWLat, SWLon}, {NELat, NELon}, Filter) ->
               fun(K, V, Ans)
                     when K =:= min_cat;
                          K =:= max_cat ->
-                      Ans#{K => strava_json:from_segment_climb_category(V)};
+                      Ans#{K => strava_repr:from_segment_climb_category(V)};
                  (activity_type, ride, Ans) -> Ans#{activity_type => <<"riding">>};
                  (activity_type, run, Ans) -> Ans#{activity_type => <<"running">>};
                  (_K, _V, Ans) -> Ans
@@ -98,7 +98,7 @@ explore(Token, {SWLat, SWLon}, {NELat, NELon}, Filter) ->
                                              [SWLat, SWLon, NELat, NELon])
                               )},
     case strava_api:read(Token, [<<"segments">>, <<"explore">>], Args1) of
-        {ok, JSON} -> lists:map(fun strava_json:to_segment/1, JSON)
+        {ok, JSON} -> lists:map(fun strava_repr:to_segment/1, JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -152,7 +152,7 @@ leaderboard(Token, Id, Filter, Page, PerPage) ->
 
 segment(Token, Id) ->
     case strava_api:read(Token, [<<"segments">>, Id]) of
-        {ok, JSON} -> strava_json:to_segment(JSON)
+        {ok, JSON} -> strava_repr:to_segment(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -198,11 +198,11 @@ efforts_args(Token, Id, Args) ->
                  (K, V, Ans)
                     when K =:= start_date_local;
                          K =:= end_date_local ->
-                      Ans#{K => strava_json:from_datetime(V)};
+                      Ans#{K => strava_repr:from_datetime(V)};
                  (_K, _V, Ans) -> Ans
               end, _Ans = #{}, Args),
     case strava_api:read(Token, [<<"segments">>, Id, <<"all_efforts">>], Args1) of
-        {ok, JSON} -> lists:map(fun strava_json:to_segment_effort/1, JSON)
+        {ok, JSON} -> lists:map(fun strava_repr:to_segment_effort/1, JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -221,13 +221,13 @@ leaderboard_args(Token, Id, Args) ->
                          K =:= club_id;
                          K =:= following ->
                       Ans#{K => V};
-                 (gender, Term, Ans) -> Ans#{gender => strava_json:from_athlete_sex(Term)};
+                 (gender, Term, Ans) -> Ans#{gender => strava_repr:from_athlete_sex(Term)};
                  (age_group, Term, Ans) -> Ans#{age_group => Term}; % TODO?
                  (weight_class, Term, Ans) -> Ans#{weight_class => Term}; % TODO?
                  (_K, _V, Ans) -> Ans
               end, _Ans = #{}, Args),
     case strava_api:read(Token, [<<"segments">>, Id, <<"leaderboard">>], Args1) of
-        {ok, JSON} -> strava_json:to_segment_leaderboard(JSON)
+        {ok, JSON} -> strava_repr:to_segment_leaderboard(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -242,5 +242,5 @@ starred_args(Token, Args) ->
                                 K =:= page orelse K =:= per_page
                         end, Args),
     case strava_api:read(Token, [<<"segments">>, <<"starred">>], Args1) of
-        {ok, JSON} -> lists:map(fun strava_json:to_segment/1, JSON)
+        {ok, JSON} -> lists:map(fun strava_repr:to_segment/1, JSON)
     end.
