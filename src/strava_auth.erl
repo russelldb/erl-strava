@@ -1,3 +1,10 @@
+%%%-------------------------------------------------------------------
+%%% @doc
+%%% Types and functions related to Strava authentication process.
+%%% @reference http://strava.github.io/api/v3/oauth/
+%%% @end
+%%% For copyright notice see LICENSE.
+%%%-------------------------------------------------------------------
 -module(strava_auth).
 
 %% Types
@@ -21,6 +28,11 @@
 
 %%--------------------------------------------------------------------
 %% @doc
+%% URL to request access on behalf of a user. Redirect the user to
+%% Strava's authorization page. No values will be provided for
+%% `Scope', `ApprovalPrompt' and `State' parameters.
+%% @see authorize_url/3
+%% @see authorize_url/5
 %% @end
 %%--------------------------------------------------------------------
 -spec authorize_url(integer(), binary()) -> binary().
@@ -30,6 +42,8 @@ authorize_url(ClientId, RedirectUri) ->
 
 %%--------------------------------------------------------------------
 %% @doc
+%% URL to request access on behalf of a user. No values will be
+%% provided for `ApprovalPrompt' and `State' parameters.
 %% @end
 %%--------------------------------------------------------------------
 -spec authorize_url(integer(), binary(), scope()) -> binary().
@@ -40,6 +54,7 @@ authorize_url(ClientId, RedirectUri, Scope) ->
 
 %%--------------------------------------------------------------------
 %% @doc
+%% URL to request access on behalf of a user.
 %% @end
 %%--------------------------------------------------------------------
 -spec authorize_url(integer(), binary(), scope(), approval_prompt(),
@@ -53,6 +68,8 @@ authorize_url(ClientId, RedirectUri, Scope, ApprovalPrompt, State) ->
 
 %%--------------------------------------------------------------------
 %% @doc
+%% Allows an application to revoke its access to an athlete's
+%% data. This will invalidate all access token, including the `Token'.
 %% @end
 %%--------------------------------------------------------------------
 -spec deauthorize(token()) -> ok.
@@ -72,6 +89,11 @@ deauthorize(Token) ->
 
 %%--------------------------------------------------------------------
 %% @doc
+%% Completing the token exchange. If the user accepts the request to
+%% share access to their Strava data, Strava will redirect back to
+%% redirect_uri with the authorization code. The application must now
+%% exchange the temporary authorization code for an access token,
+%% using its client ID and client secret.
 %% @end
 %%--------------------------------------------------------------------
 -spec token(integer(), binary(), binary()) -> {token(), strava_athlete:t()}.
