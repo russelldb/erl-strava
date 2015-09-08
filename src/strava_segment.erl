@@ -1,3 +1,10 @@
+%%%-------------------------------------------------------------------
+%%% @doc
+%%% Types and functions related to Strava segments.
+%%% @reference http://strava.github.io/api/v3/segments/
+%%% @end
+%%% For copyright notice see LICENSE.
+%%%-------------------------------------------------------------------
 -module(strava_segment).
 
 %% Types
@@ -26,7 +33,12 @@
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Retrieve an array of segment efforts.
+%% Retrieve an array of segment efforts. All efforts for the segment
+%% will be returned.
+%%
+%% @see efforts/3
+%% @see efforts/4
+%% @see efforts/5
 %% @end
 %%--------------------------------------------------------------------
 -spec efforts(strava_auth:token(), integer()) ->
@@ -37,7 +49,7 @@ efforts(Token, Id) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Retrieve an array of segment efforts.
+%% Retrieve an array of segment efforts. With pagination.
 %% @end
 %%--------------------------------------------------------------------
 -spec efforts(strava_auth:token(), integer(), pos_integer(), pos_integer()) ->
@@ -49,7 +61,8 @@ efforts(Token, Id, Page, PerPage) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Retrieve an array of segment efforts.
+%% Retrieve a filtered array of segment efforts. For filter options
+%% see Strava documentation.
 %% @end
 %%--------------------------------------------------------------------
 -spec efforts(strava_auth:token(), integer(), map()) ->
@@ -60,7 +73,7 @@ efforts(Token, Id, Filter) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Retrieve an array of segment efforts.
+%% Retrieve a filtered array of segment efforts. With pagination.
 %% @end
 %%--------------------------------------------------------------------
 -spec efforts(strava_auth:token(), integer(), map(), pos_integer(), pos_integer()) ->
@@ -72,7 +85,10 @@ efforts(Token, Id, Filter, Page, PerPage) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Segment explorer.
+%% Segment explorer. Find popular segments within a given
+%% area. Returns an array of up to 10 segment objects.
+%%
+%% @see explore/4
 %% @end
 %%--------------------------------------------------------------------
 -spec explore(strava_auth:token(), strava:latlng(), strava:latlng()) ->
@@ -83,7 +99,7 @@ explore(Token, SW, NE) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Segment explorer.
+%% Segment explorer. For filter options see Strava documentation.
 %% @end
 %%--------------------------------------------------------------------
 -spec explore(strava_auth:token(), strava:latlng(), strava:latlng(), map()) ->
@@ -110,7 +126,12 @@ explore(Token, {SWLat, SWLon}, {NELat, NELon}, Filter) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Segment leaderboards.
+%% Segment leaderboards. Leaderboards represent the ranking of
+%% athletes on specific segments.
+%%
+%% @see leaderboard/3
+%% @see leaderboard/4
+%% @see leaderboard/5
 %% @end
 %%--------------------------------------------------------------------
 -spec leaderboard(strava_auth:token(), integer()) ->
@@ -121,7 +142,7 @@ leaderboard(Token, Id) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Segment leaderboards.
+%% Segment leaderboards. With pagination.
 %% @end
 %%--------------------------------------------------------------------
 -spec leaderboard(strava_auth:token(), integer(), pos_integer(), pos_integer()) ->
@@ -133,7 +154,8 @@ leaderboard(Token, Id, Page, PerPage) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Segment leaderboards.
+%% Filtered segment leaderboards. For filter options see Strava
+%% documentation.
 %% @end
 %%--------------------------------------------------------------------
 -spec leaderboard(strava_auth:token(), integer(), map()) ->
@@ -144,7 +166,7 @@ leaderboard(Token, Id, Filter) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Segment leaderboards.
+%% Filtered segment leaderboards. With pagination.
 %% @end
 %%--------------------------------------------------------------------
 -spec leaderboard(strava_auth:token(), integer(), map(), pos_integer(), pos_integer()) ->
@@ -156,7 +178,8 @@ leaderboard(Token, Id, Filter, Page, PerPage) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Retrieve a segment.
+%% Retrieve a segment. Returns a detailed representation of the
+%% segment.
 %% @end
 %%--------------------------------------------------------------------
 -spec segment(strava_auth:token(), integer()) ->
@@ -170,7 +193,8 @@ segment(Token, Id) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List starred segments.
+%% List starred segments. Returns segments starred by the
+%% authenticated user.
 %% @end
 %%--------------------------------------------------------------------
 -spec starred(strava_auth:token()) ->
@@ -181,7 +205,7 @@ starred(Token) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List starred segments.
+%% List starred segments. With pagination.
 %% @end
 %%--------------------------------------------------------------------
 -spec starred(strava_auth:token(), pos_integer(), pos_integer()) ->
