@@ -83,7 +83,7 @@ file(Token, FileType, FileName, Options) ->
 %%--------------------------------------------------------------------
 %% @doc
 %% Check upload status. Strava recommends polling no more than once a
-%% second The mean processing time is around 8 seconds.
+%% second. The mean processing time is around 8 seconds.
 %% @end
 %%--------------------------------------------------------------------
 -spec status(strava_auth:token(), integer()) ->
