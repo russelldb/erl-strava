@@ -79,7 +79,7 @@ part(Boundary, Headers, Content) ->
 -spec content_disposition(part_name()) -> iodata().
 
 content_disposition(Name) ->
-    [<<"Content-Disposition: form-data; name=\"">>,
+    [<<"content-disposition: form-data; name=\"">>,
      strava_util:to_binary(Name), <<"\"">>].
 
 %%--------------------------------------------------------------------
@@ -113,7 +113,7 @@ headers(Name) ->
 
 headers(Name, ContentType, FileName) ->
     [content_disposition(Name, FileName), <<"\r\n">>,
-     <<"Content-Type: ">>, ContentType, <<"\r\n">>].
+     <<"content-type: ">>, ContentType, <<"\r\n">>].
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -124,7 +124,7 @@ headers(Name, ContentType, FileName) ->
 
 headers(Name, ContentType, ContentEncoding, FileName) ->
     [headers(Name, ContentType, FileName),
-     <<"Content-Encoding: ">>, ContentEncoding, <<"\r\n">>].
+     <<"content-encoding: ">>, ContentEncoding, <<"\r\n">>].
 
 %%--------------------------------------------------------------------
 %% @doc
