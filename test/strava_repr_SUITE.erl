@@ -28,7 +28,8 @@ all() ->
       test_to_athlete_2,
       test_to_athlete_stats,
       test_to_club,
-      test_to_gear_bike ].
+      test_to_gear_bike,
+      test_to_stream ].
 
 -define(test_call(Name, FunName),
         {JSON, ExpectedTerm} = load_data(Config, Name),
