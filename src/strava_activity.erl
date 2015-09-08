@@ -80,11 +80,13 @@
 %% representation for all other requests.
 %% @end
 %%--------------------------------------------------------------------
--spec activity(strava_auth:token(), integer()) -> t().
+-spec activity(strava_auth:token(), integer()) ->
+                      {ok, t()} | strava:error().
 
 activity(Token, Id) ->
     case strava_api:read(Token, [<<"activities">>, Id]) of
-        {ok, JSON} -> strava_repr:to_activity(JSON)
+        {ok, JSON} -> {ok, strava_repr:to_activity(JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -98,7 +100,7 @@ activity(Token, Id) ->
 %% @see athletes_before/2
 %% @end
 %%--------------------------------------------------------------------
--spec athletes(strava_auth:token()) -> [t()].
+-spec athletes(strava_auth:token()) -> {ok, [t()]} | strava:error().
 
 athletes(Token) ->
     athletes_args(Token, _Args = #{}).
@@ -109,7 +111,8 @@ athletes(Token) ->
 %% pagination.
 %% @end
 %%--------------------------------------------------------------------
--spec athletes(strava_auth:token(), pos_integer(), pos_integer()) -> [t()].
+-spec athletes(strava_auth:token(), pos_integer(), pos_integer()) ->
+                      {ok, [t()]} | strava:error().
 
 athletes(Token, Page, PerPage) ->
     athletes_args(Token, _Args = #{page     => Page,
@@ -122,7 +125,8 @@ athletes(Token, Page, PerPage) ->
 %% will be sorted oldest first.
 %% @end
 %%--------------------------------------------------------------------
--spec athletes_after(strava_auth:token(), integer()) -> [t()].
+-spec athletes_after(strava_auth:token(), integer()) ->
+                            {ok, [t()]} | strava:error().
 
 athletes_after(Token, Time) ->
     athletes_args(Token, _Args = #{'after' => Time}).
@@ -133,7 +137,8 @@ athletes_after(Token, Time) ->
 %% before the specified POSIX timestamp will be returned.
 %% @end
 %%--------------------------------------------------------------------
--spec athletes_before(strava_auth:token(), integer()) -> [t()].
+-spec athletes_before(strava_auth:token(), integer()) ->
+                             {ok, [t()]} | strava:error().
 
 athletes_before(Token, Time) ->
     athletes_args(Token, _Args = #{before => Time}).
@@ -145,7 +150,7 @@ athletes_before(Token, Time) ->
 %% Strava documentation. `Token' must have at least `write' scope.
 %% @end
 %%--------------------------------------------------------------------
--spec create(strava_auth:token(), t()) -> t().
+-spec create(strava_auth:token(), t()) -> {ok, t()} | strava:error().
 
 create(Token, Activity) ->
     Content =
@@ -171,7 +176,8 @@ create(Token, Activity) ->
              (_K, _V, Ans) -> Ans
           end, _Ans = #{}, Activity),
     case strava_api:create(Token, [<<"activities">>], Content) of
-        {ok, JSON} -> strava_repr:to_activity(JSON)
+        {ok, JSON} -> {ok, strava_repr:to_activity(JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -180,11 +186,12 @@ create(Token, Activity) ->
 %% `write' scope.
 %% @end
 %%--------------------------------------------------------------------
--spec delete(strava_auth:token(), integer()) -> ok.
+-spec delete(strava_auth:token(), integer()) -> ok | strava:error().
 
 delete(Token, Id) ->
     case strava_api:delete(Token, [<<"activities">>, Id]) of
-        ok -> ok
+        ok -> ok;
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -196,7 +203,7 @@ delete(Token, Id) ->
 %% @see friends_before/2
 %% @end
 %%--------------------------------------------------------------------
--spec friends(strava_auth:token()) -> [t()].
+-spec friends(strava_auth:token()) -> {ok, [t()]} | strava:error().
 
 friends(Token) ->
     friends_args(Token, _Args = #{}).
@@ -206,7 +213,8 @@ friends(Token) ->
 %% List friends’ activities. With pagination.
 %% @end
 %%--------------------------------------------------------------------
--spec friends(strava_auth:token(), pos_integer(), pos_integer()) -> [t()].
+-spec friends(strava_auth:token(), pos_integer(), pos_integer()) ->
+                     {ok, [t()]} | strava:error().
 
 friends(Token, Page, PerPage) ->
     friends_args(Token, _Args = #{page     => Page,
@@ -218,7 +226,8 @@ friends(Token, Page, PerPage) ->
 %% before the specified POSIX timestamp will be returned.
 %% @end
 %%--------------------------------------------------------------------
--spec friends_before(strava_auth:token(), integer()) -> [t()].
+-spec friends_before(strava_auth:token(), integer()) ->
+                            {ok, [t()]} | strava:error().
 
 friends_before(Token, Time) ->
     friends_args(Token, _Args = #{before => Time}).
@@ -230,7 +239,8 @@ friends_before(Token, Time) ->
 %% @see laps/4
 %% @end
 %%--------------------------------------------------------------------
--spec laps(strava_auth:token(), integer()) -> [lap()].
+-spec laps(strava_auth:token(), integer()) ->
+                  {ok, [lap()]} | strava:error().
 
 laps(Token, Id) ->
     laps_args(Token, Id, _Args = #{}).
@@ -240,7 +250,8 @@ laps(Token, Id) ->
 %% List activity laps. With pagination.
 %% @end
 %%--------------------------------------------------------------------
--spec laps(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> [lap()].
+-spec laps(strava_auth:token(), integer(), pos_integer(), pos_integer()) ->
+                  {ok, [lap()]} | strava:error().
 
 laps(Token, Id, Page, PerPage) ->
     laps_args(Token, Id, _Args = #{page     => Page,
@@ -254,7 +265,8 @@ laps(Token, Id, Page, PerPage) ->
 %% @see related/4
 %% @end
 %%--------------------------------------------------------------------
--spec related(strava_auth:token(), integer()) -> [t()].
+-spec related(strava_auth:token(), integer()) ->
+                     {ok, [t()]} | strava:error().
 
 related(Token, Id) ->
     related_args(Token, Id, _Args = #{}).
@@ -264,7 +276,8 @@ related(Token, Id) ->
 %% List related activities. With pagination.
 %% @end
 %%--------------------------------------------------------------------
--spec related(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> [t()].
+-spec related(strava_auth:token(), integer(), pos_integer(), pos_integer()) ->
+                     {ok, [t()]} | strava:error().
 
 related(Token, Id, Page, PerPage) ->
     related_args(Token, Id, _Args = #{page     => Page,
@@ -277,7 +290,7 @@ related(Token, Id, Page, PerPage) ->
 %% documentation.
 %% @end
 %%--------------------------------------------------------------------
--spec update(strava_auth:token(), t()) -> t().
+-spec update(strava_auth:token(), t()) -> {ok, t()} | strava:error().
 
 update(Token, Activity) ->
     #{id := Id} = Activity,
@@ -296,7 +309,8 @@ update(Token, Activity) ->
              (_K, _V, Ans) -> Ans
           end, _Ans = #{}, Activity),
     case strava_api:update(Token, [<<"activities">>, Id], Content) of
-        {ok, JSON} -> strava_repr:to_activity(JSON)
+        {ok, JSON} -> {ok, strava_repr:to_activity(JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -305,11 +319,13 @@ update(Token, Activity) ->
 %% activity. The `Token' must be from a premium user.
 %% @end
 %%--------------------------------------------------------------------
--spec zones(strava_auth:token(), integer()) -> [zones()].
+-spec zones(strava_auth:token(), integer()) ->
+                   {ok, [zones()]} | strava:error().
 
 zones(Token, Id) ->
     case strava_api:read(Token, [<<"activities">>, Id, <<"zones">>]) of
-        {ok, JSON} -> lists:map(fun strava_repr:to_activity_zones/1, JSON)
+        {ok, JSON} -> {ok, lists:map(fun strava_repr:to_activity_zones/1, JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
 
 %%%===================================================================
@@ -323,7 +339,8 @@ zones(Token, Id) ->
 %% @see comments/4
 %% @end
 %%--------------------------------------------------------------------
--spec comments(strava_auth:token(), integer()) -> [comment()].
+-spec comments(strava_auth:token(), integer()) ->
+                      {ok, [comment()]} | strava:error().
 
 comments(Token, Id) ->
     comments_args(Token, Id, _Args = #{}).
@@ -333,7 +350,8 @@ comments(Token, Id) ->
 %% List activity comments. With pagination.
 %% @end
 %%--------------------------------------------------------------------
--spec comments(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> [comment()].
+-spec comments(strava_auth:token(), integer(), pos_integer(), pos_integer()) ->
+                      {ok, [comment()]} | strava:error().
 
 comments(Token, Id, Page, PerPage) ->
     comments_args(Token, Id, _Args = #{page     => Page,
@@ -350,7 +368,8 @@ comments(Token, Id, Page, PerPage) ->
 %% @see kudoers/4
 %% @end
 %%--------------------------------------------------------------------
--spec kudoers(strava_auth:token(), integer()) -> [strava_athlete:t()].
+-spec kudoers(strava_auth:token(), integer()) ->
+                     {ok, [strava_athlete:t()]} | strava:error().
 
 kudoers(Token, Id) ->
     kudoers_args(Token, Id, _Args = #{}).
@@ -360,7 +379,8 @@ kudoers(Token, Id) ->
 %% List activity kudoers. With pagination.
 %% @end
 %%--------------------------------------------------------------------
--spec kudoers(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> [strava_athlete:t()].
+-spec kudoers(strava_auth:token(), integer(), pos_integer(), pos_integer()) ->
+                     {ok, [strava_athlete:t()]} | strava:error().
 
 kudoers(Token, Id, Page, PerPage) ->
     kudoers_args(Token, Id, _Args = #{page     => Page,
@@ -377,7 +397,8 @@ kudoers(Token, Id, Page, PerPage) ->
 %% @see photos/4
 %% @end
 %%--------------------------------------------------------------------
--spec photos(strava_auth:token(), integer()) -> [photo()].
+-spec photos(strava_auth:token(), integer()) ->
+                    {ok, [photo()]} | strava:error().
 
 photos(Token, Id) ->
     photos_args(Token, Id, _Args = #{}).
@@ -387,7 +408,8 @@ photos(Token, Id) ->
 %% List photos. With pagination.
 %% @end
 %%--------------------------------------------------------------------
--spec photos(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> [photo()].
+-spec photos(strava_auth:token(), integer(), pos_integer(), pos_integer()) ->
+                    {ok, [photo()]} | strava:error().
 
 photos(Token, Id, Page, PerPage) ->
     photos_args(Token, Id, _Args = #{page     => Page,
@@ -402,11 +424,13 @@ photos(Token, Id, Page, PerPage) ->
 %% List athlete activities.
 %% @end
 %%--------------------------------------------------------------------
--spec athletes_args(strava_auth:token(), map()) -> [t()].
+-spec athletes_args(strava_auth:token(), map()) ->
+                           {ok, [t()]} | strava:error().
 
 athletes_args(Token, Args) ->
     case strava_api:read(Token, [<<"athlete">>, <<"activities">>], Args) of
-        {ok, JSON} -> lists:map(fun strava_repr:to_activity/1, JSON)
+        {ok, JSON} -> {ok, lists:map(fun strava_repr:to_activity/1, JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -414,11 +438,13 @@ athletes_args(Token, Args) ->
 %% List friends' activities.
 %% @end
 %%--------------------------------------------------------------------
--spec friends_args(strava_auth:token(), map()) -> [t()].
+-spec friends_args(strava_auth:token(), map()) ->
+                          {ok, [t()]} | strava:error().
 
 friends_args(Token, Args) ->
     case strava_api:read(Token, [<<"activities">>, <<"following">>], Args) of
-        {ok, JSON} -> lists:map(fun strava_repr:to_activity/1, JSON)
+        {ok, JSON} -> {ok, lists:map(fun strava_repr:to_activity/1, JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -426,11 +452,13 @@ friends_args(Token, Args) ->
 %% List activity laps.
 %% @end
 %%--------------------------------------------------------------------
--spec laps_args(strava_auth:token(), integer(), map()) -> [lap()].
+-spec laps_args(strava_auth:token(), integer(), map()) ->
+                       {ok, [lap()]} | strava:error().
 
 laps_args(Token, Id, Args) ->
     case strava_api:read(Token, [<<"activities">>, Id, <<"laps">>], Args) of
-        {ok, JSON} -> lists:map(fun strava_repr:to_activity_lap/1, JSON)
+        {ok, JSON} -> {ok, lists:map(fun strava_repr:to_activity_lap/1, JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -438,11 +466,13 @@ laps_args(Token, Id, Args) ->
 %% List related activities.
 %% @end
 %%--------------------------------------------------------------------
--spec related_args(strava_auth:token(), integer(), map()) -> [t()].
+-spec related_args(strava_auth:token(), integer(), map()) ->
+                          {ok, [t()]} | strava:error().
 
 related_args(Token, Id, Args) ->
     case strava_api:read(Token, [<<"activities">>, Id, <<"related">>], Args) of
-        {ok, JSON} -> lists:map(fun strava_repr:to_activity/1, JSON)
+        {ok, JSON} -> {ok, lists:map(fun strava_repr:to_activity/1, JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -450,11 +480,13 @@ related_args(Token, Id, Args) ->
 %% List activity comments.
 %% @end
 %%--------------------------------------------------------------------
--spec comments_args(strava_auth:token(), integer(), map()) -> [comment()].
+-spec comments_args(strava_auth:token(), integer(), map()) ->
+                           {ok, [comment()]} | strava:error().
 
 comments_args(Token, Id, Args) ->
     case strava_api:read(Token, [<<"activities">>, Id, <<"comments">>], Args) of
-        {ok, JSON} -> lists:map(fun strava_repr:to_activity_comment/1, JSON)
+        {ok, JSON} -> {ok, lists:map(fun strava_repr:to_activity_comment/1, JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -462,11 +494,13 @@ comments_args(Token, Id, Args) ->
 %% List activity kudoers.
 %% @end
 %%--------------------------------------------------------------------
--spec kudoers_args(strava_auth:token(), integer(), map()) -> [strava_athlete:t()].
+-spec kudoers_args(strava_auth:token(), integer(), map()) ->
+                          {ok, [strava_athlete:t()]} | strava:error().
 
 kudoers_args(Token, Id, Args) ->
     case strava_api:read(Token, [<<"activities">>, Id, <<"kudos">>], Args) of
-        {ok, JSON} -> lists:map(fun strava_repr:to_athlete/1, JSON)
+        {ok, JSON} -> {ok, lists:map(fun strava_repr:to_athlete/1, JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -474,10 +508,12 @@ kudoers_args(Token, Id, Args) ->
 %% List photos.
 %% @end
 %%--------------------------------------------------------------------
--spec photos_args(strava_auth:token(), integer(), map()) -> [photo()].
+-spec photos_args(strava_auth:token(), integer(), map()) ->
+                         {ok, [photo()]} | strava:error().
 
 photos_args(Token, Id, Args) ->
     Args1 = Args#{photo_sources => true},
     case strava_api:read(Token, [<<"activities">>, Id, <<"photos">>], Args1) of
-        {ok, JSON} -> lists:map(fun strava_repr:to_activity_photo/1, JSON)
+        {ok, JSON} -> {ok, lists:map(fun strava_repr:to_activity_photo/1, JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
