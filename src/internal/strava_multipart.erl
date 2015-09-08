@@ -52,8 +52,7 @@ form_data(Form, Boundary) ->
                   {ok, FileData} = file:read_file(FileName),
                   part(Boundary, headers(Name, ContentType, FileName), FileData);
              ({Name, Body}) ->
-                  part(Boundary, headers(Name),
-                       [strava_util:to_binary(Body), <<"\r\n">>])
+                  part(Boundary, headers(Name), strava_util:to_binary(Body))
           end, Form),
         <<"--">>, Boundary, <<"--\r\n">>])}.
 
@@ -70,7 +69,7 @@ form_data(Form, Boundary) ->
 
 part(Boundary, Headers, Content) ->
     [<<"--">>, Boundary, <<"\r\n">>,
-     Headers, <<"\r\n">>, Content].
+     Headers, <<"\r\n">>, Content, <<"\r\n">>].
 
 %%--------------------------------------------------------------------
 %% @doc
