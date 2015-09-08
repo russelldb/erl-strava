@@ -33,9 +33,11 @@
 %% correspond to the current athlete.
 %% @end
 %%--------------------------------------------------------------------
--spec segment_effort(strava_auth:token(), integer()) -> t().
+-spec segment_effort(strava_auth:token(), integer()) ->
+                            {ok, t()} | strava:error().
 
 segment_effort(Token, Id) ->
     case strava_api:read(Token, [<<"segment_efforts">>, Id]) of
-        {ok, JSON} -> strava_repr:to_segment_effort(JSON)
+        {ok, JSON} -> {ok, strava_repr:to_segment_effort(JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
