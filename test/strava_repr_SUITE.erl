@@ -15,7 +15,8 @@
          test_to_club/1,
          test_to_club_announcement/1,
          test_to_club_group_event/1,
-         test_to_gear_bike/1]).
+         test_to_gear_bike/1,
+         test_to_stream/1]).
 
 all() ->
     [ test_to_activity_2,
@@ -71,6 +72,9 @@ test_to_club_group_event(Config) ->
 
 test_to_gear_bike(Config) ->
     ?test_call(<<"gear-bike">>, to_gear).
+
+test_to_stream(Config) ->
+    ?test_call(<<"stream">>, to_stream).
 
 load_data(Config, Name) ->
     DataDir = ?config(data_dir, Config),
