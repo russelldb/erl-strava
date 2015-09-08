@@ -72,7 +72,7 @@ authorize_url(ClientId, RedirectUri, Scope, ApprovalPrompt, State) ->
 %% data. This will invalidate all access token, including the `Token'.
 %% @end
 %%--------------------------------------------------------------------
--spec deauthorize(token()) -> ok.
+-spec deauthorize(token()) -> ok | strava:error().
 
 deauthorize(Token) ->
     case strava_http:request(
@@ -84,7 +84,9 @@ deauthorize(Token) ->
            _Body = <<>>
           )
     of
-        {ok, _ResBody} -> ok
+        {ok, _ResBody} -> ok;
+        {error, ResBody} ->
+            strava_repr:to_error(jsx:decode(ResBody, [return_maps]))
     end.
 
 %%--------------------------------------------------------------------
@@ -96,7 +98,8 @@ deauthorize(Token) ->
 %% using its client ID and client secret.
 %% @end
 %%--------------------------------------------------------------------
--spec token(integer(), binary(), binary()) -> {token(), strava_athlete:t()}.
+-spec token(integer(), binary(), binary()) ->
+                   {ok, token(), strava_athlete:t()} | strava:error().
 
 token(ClientId, ClientSecret, Code) ->
     case strava_http:request(
@@ -113,7 +116,9 @@ token(ClientId, ClientSecret, Code) ->
         {ok, ResBody} ->
             #{<<"access_token">> := Token, <<"athlete">> := Athlete} =
                 jsx:decode(ResBody, [return_maps]),
-            {Token, strava_repr:to_athlete(Athlete)}
+            {ok, Token, strava_repr:to_athlete(Athlete)};
+        {error, ResBody} ->
+            strava_repr:to_error(jsx:decode(ResBody, [return_maps]))
     end.
 
 %%%===================================================================
