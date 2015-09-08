@@ -1,0 +1,12 @@
+#{ id => 10701863,
+   activity_id => 81121657,
+   resource_state => summary,
+   ref => <<"http://instagram.com/p/eAvA-tir85/">>,
+   uid => <<"540638730806542137_2865686">>,
+   caption => <<"City on a cottonbal">>,
+   type => <<"InstagramPhoto">>,
+   source => instagram,
+   uploaded_at => {{2013,09,08}, {19,39,40}},
+   created_at => {{2013,09,08}, {22,05,14}},
+   urls => #{ 100 => <<"https://instagram.com/p/zLoDM0QkD8/media?size=t">> },
+   location => {37.839333333, -122.489833333} }.
