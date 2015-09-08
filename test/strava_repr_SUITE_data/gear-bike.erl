@@ -1,0 +1,9 @@
+#{ id => <<"b105763">>,
+   primary => false,
+   name => <<"Cannondale TT">>,
+   distance => 476612.8,
+   resource_state => detailed,
+   brand_name => <<"Cannondale">>,
+   model_name => <<"Slice">>,
+   frame_type => time_trial,
+   description => <<"Best bike EVER!!">> }.
