@@ -55,8 +55,7 @@ qs(Query, Prefix) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec request(method(), headers(), url(), query()) ->
-                     {ok, pos_integer(), binary()} |
-                     {error, pos_integer(), binary()}.
+                     {ok, binary()} | {error, binary()}.
 
 request(Method, Headers, URL, Query) ->
     request(Method, Headers, URL, Query,
@@ -67,8 +66,7 @@ request(Method, Headers, URL, Query) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec request(method(), headers(), url(), query(), content_type(),
-              body()) -> {ok, pos_integer(), binary()} |
-                         {error, pos_integer(), binary()}.
+              body()) -> {ok, binary()} | {error, binary()}.
 
 request(Method, Headers, URL, Query, ContentType, Body) ->
     URL1 = strava_util:to_string([URL, qs(Query, $?)]),
@@ -88,7 +86,7 @@ request(Method, Headers, URL, Query, ContentType, Body) ->
                        strava) of
         {ok, {Status, ResBody}}
           when Status >= 200, Status =< 299 ->
-            {ok, Status, ResBody};
+            {ok, ResBody};
         {ok, {Status, ResBody}} ->
-            {error, Status, ResBody}
+            {error, ResBody}
     end.

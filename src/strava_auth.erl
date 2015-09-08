@@ -84,7 +84,7 @@ deauthorize(Token) ->
            _Body = <<>>
           )
     of
-        {ok, _Status, _ResBody} -> ok
+        {ok, _ResBody} -> ok
     end.
 
 %%--------------------------------------------------------------------
@@ -110,7 +110,7 @@ token(ClientId, ClientSecret, Code) ->
                                     code          => Code})
           )
     of
-        {ok, _Status, ResBody} ->
+        {ok, ResBody} ->
             #{<<"access_token">> := Token, <<"athlete">> := Athlete} =
                 jsx:decode(ResBody, [return_maps]),
             {Token, strava_repr:to_athlete(Athlete)}
