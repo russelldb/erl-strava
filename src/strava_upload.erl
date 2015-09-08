@@ -86,11 +86,13 @@ file(Token, FileType, FileName, Options) ->
 %% second The mean processing time is around 8 seconds.
 %% @end
 %%--------------------------------------------------------------------
--spec status(strava_auth:token(), integer()) -> status().
+-spec status(strava_auth:token(), integer()) ->
+                    {ok, status()} | strava:error().
 
 status(Token, Id) ->
     case strava_api:read(Token, [<<"uploads">>, Id]) of
-        {ok, JSON} -> strava_repr:to_upload_status(JSON)
+        {ok, JSON} -> {ok, strava_repr:to_upload_status(JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
 
 %%%===================================================================
