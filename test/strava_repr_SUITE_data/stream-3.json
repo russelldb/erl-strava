@@ -1,0 +1,12 @@
+{
+    "type": "distance",
+    "data": [
+        0.0,
+        1305.8,
+        128136.6,
+        129444.1
+    ],
+    "series_type": "distance",
+    "original_size": 512,
+    "resolution": "low"
+}
