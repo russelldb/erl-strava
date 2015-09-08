@@ -1,3 +1,9 @@
+%%%-------------------------------------------------------------------
+%%% @doc Types and functions related to Strava clubs.
+%%% @reference http://strava.github.io/api/v3/clubs/
+%%% @end
+%%% For copyright notice see LICENSE.
+%%%-------------------------------------------------------------------
 -module(strava_club).
 
 %% Types
@@ -34,7 +40,12 @@
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List club activities.
+%% List club activities. Retrieve the recent activities performed by
+%% members of a specific club. The authenticated athlete must be a
+%% member of the club.
+%%
+%% @see activities/4
+%% @see activities_before/3
 %% @end
 %%--------------------------------------------------------------------
 -spec activities(strava_auth:token(), integer()) -> [strava_activity:t()].
@@ -44,7 +55,7 @@ activities(Token, Id) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List club activities.
+%% List club activities. With pagination.
 %% @end
 %%--------------------------------------------------------------------
 -spec activities(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> [strava_activity:t()].
@@ -55,7 +66,8 @@ activities(Token, Id, Page, PerPage) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List club activities.
+%% List club activities. Only activities whose `start_date' is
+%% before the specified POSIX timestamp will be returned.
 %% @end
 %%--------------------------------------------------------------------
 -spec activities_before(strava_auth:token(), integer(), integer()) -> [strava_activity:t()].
@@ -65,7 +77,9 @@ activities_before(Token, Id, Time) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List club announcements.
+%% List club announcements. Announcements are posts sent by club
+%% admins or owners to the members of a club. Only members of private
+%% clubs can access their announcements.
 %% @end
 %%--------------------------------------------------------------------
 -spec announcements(strava_auth:token(), integer()) -> [announcement()].
@@ -77,7 +91,8 @@ announcements(Token, Id) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List athlete clubs.
+%% List athlete clubs. Fetch an array of clubs that the currently
+%% authenticated athlete is a member of.
 %% @end
 %%--------------------------------------------------------------------
 -spec athletes(strava_auth:token()) -> [t()].
@@ -89,7 +104,8 @@ athletes(Token) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Retrieve a club.
+%% Retrieve a club. Retrieve details about a specific club. The club
+%% must be public or the current athlete must be a member.
 %% @end
 %%--------------------------------------------------------------------
 -spec club(strava_auth:token(), integer()) -> t().
@@ -101,7 +117,9 @@ club(Token, Id) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List club group events.
+%% List club group events. Group events are optionally recurring
+%% events for club members. Only club members can access private club
+%% events.
 %% @end
 %%--------------------------------------------------------------------
 -spec group_events(strava_auth:token(), integer()) -> [group_event()].
@@ -113,7 +131,7 @@ group_events(Token, Id) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Join a club.
+%% Join a club. The auth `Token' must have at least `write' scope.
 %% @end
 %%--------------------------------------------------------------------
 -spec join(strava_auth:token(), integer()) -> ok.
@@ -125,7 +143,7 @@ join(Token, Id) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Leave a club.
+%% Leave a club. The auth `Token' must have at least `write' scope.
 %% @end
 %%--------------------------------------------------------------------
 -spec leave(strava_auth:token(), integer()) -> ok.
@@ -137,7 +155,8 @@ leave(Token, Id) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List club members.
+%% List club members. Retrieve summary information about members of a
+%% specific club.
 %% @end
 %%--------------------------------------------------------------------
 -spec members(strava_auth:token(), integer()) -> [strava_athlete:t()].
@@ -147,7 +166,7 @@ members(Token, Id) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% List club members.
+%% List club members. With pagination.
 %% @end
 %%--------------------------------------------------------------------
 -spec members(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> [strava_athlete:t()].
