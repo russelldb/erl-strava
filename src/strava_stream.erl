@@ -1,3 +1,11 @@
+%%%-------------------------------------------------------------------
+%%% @doc
+%%% Streams is the Strava term for the raw data associated with an
+%%% activity.
+%%% @reference http://strava.github.io/api/v3/streams/
+%%% @end
+%%% For copyright notice see LICENSE.
+%%%-------------------------------------------------------------------
 -module(strava_stream).
 
 %% Types
@@ -32,7 +40,11 @@
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Retrieve activity streams.
+%% Retrieve activity streams. Streams represent the raw data of the
+%% uploaded file. External applications may only access this
+%% information for activities owned by the authenticated athlete.
+%%
+%% @see activity/4
 %% @end
 %%--------------------------------------------------------------------
 -spec activity(strava_auth:token(), integer(), [type()]) ->
@@ -43,7 +55,7 @@ activity(Token, Id, Types) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Retrieve activity streams.
+%% Retrieve activity streams. For options see Strava documentation.
 %% @end
 %%--------------------------------------------------------------------
 -spec activity(strava_auth:token(), integer(), [type()], map()) ->
@@ -54,7 +66,10 @@ activity(Token, Id, Types, Options) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Retrieve effort streams.
+%% Retrieve effort streams. Returns a subset of the activity streams
+%% that correspond to the effort.
+%%
+%% @see effort/4
 %% @end
 %%--------------------------------------------------------------------
 -spec effort(strava_auth:token(), integer(), [type()]) ->
@@ -65,7 +80,7 @@ effort(Token, Id, Types) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Retrieve effort streams.
+%% Retrieve effort streams. For options see Strava documentation.
 %% @end
 %%--------------------------------------------------------------------
 -spec effort(strava_auth:token(), integer(), [type()], map()) ->
@@ -76,7 +91,10 @@ effort(Token, Id, Types, Options) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Retrieve segment streams.
+%% Retrieve segment streams. Only `distance', `altitude' and `latlng'
+%% stream types are available.
+%%
+%% @see segment/4
 %% @end
 %%--------------------------------------------------------------------
 -spec segment(strava_auth:token(), integer(), [type()]) ->
@@ -87,7 +105,7 @@ segment(Token, Id, Types) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Retrieve segment streams.
+%% Retrieve segment streams. For options see Strava documentation.
 %% @end
 %%--------------------------------------------------------------------
 -spec segment(strava_auth:token(), integer(), [type()], map()) ->
@@ -102,7 +120,7 @@ segment(Token, Id, Types, Options) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Retrieve segment streams.
+%% Retrieve streams.
 %% @end
 %%--------------------------------------------------------------------
 -spec streams(strava_auth:token(), strava_api:path(), [type()], map()) ->
