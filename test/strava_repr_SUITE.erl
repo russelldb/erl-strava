@@ -11,13 +11,18 @@ all() ->
     [ test_to_activity_comment,
       test_to_athlete ].
 
+-define(test_call(Name, FunName),
+        {JSON, ExpectedTerm} = load_data(Config, Name),
+        Term = strava_repr:FunName(JSON),
+        ct:pal("~p", [ExpectedTerm]),
+        ct:pal("~p", [Term]),
+        ExpectedTerm = Term).
+
 test_to_activity_comment(Config) ->
-    {JSON, Term} = load_data(Config, <<"activity_comment">>),
-    Term = strava_repr:to_activity_comment(JSON).
+    ?test_call(<<"activity_comment">>, to_activity_comment).
 
 test_to_athlete(Config) ->
-    {JSON, Term} = load_data(Config, <<"athlete">>),
-    Term = strava_repr:to_athlete(JSON).
+    ?test_call(<<"athlete">>, to_athlete).
 
 load_data(Config, Name) ->
     DataDir = ?config(data_dir, Config),
