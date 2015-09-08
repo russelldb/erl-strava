@@ -10,6 +10,8 @@
          test_to_activity_lap/1,
          test_to_activity_photo/1,
          test_to_athlete/1,
+         test_to_athlete_2/1,
+         test_to_athlete_stats/1,
          test_to_club/1,
          test_to_club_announcement/1,
          test_to_club_group_event/1,
@@ -22,6 +24,8 @@ all() ->
       test_to_activity_lap,
       test_to_activity_photo,
       test_to_athlete,
+      test_to_athlete_2,
+      test_to_athlete_stats,
       test_to_club,
       test_to_gear_bike ].
 
@@ -49,6 +53,12 @@ test_to_activity_photo(Config) ->
 
 test_to_athlete(Config) ->
     ?test_call(<<"athlete">>, to_athlete).
+
+test_to_athlete_2(Config) ->
+    ?test_call(<<"athlete-2">>, to_athlete).
+
+test_to_athlete_stats(Config) ->
+    ?test_call(<<"athlete_stats">>, to_athlete_stats).
 
 test_to_club(Config) ->
     ?test_call(<<"club">>, to_club).
