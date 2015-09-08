@@ -4,12 +4,16 @@
 
 -export([all/0]).
 
--export([test_to_activity_comment/1,
+-export([test_to_activity_2/1,
+         test_to_activity_3/1,
+         test_to_activity_comment/1,
          test_to_activity_lap/1,
          test_to_athlete/1]).
 
 all() ->
-    [ test_to_activity_comment,
+    [ test_to_activity_2,
+      test_to_activity_3,
+      test_to_activity_comment,
       test_to_activity_lap,
       test_to_athlete ].
 
@@ -19,6 +23,12 @@ all() ->
         ct:pal("~p", [ExpectedTerm]),
         ct:pal("~p", [Term]),
         ExpectedTerm = Term).
+
+test_to_activity_2(Config) ->
+    ?test_call(<<"activity-2">>, to_activity).
+
+test_to_activity_3(Config) ->
+    ?test_call(<<"activity-3">>, to_activity).
 
 test_to_activity_comment(Config) ->
     ?test_call(<<"activity_comment">>, to_activity_comment).
