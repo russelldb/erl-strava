@@ -5,10 +5,12 @@
 -export([all/0]).
 
 -export([test_to_activity_comment/1,
+         test_to_activity_lap/1,
          test_to_athlete/1]).
 
 all() ->
     [ test_to_activity_comment,
+      test_to_activity_lap,
       test_to_athlete ].
 
 -define(test_call(Name, FunName),
@@ -20,6 +22,9 @@ all() ->
 
 test_to_activity_comment(Config) ->
     ?test_call(<<"activity_comment">>, to_activity_comment).
+
+test_to_activity_lap(Config) ->
+    ?test_call(<<"activity_lap">>, to_activity_lap).
 
 test_to_athlete(Config) ->
     ?test_call(<<"athlete">>, to_athlete).
