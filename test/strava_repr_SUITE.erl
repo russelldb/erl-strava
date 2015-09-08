@@ -4,10 +4,16 @@
 
 -export([all/0]).
 
--export([test_to_athlete/1]).
+-export([test_to_activity_comment/1,
+         test_to_athlete/1]).
 
 all() ->
-    [ test_to_athlete ].
+    [ test_to_activity_comment,
+      test_to_athlete ].
+
+test_to_activity_comment(Config) ->
+    {JSON, Term} = load_data(Config, <<"activity_comment">>),
+    Term = strava_repr:to_activity_comment(JSON).
 
 test_to_athlete(Config) ->
     {JSON, Term} = load_data(Config, <<"athlete">>),
