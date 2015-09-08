@@ -2,3 +2,5 @@
 ^rebar$
 deps/
 ebin/
+test/.*\.beam
+test/logs/
