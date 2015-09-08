@@ -1,0 +1,13 @@
+#{ id => 1,
+   resource_state => detailed,
+   name => <<"Team Strava Cycling">>,
+   profile_medium => <<"http://pics.com/clubs/1/medium.jpg">>,
+   profile => <<"http://pics.com/clubs/1/large.jpg">>,
+   description => <<"From the people who brought you strava.com">>,
+   club_type => company,
+   sport_type => cycling,
+   city => <<"San Francisco">>,
+   state => <<"California">>,
+   country => <<"United States">>,
+   private => false,
+   member_count => 71 }.
