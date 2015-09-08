@@ -1,0 +1,10 @@
+#{ id => 10701864,
+   activity_id => 81121657,
+   resource_state => summary,
+   ref => <<"http://instagram.com/p/eAujwACr7w/">>,
+   uid => <<"540636722145967856_2865686">>,
+   caption => <<"Daytime Ninja">>,
+   type => <<"InstagramPhoto">>,
+   uploaded_at => {{2013,09,08}, {19,35,41}},
+   created_at => {{2013,09,08}, {22,05,14}},
+   location => {-122.487666667, 37.836} }.
