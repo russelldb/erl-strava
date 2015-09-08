@@ -35,7 +35,8 @@
 %% Retrieve activity streams.
 %% @end
 %%--------------------------------------------------------------------
--spec activity(strava_auth:token(), integer(), [type()]) -> [t()].
+-spec activity(strava_auth:token(), integer(), [type()]) ->
+                      {ok, [t()]} | strava:error().
 
 activity(Token, Id, Types) ->
     activity(Token, Id, Types, _Options = #{}).
@@ -45,7 +46,8 @@ activity(Token, Id, Types) ->
 %% Retrieve activity streams.
 %% @end
 %%--------------------------------------------------------------------
--spec activity(strava_auth:token(), integer(), [type()], map()) -> [t()].
+-spec activity(strava_auth:token(), integer(), [type()], map()) ->
+                      {ok, [t()]} | strava:error().
 
 activity(Token, Id, Types, Options) ->
     streams(Token, [<<"activities">>, Id, <<"streams">>], Types, Options).
@@ -55,7 +57,8 @@ activity(Token, Id, Types, Options) ->
 %% Retrieve effort streams.
 %% @end
 %%--------------------------------------------------------------------
--spec effort(strava_auth:token(), integer(), [type()]) -> [t()].
+-spec effort(strava_auth:token(), integer(), [type()]) ->
+                    {ok, [t()]} | strava:error().
 
 effort(Token, Id, Types) ->
     effort(Token, Id, Types, _Options = #{}).
@@ -65,7 +68,8 @@ effort(Token, Id, Types) ->
 %% Retrieve effort streams.
 %% @end
 %%--------------------------------------------------------------------
--spec effort(strava_auth:token(), integer(), [type()], map()) -> [t()].
+-spec effort(strava_auth:token(), integer(), [type()], map()) ->
+                    {ok, [t()]} | strava:error().
 
 effort(Token, Id, Types, Options) ->
     streams(Token, [<<"segment_efforts">>, Id, <<"streams">>], Types, Options).
@@ -75,7 +79,8 @@ effort(Token, Id, Types, Options) ->
 %% Retrieve segment streams.
 %% @end
 %%--------------------------------------------------------------------
--spec segment(strava_auth:token(), integer(), [type()]) -> [t()].
+-spec segment(strava_auth:token(), integer(), [type()]) ->
+                     {ok, [t()]} | strava:error().
 
 segment(Token, Id, Types) ->
     segment(Token, Id, Types, _Options = #{}).
@@ -85,7 +90,8 @@ segment(Token, Id, Types) ->
 %% Retrieve segment streams.
 %% @end
 %%--------------------------------------------------------------------
--spec segment(strava_auth:token(), integer(), [type()], map()) -> [t()].
+-spec segment(strava_auth:token(), integer(), [type()], map()) ->
+                     {ok, [t()]} | strava:error().
 
 segment(Token, Id, Types, Options) ->
     streams(Token, [<<"segments">>, Id, <<"streams">>], Types, Options).
@@ -100,7 +106,7 @@ segment(Token, Id, Types, Options) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec streams(strava_auth:token(), strava_api:path(), [type()], map()) ->
-                     [t()].
+                     {ok, [t()]} | strava:error().
 
 streams(Token, Path, Types, Options) ->
     Path1 = Path ++
@@ -121,5 +127,6 @@ streams(Token, Path, Types, Options) ->
              (_K, _V, Ans) -> Ans
           end, _Ans = #{}, Options),
     case strava_api:read(Token, Path1, Options1) of
-        {ok, JSON} -> lists:map(fun strava_repr:to_stream/1, JSON)
+        {ok, JSON} -> {ok, lists:map(fun strava_repr:to_stream/1, JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
