@@ -29,7 +29,8 @@
 %% Retrieve an array of segment efforts.
 %% @end
 %%--------------------------------------------------------------------
--spec efforts(strava_auth:token(), integer()) -> [strava_segment_effort:t()].
+-spec efforts(strava_auth:token(), integer()) ->
+                     {ok, [strava_segment_effort:t()]} | strava:error().
 
 efforts(Token, Id) ->
     efforts_args(Token, Id, _Args = #{}).
@@ -39,7 +40,8 @@ efforts(Token, Id) ->
 %% Retrieve an array of segment efforts.
 %% @end
 %%--------------------------------------------------------------------
--spec efforts(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> [strava_segment_effort:t()].
+-spec efforts(strava_auth:token(), integer(), pos_integer(), pos_integer()) ->
+                     {ok, [strava_segment_effort:t()]} | strava:error().
 
 efforts(Token, Id, Page, PerPage) ->
     efforts_args(Token, Id, _Args = #{page     => Page,
@@ -50,7 +52,8 @@ efforts(Token, Id, Page, PerPage) ->
 %% Retrieve an array of segment efforts.
 %% @end
 %%--------------------------------------------------------------------
--spec efforts(strava_auth:token(), integer(), map()) -> [strava_segment_effort:t()].
+-spec efforts(strava_auth:token(), integer(), map()) ->
+                     {ok, [strava_segment_effort:t()]} | strava:error().
 
 efforts(Token, Id, Filter) ->
     efforts_args(Token, Id, _Args = Filter).
@@ -60,7 +63,8 @@ efforts(Token, Id, Filter) ->
 %% Retrieve an array of segment efforts.
 %% @end
 %%--------------------------------------------------------------------
--spec efforts(strava_auth:token(), integer(), map(), pos_integer(), pos_integer()) -> [strava_segment_effort:t()].
+-spec efforts(strava_auth:token(), integer(), map(), pos_integer(), pos_integer()) ->
+                     {ok, [strava_segment_effort:t()]} | strava:error().
 
 efforts(Token, Id, Filter, Page, PerPage) ->
     efforts_args(Token, Id, _Args = Filter#{page     => Page,
@@ -71,7 +75,8 @@ efforts(Token, Id, Filter, Page, PerPage) ->
 %% Segment explorer.
 %% @end
 %%--------------------------------------------------------------------
--spec explore(strava_auth:token(), strava:latlng(), strava:latlng()) -> [t()].
+-spec explore(strava_auth:token(), strava:latlng(), strava:latlng()) ->
+                     {ok, [t()]} | strava:error().
 
 explore(Token, SW, NE) ->
     explore(Token, SW, NE, _Filter = #{}).
@@ -81,7 +86,8 @@ explore(Token, SW, NE) ->
 %% Segment explorer.
 %% @end
 %%--------------------------------------------------------------------
--spec explore(strava_auth:token(), strava:latlng(), strava:latlng(), map()) -> [t()].
+-spec explore(strava_auth:token(), strava:latlng(), strava:latlng(), map()) ->
+                     {ok, [t()]} | strava:error().
 
 explore(Token, {SWLat, SWLon}, {NELat, NELon}, Filter) ->
     Args0 = maps:fold(
@@ -98,7 +104,8 @@ explore(Token, {SWLat, SWLon}, {NELat, NELon}, Filter) ->
                                              [SWLat, SWLon, NELat, NELon])
                               )},
     case strava_api:read(Token, [<<"segments">>, <<"explore">>], Args1) of
-        {ok, JSON} -> lists:map(fun strava_repr:to_segment/1, JSON)
+        {ok, JSON} -> {ok, lists:map(fun strava_repr:to_segment/1, JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -106,7 +113,8 @@ explore(Token, {SWLat, SWLon}, {NELat, NELon}, Filter) ->
 %% Segment leaderboards.
 %% @end
 %%--------------------------------------------------------------------
--spec leaderboard(strava_auth:token(), integer()) -> leaderboard().
+-spec leaderboard(strava_auth:token(), integer()) ->
+                         {ok, leaderboard()} | strava:error().
 
 leaderboard(Token, Id) ->
     leaderboard_args(Token, Id, _Args = #{}).
@@ -116,7 +124,8 @@ leaderboard(Token, Id) ->
 %% Segment leaderboards.
 %% @end
 %%--------------------------------------------------------------------
--spec leaderboard(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> leaderboard().
+-spec leaderboard(strava_auth:token(), integer(), pos_integer(), pos_integer()) ->
+                         {ok, leaderboard()} | strava:error().
 
 leaderboard(Token, Id, Page, PerPage) ->
     leaderboard_args(Token, Id, _Args = #{page =>     Page,
@@ -127,7 +136,8 @@ leaderboard(Token, Id, Page, PerPage) ->
 %% Segment leaderboards.
 %% @end
 %%--------------------------------------------------------------------
--spec leaderboard(strava_auth:token(), integer(), map()) -> leaderboard().
+-spec leaderboard(strava_auth:token(), integer(), map()) ->
+                         {ok, leaderboard()} | strava:error().
 
 leaderboard(Token, Id, Filter) ->
     leaderboard_args(Token, Id, _Args = Filter).
@@ -137,7 +147,8 @@ leaderboard(Token, Id, Filter) ->
 %% Segment leaderboards.
 %% @end
 %%--------------------------------------------------------------------
--spec leaderboard(strava_auth:token(), integer(), map(), pos_integer(), pos_integer()) -> leaderboard().
+-spec leaderboard(strava_auth:token(), integer(), map(), pos_integer(), pos_integer()) ->
+                         {ok, leaderboard()} | strava:error().
 
 leaderboard(Token, Id, Filter, Page, PerPage) ->
     leaderboard_args(Token, Id, _Args = Filter#{page     => Page,
@@ -148,11 +159,13 @@ leaderboard(Token, Id, Filter, Page, PerPage) ->
 %% Retrieve a segment.
 %% @end
 %%--------------------------------------------------------------------
--spec segment(strava_auth:token(), integer()) -> t().
+-spec segment(strava_auth:token(), integer()) ->
+                     {ok, t()} | strava:error().
 
 segment(Token, Id) ->
     case strava_api:read(Token, [<<"segments">>, Id]) of
-        {ok, JSON} -> strava_repr:to_segment(JSON)
+        {ok, JSON} -> {ok, strava_repr:to_segment(JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -160,7 +173,8 @@ segment(Token, Id) ->
 %% List starred segments.
 %% @end
 %%--------------------------------------------------------------------
--spec starred(strava_auth:token()) -> [t()].
+-spec starred(strava_auth:token()) ->
+                     {ok, [t()]} | strava:error().
 
 starred(Token) ->
     starred_args(Token, _Args = #{}).
@@ -170,7 +184,8 @@ starred(Token) ->
 %% List starred segments.
 %% @end
 %%--------------------------------------------------------------------
--spec starred(strava_auth:token(), pos_integer(), pos_integer()) -> [t()].
+-spec starred(strava_auth:token(), pos_integer(), pos_integer()) ->
+                     {ok, [t()]} | strava:error().
 
 starred(Token, Page, PerPage) ->
     starred_args(Token, _Args = #{page     => Page,
@@ -186,7 +201,7 @@ starred(Token, Page, PerPage) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec efforts_args(strava_auth:token(), integer(), map()) ->
-                          [strava_segment_effort:t()].
+                          {ok, [strava_segment_effort:t()]} | strava:error().
 
 efforts_args(Token, Id, Args) ->
     Args1 = maps:fold(
@@ -202,7 +217,8 @@ efforts_args(Token, Id, Args) ->
                  (_K, _V, Ans) -> Ans
               end, _Ans = #{}, Args),
     case strava_api:read(Token, [<<"segments">>, Id, <<"all_efforts">>], Args1) of
-        {ok, JSON} -> lists:map(fun strava_repr:to_segment_effort/1, JSON)
+        {ok, JSON} -> {ok, lists:map(fun strava_repr:to_segment_effort/1, JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -210,7 +226,8 @@ efforts_args(Token, Id, Args) ->
 %% Segment leaderboards.
 %% @end
 %%--------------------------------------------------------------------
--spec leaderboard_args(strava_auth:token(), integer(), map()) -> leaderboard().
+-spec leaderboard_args(strava_auth:token(), integer(), map()) ->
+                              {ok, leaderboard()} | strava:error().
 
 leaderboard_args(Token, Id, Args) ->
     Args1 = maps:fold(
@@ -227,7 +244,8 @@ leaderboard_args(Token, Id, Args) ->
                  (_K, _V, Ans) -> Ans
               end, _Ans = #{}, Args),
     case strava_api:read(Token, [<<"segments">>, Id, <<"leaderboard">>], Args1) of
-        {ok, JSON} -> strava_repr:to_segment_leaderboard(JSON)
+        {ok, JSON} -> {ok, strava_repr:to_segment_leaderboard(JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -235,12 +253,14 @@ leaderboard_args(Token, Id, Args) ->
 %% List starred segments.
 %% @end
 %%--------------------------------------------------------------------
--spec starred_args(strava_auth:token(), map()) -> [t()].
+-spec starred_args(strava_auth:token(), map()) ->
+                          {ok, [t()]} | strava:error().
 
 starred_args(Token, Args) ->
     Args1 = maps:filter(fun(K, _V) ->
                                 K =:= page orelse K =:= per_page
                         end, Args),
     case strava_api:read(Token, [<<"segments">>, <<"starred">>], Args1) of
-        {ok, JSON} -> lists:map(fun strava_repr:to_segment/1, JSON)
+        {ok, JSON} -> {ok, lists:map(fun strava_repr:to_segment/1, JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
