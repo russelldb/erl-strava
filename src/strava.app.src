@@ -2,6 +2,6 @@
 
 {application, strava,
  [{description, "Client library for Strava v3 API"},
-  {vsn, "0.31.0"},
+  {vsn, "0.32.0"},
   {modules, []},
   {applications, [inets, jsx, kernel, ssl, stdlib]}]}.

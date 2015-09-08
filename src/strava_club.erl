@@ -48,7 +48,8 @@
 %% @see activities_before/3
 %% @end
 %%--------------------------------------------------------------------
--spec activities(strava_auth:token(), integer()) -> [strava_activity:t()].
+-spec activities(strava_auth:token(), integer()) ->
+                        {ok, [strava_activity:t()]} | strava:error().
 
 activities(Token, Id) ->
     activities_args(Token, Id, _Args = #{}).
@@ -58,7 +59,8 @@ activities(Token, Id) ->
 %% List club activities. With pagination.
 %% @end
 %%--------------------------------------------------------------------
--spec activities(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> [strava_activity:t()].
+-spec activities(strava_auth:token(), integer(), pos_integer(), pos_integer()) ->
+                        {ok, [strava_activity:t()]} | strava:error().
 
 activities(Token, Id, Page, PerPage) ->
     activities_args(Token, Id, _Args = #{page     => Page,
@@ -70,7 +72,8 @@ activities(Token, Id, Page, PerPage) ->
 %% before the specified POSIX timestamp will be returned.
 %% @end
 %%--------------------------------------------------------------------
--spec activities_before(strava_auth:token(), integer(), integer()) -> [strava_activity:t()].
+-spec activities_before(strava_auth:token(), integer(), integer()) ->
+                               {ok, [strava_activity:t()]} | strava:error().
 
 activities_before(Token, Id, Time) ->
     activities_args(Token, Id, _Args = #{before => Time}).
@@ -82,11 +85,13 @@ activities_before(Token, Id, Time) ->
 %% clubs can access their announcements.
 %% @end
 %%--------------------------------------------------------------------
--spec announcements(strava_auth:token(), integer()) -> [announcement()].
+-spec announcements(strava_auth:token(), integer()) ->
+                           {ok, [announcement()]} | strava:error().
 
 announcements(Token, Id) ->
     case strava_api:read(Token, [<<"clubs">>, Id, <<"announcements">>]) of
-        {ok, JSON} -> lists:map(fun strava_repr:to_club_announcement/1, JSON)
+        {ok, JSON} -> {ok, lists:map(fun strava_repr:to_club_announcement/1, JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -95,11 +100,12 @@ announcements(Token, Id) ->
 %% authenticated athlete is a member of.
 %% @end
 %%--------------------------------------------------------------------
--spec athletes(strava_auth:token()) -> [t()].
+-spec athletes(strava_auth:token()) -> {ok, [t()]} | strava:error().
 
 athletes(Token) ->
     case strava_api:read(Token, [<<"athlete">>, <<"clubs">>]) of
-        {ok, JSON} -> lists:map(fun strava_repr:to_club/1, JSON)
+        {ok, JSON} -> {ok, lists:map(fun strava_repr:to_club/1, JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -108,11 +114,12 @@ athletes(Token) ->
 %% must be public or the current athlete must be a member.
 %% @end
 %%--------------------------------------------------------------------
--spec club(strava_auth:token(), integer()) -> t().
+-spec club(strava_auth:token(), integer()) -> {ok, t()} | strava:error().
 
 club(Token, Id) ->
     case strava_api:read(Token, [<<"clubs">>, Id]) of
-        {ok, JSON} -> strava_repr:to_club(JSON)
+        {ok, JSON} -> {ok, strava_repr:to_club(JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -122,11 +129,13 @@ club(Token, Id) ->
 %% events.
 %% @end
 %%--------------------------------------------------------------------
--spec group_events(strava_auth:token(), integer()) -> [group_event()].
+-spec group_events(strava_auth:token(), integer()) ->
+                          {ok, [group_event()]} | strava:error().
 
 group_events(Token, Id) ->
     case strava_api:read(Token, [<<"clubs">>, Id, <<"group_events">>]) of
-        {ok, JSON} -> lists:map(fun strava_repr:to_club_group_event/1, JSON)
+        {ok, JSON} -> {ok, lists:map(fun strava_repr:to_club_group_event/1, JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -134,11 +143,12 @@ group_events(Token, Id) ->
 %% Join a club. The auth `Token' must have at least `write' scope.
 %% @end
 %%--------------------------------------------------------------------
--spec join(strava_auth:token(), integer()) -> ok.
+-spec join(strava_auth:token(), integer()) -> ok | strava:error().
 
 join(Token, Id) ->
     case strava_api:create(Token, [<<"clubs">>, Id, <<"join">>], #{}) of
-        {ok, _JSON} -> ok
+        {ok, _JSON} -> ok;
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -146,11 +156,12 @@ join(Token, Id) ->
 %% Leave a club. The auth `Token' must have at least `write' scope.
 %% @end
 %%--------------------------------------------------------------------
--spec leave(strava_auth:token(), integer()) -> ok.
+-spec leave(strava_auth:token(), integer()) -> ok | strava:error().
 
 leave(Token, Id) ->
     case strava_api:create(Token, [<<"clubs">>, Id, <<"leave">>], #{}) of
-        {ok, _JSON} -> ok
+        {ok, _JSON} -> ok;
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -159,7 +170,8 @@ leave(Token, Id) ->
 %% specific club.
 %% @end
 %%--------------------------------------------------------------------
--spec members(strava_auth:token(), integer()) -> [strava_athlete:t()].
+-spec members(strava_auth:token(), integer()) ->
+                     {ok, [strava_athlete:t()]} | strava:error().
 
 members(Token, Id) ->
     members_args(Token, Id, _Args = #{}).
@@ -169,7 +181,8 @@ members(Token, Id) ->
 %% List club members. With pagination.
 %% @end
 %%--------------------------------------------------------------------
--spec members(strava_auth:token(), integer(), pos_integer(), pos_integer()) -> [strava_athlete:t()].
+-spec members(strava_auth:token(), integer(), pos_integer(), pos_integer()) ->
+                     {ok, [strava_athlete:t()]} | strava:error().
 
 members(Token, Id, Page, PerPage) ->
     members_args(Token, Id, _Args = #{page     => Page,
@@ -185,11 +198,12 @@ members(Token, Id, Page, PerPage) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec activities_args(strava_auth:token(), integer(), map()) ->
-                             [strava_activity:t()].
+                             {ok, [strava_activity:t()]} | strava:error().
 
 activities_args(Token, Id, Args) ->
     case strava_api:read(Token, [<<"clubs">>, Id, <<"activities">>], Args) of
-        {ok, JSON} -> lists:map(fun strava_repr:to_activity/1, JSON)
+        {ok, JSON} -> {ok, lists:map(fun strava_repr:to_activity/1, JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
 
 %%--------------------------------------------------------------------
@@ -198,9 +212,10 @@ activities_args(Token, Id, Args) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec members_args(strava_auth:token(), integer(), map()) ->
-                          [strava_athlete:t()].
+                          {ok, [strava_athlete:t()]} | strava:error().
 
 members_args(Token, Id, Args) ->
     case strava_api:read(Token, [<<"clubs">>, Id, <<"members">>], Args) of
-        {ok, JSON} -> lists:map(fun strava_repr:to_athlete/1, JSON)
+        {ok, JSON} -> {ok, lists:map(fun strava_repr:to_athlete/1, JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
