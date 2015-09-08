@@ -7,7 +7,7 @@
 -module(strava).
 
 %% Types
--export_type([latlng/0, resource_state/0]).
+-export_type([error/0, latlng/0, resource_state/0]).
 
 %% API
 -export([start/0]).
@@ -16,6 +16,7 @@
 %%% Types
 %%%===================================================================
 
+-type error() :: map().
 -type latlng() :: {number(), number()}.
 -type resource_state() :: meta | summary | detailed.
 

@@ -4,7 +4,7 @@
 -export([to_activity/1, to_activity_comment/1, to_activity_lap/1,
          to_activity_photo/1, to_activity_zones/1, to_athlete/1,
          to_athlete_stats/1, to_club/1, to_club_announcement/1,
-         to_club_group_event/1, to_gear/1, to_segment/1,
+         to_club_group_event/1, to_error/1, to_gear/1, to_segment/1,
          to_segment_climb_category/1, to_segment_effort/1,
          to_segment_leaderboard/1, to_stream/1, to_upload_status/1]).
 
@@ -459,6 +459,22 @@ to_club_type(Text)
 
 to_datetime(Text) ->
     {ok, Ans} = iso8601:parse_datetime(Text), Ans.
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_error(map()) -> strava:error().
+
+to_error(Map) ->
+    transform(
+      Map,
+      [ message,
+        {errors, {list, fun(Map1) ->
+                                transform(Map1,
+                                          [ resource, field, code ])
+                        end}} ]
+     ).
 
 %%--------------------------------------------------------------------
 %% @doc
