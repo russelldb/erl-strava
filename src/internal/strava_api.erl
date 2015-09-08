@@ -24,7 +24,7 @@
 %%--------------------------------------------------------------------
 -spec create(strava_auth:token(), path(),
              strava_http:query() | strava_multipart:t()) ->
-                    {ok, map()} | {error, pos_integer()}.
+                    {ok, map()} | {error, map()}.
 
 create(Token, Path, Content) ->
     {ContentType, Body} =
@@ -36,8 +36,7 @@ create(Token, Path, Content) ->
         end,
     Options = #{},
     case request(post, Token, Path, Options, ContentType, Body) of
-        {ok, ResBody} -> {ok, jsx:decode(ResBody, [return_maps])};
-        Error -> Error
+        {Ans, ResBody} -> {Ans, jsx:decode(ResBody, [return_maps])}
     end.
 
 %%--------------------------------------------------------------------
@@ -45,7 +44,7 @@ create(Token, Path, Content) ->
 %% DELETE
 %% @end
 %%--------------------------------------------------------------------
--spec delete(strava_auth:token(), path()) -> ok | {error, pos_integer()}.
+-spec delete(strava_auth:token(), path()) -> ok | {error, map()}.
 
 delete(Token, Path) ->
     Options = #{},
@@ -53,7 +52,7 @@ delete(Token, Path) ->
     Body = <<>>,
     case request(delete, Token, Path, Options, ContentType, Body) of
         {ok, _ResBody} -> ok;
-        Error -> Error
+        {error, ResBody} -> {error, jsx:decode(ResBody, [return_maps])}
     end.
 
 %%--------------------------------------------------------------------
@@ -61,7 +60,7 @@ delete(Token, Path) ->
 %% GET application/json
 %% @end
 %%--------------------------------------------------------------------
--spec read(strava_auth:token(), path()) -> {ok, map()} | {error, pos_integer()}.
+-spec read(strava_auth:token(), path()) -> {ok, map()} | {error, map()}.
 
 read(Token, Path) ->
     read(Token, Path, _Options = #{}).
@@ -72,14 +71,13 @@ read(Token, Path) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec read(strava_auth:token(), path(), strava_http:query()) ->
-                  {ok, map()} | {error, pos_integer()}.
+                  {ok, map()} | {error, map()}.
 
 read(Token, Path, Options) ->
     ContentType = <<>>,
     Body = <<>>,
     case request(get, Token, Path, Options, ContentType, Body) of
-        {ok, ResBody} -> {ok, jsx:decode(ResBody, [return_maps])};
-        Error -> Error
+        {Ans, ResBody} -> {Ans, jsx:decode(ResBody, [return_maps])}
     end.
 
 %%--------------------------------------------------------------------
@@ -88,15 +86,14 @@ read(Token, Path, Options) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec update(strava_auth:token(), path(), strava_http:query()) ->
-                    {ok, map()} | {error, pos_integer()}.
+                    {ok, map()} | {error, map()}.
 
 update(Token, Path, Content) ->
     Options = #{},
     ContentType = "application/x-www-form-urlencoded",
     Body = strava_http:qs(Content),
     case request(put, Token, Path, Options, ContentType, Body) of
-        {ok, ResBody} -> {ok, jsx:decode(ResBody, [return_maps])};
-        Error -> Error
+        {Ans, ResBody} -> {Ans, jsx:decode(ResBody, [return_maps])}
     end.
 
 %%%===================================================================
@@ -110,15 +107,14 @@ update(Token, Path, Content) ->
 -spec request(strava_http:method(), strava_auth:token(), path(),
               strava_http:query(), strava_http:content_type(),
               strava_http:body()) ->
-                     {ok, binary()} | {error, pos_integer()}.
+                     {ok, binary()} | {error, binary()}.
 
 request(Method, Token, Path, Options, ContentType, Body) ->
     URL = url(Path),
     Headers = [{<<"Authorization">>, [<<"Bearer ">>, Token]}],
     case strava_http:request(Method, Headers, URL, Options,
                              ContentType, Body) of
-        {ok, _Status, ResBody} -> {ok, ResBody};
-        {error, Status, _ResBody} -> {error, Status}
+        {Ans, _Status, ResBody} -> {Ans, ResBody}
     end.
 
 %%--------------------------------------------------------------------
