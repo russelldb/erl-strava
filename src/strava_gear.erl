@@ -33,9 +33,10 @@
 %% time it is not possible to view just anyone’s gear type and usage.
 %% @end
 %%--------------------------------------------------------------------
--spec gear(strava_auth:token(), binary()) -> t().
+-spec gear(strava_auth:token(), binary()) -> {ok, t()} | strava:error().
 
 gear(Token, Id) ->
     case strava_api:read(Token, [<<"gear">>, Id]) of
-        {ok, JSON} -> strava_repr:to_gear(JSON)
+        {ok, JSON} -> {ok, strava_repr:to_gear(JSON)};
+        {error, JSON} -> strava_repr:to_error(JSON)
     end.
