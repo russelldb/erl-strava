@@ -11,6 +11,8 @@
          test_to_activity_photo/1,
          test_to_athlete/1,
          test_to_club/1,
+         test_to_club_announcement/1,
+         test_to_club_group_event/1,
          test_to_gear_bike/1]).
 
 all() ->
@@ -50,6 +52,12 @@ test_to_athlete(Config) ->
 
 test_to_club(Config) ->
     ?test_call(<<"club">>, to_club).
+
+test_to_club_announcement(Config) ->
+    ?test_call(<<"club_announcement">>, to_club_announcement).
+
+test_to_club_group_event(Config) ->
+    ?test_call(<<"club_group_event">>, to_club_group_event).
 
 test_to_gear_bike(Config) ->
     ?test_call(<<"gear-bike">>, to_gear).
