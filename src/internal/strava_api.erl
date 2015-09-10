@@ -130,7 +130,14 @@ update(Token, Path, Content) ->
 headers(Token) ->
     [{<<"Authorization">>, [<<"Bearer ">>, Token]}].
 
--spec headers(strava_auth:token(), binary()) -> strava_http:headers().
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec headers(strava_auth:token(), binary() | undefined) -> strava_http:headers().
+
+headers(Token, _ETag = undefined) ->
+    headers(Token);
 
 headers(Token, ETag) ->
     [{<<"If-None-Match">>, ETag} | headers(Token)].
