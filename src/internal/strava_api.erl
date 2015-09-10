@@ -6,10 +6,14 @@
 %% API
 -export([create/3, delete/2, read/2, read/3, update/3]).
 
+%% API
+-export([convert/1, convert/2]).
+
 %%%===================================================================
 %%% Types
 %%%===================================================================
 
+-type convert_fun() :: fun() | {list, fun()}.
 -type path() :: [atom() | integer() | iodata()].
 
 %%%===================================================================
@@ -95,6 +99,45 @@ update(Token, Path, Content) ->
     case request(put, Token, Path, Options, ContentType, Body) of
         {Ans, ResBody} -> {Ans, strava_json:decode(ResBody)}
     end.
+
+%%%===================================================================
+%%% API
+%%%===================================================================
+
+%%--------------------------------------------------------------------
+%% @doc
+%% Convert result of a CRUD function from JSON representation to
+%% application's.
+%% @end
+%%--------------------------------------------------------------------
+-spec convert(ok | {error, map()}) -> ok | strava:error().
+
+convert(ok) ->
+    ok;
+
+convert({ok, _JSON}) ->
+    ok;
+
+convert({error, JSON}) ->
+    strava_repr:to_error(JSON).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% Convert result of a CRUD function from JSON representation to
+%% application's.
+%% @end
+%%--------------------------------------------------------------------
+-spec convert({ok, map()} | {error, map()}, convert_fun()) ->
+                     {ok, term()} | strava:error().
+
+convert({ok, JSON}, {list, Fun}) ->
+    {ok, lists:map(Fun, JSON)};
+
+convert({ok, JSON}, Fun) ->
+    {ok, Fun(JSON)};
+
+convert({error, JSON}, _Fun) ->
+    strava_repr:to_error(JSON).
 
 %%%===================================================================
 %%% Internal functions
