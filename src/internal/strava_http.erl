@@ -5,7 +5,7 @@
               url/0]).
 
 %% API
--export([qs/1, qs/2, request/4, request/6]).
+-export([qs/1, qs/2, request/4, request/6, status_atom/1]).
 
 -include_lib("eunit/include/eunit.hrl").
 
@@ -86,3 +86,12 @@ request(Method, Headers, URL, Query, ContentType, Body) ->
                       strava),
     ?debugVal({Status, ResHeaders, ResBody}),
     {Status, ResHeaders, ResBody}.
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec status_atom(httpc:status_code()) -> ok | error.
+
+status_atom(Status) when Status >= 200, Status =< 299 -> ok;
+status_atom(_Status) -> error.
