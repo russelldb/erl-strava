@@ -19,6 +19,8 @@
 -type convert_fun() :: fun() | {list, fun()}.
 -type etag() :: binary().
 -type path() :: [atom() | integer() | iodata()].
+-type result() :: {ok, map()} | {error, map()}.
+-type result_etag() :: {ok, etag(), map() | undefined} | {error, map()}.
 
 %%%===================================================================
 %%% API
@@ -31,8 +33,7 @@
 %% @end
 %%--------------------------------------------------------------------
 -spec create(strava_auth:token(), path(),
-             strava_http:query() | strava_multipart:t()) ->
-                    {ok, map()} | {error, map()}.
+             strava_http:query() | strava_multipart:t()) -> result().
 
 create(Token, Path, Content) ->
     {ContentType, Body} =
@@ -80,7 +81,7 @@ delete(Token, Path) ->
 %% GET application/json
 %% @end
 %%--------------------------------------------------------------------
--spec read(strava_auth:token(), path()) -> {ok, map()} | {error, map()}.
+-spec read(strava_auth:token(), path()) -> result().
 
 read(Token, Path) ->
     read(Token, Path, _Options = #{}).
@@ -91,7 +92,7 @@ read(Token, Path) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec read(strava_auth:token(), path(), strava_http:query()) ->
-                  {ok, map()} | {error, map()}.
+                  result().
 
 read(Token, Path, Options) ->
     {Status, _ResHeaders, ResBody} =
@@ -111,7 +112,7 @@ read(Token, Path, Options) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec update(strava_auth:token(), path(), strava_http:query()) ->
-                    {ok, map()} | {error, map()}.
+                    result().
 
 update(Token, Path, Content) ->
     {Status, _ResHeaders, ResBody} =
@@ -134,8 +135,7 @@ update(Token, Path, Content) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec read_etag(strava_auth:token(), etag() | undefined, path()) ->
-                       {ok, etag(), map() | undefined} |
-                       {error, map()}.
+                       result_etag().
 
 read_etag(Token, ETag, Path) ->
     read_etag(Token, ETag, Path, _Options = #{}).
@@ -145,9 +145,7 @@ read_etag(Token, ETag, Path) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec read_etag(strava_auth:token(), path(), strava_http:query(),
-                etag() | undefined) ->
-                       {ok, etag(), map() | undefined} |
-                       {error, map()}.
+                etag() | undefined) -> result_etag().
 
 read_etag(Token, ETag, Path, Options) ->
     {Status, ResHeaders, ResBody} =
@@ -196,7 +194,7 @@ convert({error, JSON}) ->
 %% application's.
 %% @end
 %%--------------------------------------------------------------------
--spec convert({ok, map()} | {error, map()}, convert_fun()) ->
+-spec convert(result(), convert_fun()) ->
                      {ok, term()} | strava:error().
 
 convert({ok, JSON}, {list, Fun}) ->
@@ -214,6 +212,9 @@ convert({error, JSON}, _Fun) ->
 %% application's.
 %% @end
 %%--------------------------------------------------------------------
+-spec convert_etag(result_etag(), convert_fun()) ->
+                          {ok, etag(), term() | undefined} | strava:error().
+
 convert_etag({ok, ETag, undefined}, _Fun) ->
     {ok, ETag, undefined};
 
