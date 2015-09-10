@@ -122,7 +122,7 @@ request(Method, Token, Path, Options, ContentType, Body) ->
 -spec url(path()) -> strava_http:url().
 
 url(Path) ->
-    [ <<"https://www.strava.com/api/v3/">>,
+    [ <<"https://www.strava.com/api/v3">>,
       lists:map(fun(Elem) ->
-                        [strava_util:to_binary(Elem), <<"/">>]
+                        [<<"/">>, strava_util:to_binary(Elem)]
                 end, Path) ].
