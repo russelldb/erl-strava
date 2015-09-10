@@ -104,6 +104,20 @@ update(Token, Path, Content) ->
 %% @doc
 %% @end
 %%--------------------------------------------------------------------
+-spec headers(strava_auth:token()) -> strava_http:headers().
+
+headers(Token) ->
+    [{<<"Authorization">>, [<<"Bearer ">>, Token]}].
+
+-spec headers(strava_auth:token(), binary()) -> strava_http:headers().
+
+headers(Token, ETag) ->
+    [{<<"If-None-Match">>, ETag} | headers(Token)].
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
 -spec request(strava_http:method(), strava_auth:token(), path(),
               strava_http:query(), strava_http:content_type(),
               strava_http:body()) ->
