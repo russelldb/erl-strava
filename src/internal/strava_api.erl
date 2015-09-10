@@ -112,8 +112,11 @@ update(Token, Path, Content) ->
 request(Method, Token, Path, Options, ContentType, Body) ->
     URL = url(Path),
     Headers = [{<<"Authorization">>, [<<"Bearer ">>, Token]}],
-    strava_http:request(Method, Headers, URL, Options,
-                        ContentType, Body).
+    case strava_http:request(Method, Headers, URL, Options,
+                             ContentType, Body) of
+        {Ans, _ResHeaders, ResBody} ->
+            {Ans, ResBody}
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc

@@ -81,12 +81,11 @@ request(Method, Headers, URL, Query, ContentType, Body) ->
               end,
     ?debugVal(Request),
     case httpc:request(Method, Request, _HTTPOptions = [],
-                       _Options = [{body_format, binary},
-                                   {full_result, false}],
+                       _Options = [{body_format, binary}],
                        strava) of
-        {ok, {Status, ResBody}}
-          when Status >= 200, Status =< 299 ->
-            {ok, ResBody};
-        {ok, {Status, ResBody}} ->
-            {error, ResBody}
+        {ok, {{_Vsn, Status, _Reason}, ResHeaders, ResBody}}
+          when Status >= 200, Status =< 299; Status =:= 304 ->
+            {ok, ResHeaders, ResBody};
+        {ok, {{_Vsn, _Status, _Reason}, ResHeaders, ResBody}} ->
+            {error, ResHeaders, ResBody}
     end.
