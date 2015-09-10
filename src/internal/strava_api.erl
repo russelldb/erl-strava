@@ -9,10 +9,14 @@
 %% API
 -export([read_etag/3, read_etag/4]).
 
+%% API
+-export([convert/1, convert/2]).
+
 %%%===================================================================
 %%% Types
 %%%===================================================================
 
+-type convert_fun() :: fun() | {list, fun()}.
 -type etag() :: binary().
 -type path() :: [atom() | integer() | iodata()].
 
@@ -47,7 +51,7 @@ create(Token, Path, Content) ->
           ContentType,
           Body
          ),
-    {strava_http:status_atom(Status), jsx:decode(ResBody, [return_maps])}.
+    {strava_http:status_atom(Status), strava_json:decode(ResBody)}.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -68,7 +72,7 @@ delete(Token, Path) ->
          ),
     case strava_http:status_atom(Status) of
         ok -> ok;
-        error -> {error, jsx:decode(ResBody, [return_maps])}
+        error -> {error, strava_json:decode(ResBody)}
     end.
 
 %%--------------------------------------------------------------------
@@ -99,7 +103,7 @@ read(Token, Path, Options) ->
           _ContentType = <<>>,
           _Body = <<>>
          ),
-    {strava_http:status_atom(Status), jsx:decode(ResBody, [return_maps])}.
+    {strava_http:status_atom(Status), strava_json:decode(ResBody)}.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -119,7 +123,7 @@ update(Token, Path, Content) ->
           _ContentType = <<"application/x-www-form-urlencoded">>,
           _Body = strava_http:qs(Content)
          ),
-    {strava_http:status_atom(Status), jsx:decode(ResBody, [return_maps])}.
+    {strava_http:status_atom(Status), strava_json:decode(ResBody)}.
 
 %%%===================================================================
 %%% API
@@ -158,12 +162,51 @@ read_etag(Token, ETag, Path, Options) ->
     case Status of
         _ when Status >= 200, Status =< 299 ->
             ETag1 = proplists:get_value("etag", ResHeaders),
-            {ok, ETag1, jsx:decode(ResBody, [return_maps])};
+            {ok, ETag1, strava_json:decode(ResBody)};
         304 ->
             {ok, ETag, undefined};
         _ ->
-            {error, jsx:decode(ResBody, [return_maps])}
+            {error, strava_json:decode(ResBody)}
     end.
+
+%%%===================================================================
+%%% API
+%%%===================================================================
+
+%%--------------------------------------------------------------------
+%% @doc
+%% Convert result of a CRUD function from JSON representation to
+%% application's.
+%% @end
+%%--------------------------------------------------------------------
+-spec convert(ok | {error, map()}) -> ok | strava:error().
+
+convert(ok) ->
+    ok;
+
+convert({ok, _JSON}) ->
+    ok;
+
+convert({error, JSON}) ->
+    strava_repr:to_error(JSON).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% Convert result of a CRUD function from JSON representation to
+%% application's.
+%% @end
+%%--------------------------------------------------------------------
+-spec convert({ok, map()} | {error, map()}, convert_fun()) ->
+                     {ok, term()} | strava:error().
+
+convert({ok, JSON}, {list, Fun}) ->
+    {ok, lists:map(Fun, JSON)};
+
+convert({ok, JSON}, Fun) ->
+    {ok, Fun(JSON)};
+
+convert({error, JSON}, _Fun) ->
+    strava_repr:to_error(JSON).
 
 %%%===================================================================
 %%% Internal functions
@@ -197,7 +240,7 @@ headers(Token, ETag) ->
 -spec url(path()) -> strava_http:url().
 
 url(Path) ->
-    [ <<"https://www.strava.com/api/v3/">>,
+    [ <<"https://www.strava.com/api/v3">>,
       lists:map(fun(Elem) ->
-                        [strava_util:to_binary(Elem), <<"/">>]
+                        [<<"/">>, strava_util:to_binary(Elem)]
                 end, Path) ].

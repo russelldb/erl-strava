@@ -37,7 +37,7 @@
                             {ok, t()} | strava:error().
 
 segment_effort(Token, Id) ->
-    case strava_api:read(Token, [<<"segment_efforts">>, Id]) of
-        {ok, JSON} -> {ok, strava_repr:to_segment_effort(JSON)};
-        {error, JSON} -> strava_repr:to_error(JSON)
-    end.
+    strava_api:convert(
+      strava_api:read(Token, [<<"segment_efforts">>, Id]),
+      fun strava_repr:to_segment_effort/1
+     ).
