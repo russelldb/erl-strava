@@ -86,7 +86,7 @@ deauthorize(Token) ->
     of
         {ok, _ResBody} -> ok;
         {error, ResBody} ->
-            strava_repr:to_error(jsx:decode(ResBody, [return_maps]))
+            strava_repr:to_error(strava_json:decode(ResBody))
     end.
 
 %%--------------------------------------------------------------------
@@ -115,10 +115,10 @@ token(ClientId, ClientSecret, Code) ->
     of
         {ok, ResBody} ->
             #{<<"access_token">> := Token, <<"athlete">> := Athlete} =
-                jsx:decode(ResBody, [return_maps]),
+                strava_json:decode(ResBody),
             {ok, Token, strava_repr:to_athlete(Athlete)};
         {error, ResBody} ->
-            strava_repr:to_error(jsx:decode(ResBody, [return_maps]))
+            strava_repr:to_error(strava_json:decode(ResBody))
     end.
 
 %%%===================================================================
