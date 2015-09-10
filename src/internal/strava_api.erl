@@ -10,7 +10,7 @@
 -export([read_etag/3, read_etag/4]).
 
 %% API
--export([convert/1, convert/2]).
+-export([convert/1, convert/2, convert_etag/2]).
 
 %%%===================================================================
 %%% Types
@@ -206,6 +206,24 @@ convert({ok, JSON}, Fun) ->
     {ok, Fun(JSON)};
 
 convert({error, JSON}, _Fun) ->
+    strava_repr:to_error(JSON).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% Convert result of an ETag read function from JSON representation to
+%% application's.
+%% @end
+%%--------------------------------------------------------------------
+convert_etag({ok, ETag, undefined}, _Fun) ->
+    {ok, ETag, undefined};
+
+convert_etag({ok, ETag, JSON}, Fun) ->
+    {ok, ETag, case Fun of
+                   {list, Fun1} -> lists:map(Fun1, JSON);
+                   Fun1 -> Fun1(JSON)
+               end};
+
+convert_etag({error, JSON}, _Fun) ->
     strava_repr:to_error(JSON).
 
 %%%===================================================================
