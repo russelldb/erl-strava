@@ -119,10 +119,10 @@ explore(Token, {SWLat, SWLon}, {NELat, NELon}, Filter) ->
                                io_lib:format("~f,~f,~f,~f",
                                              [SWLat, SWLon, NELat, NELon])
                               )},
-    case strava_api:read(Token, [<<"segments">>, <<"explore">>], Args1) of
-        {ok, JSON} -> {ok, lists:map(fun strava_repr:to_segment/1, JSON)};
-        {error, JSON} -> strava_repr:to_error(JSON)
-    end.
+    strava_api:convert(
+      strava_api:read(Token, [<<"segments">>, <<"explore">>], Args1),
+      {list, fun strava_repr:to_segment/1}
+     ).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -186,10 +186,10 @@ leaderboard(Token, Id, Filter, Page, PerPage) ->
                      {ok, t()} | strava:error().
 
 segment(Token, Id) ->
-    case strava_api:read(Token, [<<"segments">>, Id]) of
-        {ok, JSON} -> {ok, strava_repr:to_segment(JSON)};
-        {error, JSON} -> strava_repr:to_error(JSON)
-    end.
+    strava_api:convert(
+      strava_api:read(Token, [<<"segments">>, Id]),
+      fun strava_repr:to_segment/1
+     ).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -240,10 +240,10 @@ efforts_args(Token, Id, Args) ->
                       Ans#{K => strava_repr:from_datetime(V)};
                  (_K, _V, Ans) -> Ans
               end, _Ans = #{}, Args),
-    case strava_api:read(Token, [<<"segments">>, Id, <<"all_efforts">>], Args1) of
-        {ok, JSON} -> {ok, lists:map(fun strava_repr:to_segment_effort/1, JSON)};
-        {error, JSON} -> strava_repr:to_error(JSON)
-    end.
+    strava_api:convert(
+      strava_api:read(Token, [<<"segments">>, Id, <<"all_efforts">>], Args1),
+      {list, fun strava_repr:to_segment_effort/1}
+     ).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -267,10 +267,10 @@ leaderboard_args(Token, Id, Args) ->
                  (weight_class, Term, Ans) -> Ans#{weight_class => Term}; % TODO?
                  (_K, _V, Ans) -> Ans
               end, _Ans = #{}, Args),
-    case strava_api:read(Token, [<<"segments">>, Id, <<"leaderboard">>], Args1) of
-        {ok, JSON} -> {ok, strava_repr:to_segment_leaderboard(JSON)};
-        {error, JSON} -> strava_repr:to_error(JSON)
-    end.
+    strava_api:convert(
+      strava_api:read(Token, [<<"segments">>, Id, <<"leaderboard">>], Args1),
+      fun strava_repr:to_segment_leaderboard/1
+     ).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -284,7 +284,7 @@ starred_args(Token, Args) ->
     Args1 = maps:filter(fun(K, _V) ->
                                 K =:= page orelse K =:= per_page
                         end, Args),
-    case strava_api:read(Token, [<<"segments">>, <<"starred">>], Args1) of
-        {ok, JSON} -> {ok, lists:map(fun strava_repr:to_segment/1, JSON)};
-        {error, JSON} -> strava_repr:to_error(JSON)
-    end.
+    strava_api:convert(
+      strava_api:read(Token, [<<"segments">>, <<"starred">>], Args1),
+      {list, fun strava_repr:to_segment/1}
+     ).

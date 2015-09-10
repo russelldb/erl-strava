@@ -76,9 +76,10 @@ file(Token, FileType, FileName, Options) ->
                        FileType =:= 'gpx.gz' ->
                     {file, {content_type(FileType), <<"gzip">>, FileName}}
             end | maps:to_list(Options1)],
-    case strava_api:create(Token, [<<"uploads">>], Form) of
-        {ok, JSON} -> strava_repr:to_upload_status(JSON)
-    end.
+    strava_api:convert(
+      strava_api:create(Token, [<<"uploads">>], Form),
+      fun strava_repr:to_upload_status/1
+     ).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -90,10 +91,10 @@ file(Token, FileType, FileName, Options) ->
                     {ok, status()} | strava:error().
 
 status(Token, Id) ->
-    case strava_api:read(Token, [<<"uploads">>, Id]) of
-        {ok, JSON} -> {ok, strava_repr:to_upload_status(JSON)};
-        {error, JSON} -> strava_repr:to_error(JSON)
-    end.
+    strava_api:convert(
+      strava_api:read(Token, [<<"uploads">>, Id]),
+      fun strava_repr:to_upload_status/1
+     ).
 
 %%%===================================================================
 %%% Internal functions

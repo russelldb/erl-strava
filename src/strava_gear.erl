@@ -36,7 +36,7 @@
 -spec gear(strava_auth:token(), binary()) -> {ok, t()} | strava:error().
 
 gear(Token, Id) ->
-    case strava_api:read(Token, [<<"gear">>, Id]) of
-        {ok, JSON} -> {ok, strava_repr:to_gear(JSON)};
-        {error, JSON} -> strava_repr:to_error(JSON)
-    end.
+    strava_api:convert(
+      strava_api:read(Token, [<<"gear">>, Id]),
+      fun strava_repr:to_gear/1
+     ).
