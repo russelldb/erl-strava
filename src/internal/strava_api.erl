@@ -6,6 +6,9 @@
 %% API
 -export([create/3, delete/2, read/2, read/3, update/3]).
 
+%% API
+-export([read_etag/3, read_etag/4]).
+
 %%%===================================================================
 %%% Types
 %%%===================================================================
@@ -116,6 +119,50 @@ update(Token, Path, Content) ->
           _Body = strava_http:qs(Content)
          ),
     {strava_http:status_atom(Status), jsx:decode(ResBody, [return_maps])}.
+
+%%%===================================================================
+%%% API
+%%%===================================================================
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec read_etag(strava_auth:token(), path(), binary() | undefined) ->
+                       {ok, binary(), map() | undefined} |
+                       {error, map()}.
+
+read_etag(Token, Path, ETag) ->
+    read_etag(Token, Path, _Options = #{}, ETag).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec read_etag(strava_auth:token(), path(), strava_http:query(),
+                binary() | undefined) ->
+                       {ok, binary(), map() | undefined} |
+                       {error, map()}.
+
+read_etag(Token, Path, Options, ETag) ->
+    {Status, ResHeaders, ResBody} =
+        strava_http:request(
+          _Method = get,
+          _Headers = headers(Token, ETag),
+          _URL = url(Path),
+          Options,
+          _ContentType = <<>>,
+          _Body = <<>>
+         ),
+    case Status of
+        _ when Status >= 200, Status =< 299 ->
+            ETag1 = proplists:get_value("etag", ResHeaders),
+            {ok, ETag1, jsx:decode(ResBody, [return_maps])};
+        304 ->
+            {ok, ETag, undefined};
+        _ ->
+            {error, jsx:decode(ResBody, [return_maps])}
+    end.
 
 %%%===================================================================
 %%% Internal functions
