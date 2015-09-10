@@ -144,8 +144,8 @@ read_etag(Token, ETag, Path) ->
 %% @doc
 %% @end
 %%--------------------------------------------------------------------
--spec read_etag(strava_auth:token(), path(), strava_http:query(),
-                etag() | undefined) -> result_etag().
+-spec read_etag(strava_auth:token(), etag() | undefined, path(),
+                strava_http:query()) -> result_etag().
 
 read_etag(Token, ETag, Path, Options) ->
     {Status, ResHeaders, ResBody} =
