@@ -129,23 +129,23 @@ update(Token, Path, Content) ->
 %% @doc
 %% @end
 %%--------------------------------------------------------------------
--spec read_etag(strava_auth:token(), path(), binary() | undefined) ->
-                       {ok, binary(), map() | undefined} |
+-spec read_etag(strava_auth:token(), etag() | undefined, path()) ->
+                       {ok, etag(), map() | undefined} |
                        {error, map()}.
 
-read_etag(Token, Path, ETag) ->
-    read_etag(Token, Path, _Options = #{}, ETag).
+read_etag(Token, ETag, Path) ->
+    read_etag(Token, ETag, Path, _Options = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
 %% @end
 %%--------------------------------------------------------------------
 -spec read_etag(strava_auth:token(), path(), strava_http:query(),
-                binary() | undefined) ->
-                       {ok, binary(), map() | undefined} |
+                etag() | undefined) ->
+                       {ok, etag(), map() | undefined} |
                        {error, map()}.
 
-read_etag(Token, Path, Options, ETag) ->
+read_etag(Token, ETag, Path, Options) ->
     {Status, ResHeaders, ResBody} =
         strava_http:request(
           _Method = get,
