@@ -34,10 +34,16 @@ create(Token, Path, Content) ->
             Form when is_list(Form) ->
                 strava_multipart:form_data(Form)
         end,
-    Options = #{},
-    case request(post, Token, Path, Options, ContentType, Body) of
-        {Ans, ResBody} -> {Ans, jsx:decode(ResBody, [return_maps])}
-    end.
+    {Status, _ResHeaders, ResBody} =
+        strava_http:request(
+          _Method = post,
+          _Headers = headers(Token),
+          _URL = url(Path),
+          _Options = #{},
+          ContentType,
+          Body
+         ),
+    {strava_http:status_atom(Status), jsx:decode(ResBody, [return_maps])}.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -47,12 +53,18 @@ create(Token, Path, Content) ->
 -spec delete(strava_auth:token(), path()) -> ok | {error, map()}.
 
 delete(Token, Path) ->
-    Options = #{},
-    ContentType = <<>>,
-    Body = <<>>,
-    case request(delete, Token, Path, Options, ContentType, Body) of
-        {ok, _ResBody} -> ok;
-        {error, ResBody} -> {error, jsx:decode(ResBody, [return_maps])}
+    {Status, _ResHeaders, ResBody} =
+        strava_http:request(
+          _Method = delete,
+          _Headers = headers(Token),
+          _URL = url(Path),
+          _Options = #{},
+          _ContentType = <<>>,
+          _Body = <<>>
+         ),
+    case strava_http:status_atom(Status) of
+        ok -> ok;
+        error -> {error, jsx:decode(ResBody, [return_maps])}
     end.
 
 %%--------------------------------------------------------------------
@@ -74,11 +86,16 @@ read(Token, Path) ->
                   {ok, map()} | {error, map()}.
 
 read(Token, Path, Options) ->
-    ContentType = <<>>,
-    Body = <<>>,
-    case request(get, Token, Path, Options, ContentType, Body) of
-        {Ans, ResBody} -> {Ans, jsx:decode(ResBody, [return_maps])}
-    end.
+    {Status, _ResHeaders, ResBody} =
+        strava_http:request(
+          _Method = get,
+          _Headers = headers(Token),
+          _URL = url(Path),
+          Options,
+          _ContentType = <<>>,
+          _Body = <<>>
+         ),
+    {strava_http:status_atom(Status), jsx:decode(ResBody, [return_maps])}.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -89,12 +106,16 @@ read(Token, Path, Options) ->
                     {ok, map()} | {error, map()}.
 
 update(Token, Path, Content) ->
-    Options = #{},
-    ContentType = "application/x-www-form-urlencoded",
-    Body = strava_http:qs(Content),
-    case request(put, Token, Path, Options, ContentType, Body) of
-        {Ans, ResBody} -> {Ans, jsx:decode(ResBody, [return_maps])}
-    end.
+    {Status, _ResHeaders, ResBody} =
+        strava_http:request(
+          _Method = put,
+          _Headers = headers(Token),
+          _URL = url(Path),
+          _Options = #{},
+          _ContentType = <<"application/x-www-form-urlencoded">>,
+          _Body = strava_http:qs(Content)
+         ),
+    {strava_http:status_atom(Status), jsx:decode(ResBody, [return_maps])}.
 
 %%%===================================================================
 %%% Internal functions
@@ -113,28 +134,6 @@ headers(Token) ->
 
 headers(Token, ETag) ->
     [{<<"If-None-Match">>, ETag} | headers(Token)].
-
-%%--------------------------------------------------------------------
-%% @doc
-%% @end
-%%--------------------------------------------------------------------
--spec request(strava_http:method(), strava_auth:token(), path(),
-              strava_http:query(), strava_http:content_type(),
-              strava_http:body()) ->
-                     {ok, binary()} | {error, binary()}.
-
-request(Method, Token, Path, Options, ContentType, Body) ->
-    URL = url(Path),
-    Headers = [{<<"Authorization">>, [<<"Bearer ">>, Token]}],
-    case strava_http:request(Method, Headers, URL, Options,
-                             ContentType, Body) of
-        {Status, _ResHeaders, ResBody} ->
-            {case Status of
-                 _ when Status >= 200,
-                        Status =< 299 -> ok;
-                 _ -> error
-             end, ResBody}
-    end.
 
 %%--------------------------------------------------------------------
 %% @doc
