@@ -75,18 +75,18 @@ authorize_url(ClientId, RedirectUri, Scope, ApprovalPrompt, State) ->
 -spec deauthorize(token()) -> ok | strava:error().
 
 deauthorize(Token) ->
-    case strava_http:request(
-           _Method = post,
-           _Headers = [{<<"Authorization">>, [<<"Bearer ">>, Token]}],
-           _URL = url(<<"deauthorize">>),
-           _Query = #{},
-           _ContentType = <<>>,
-           _Body = <<>>
-          )
-    of
-        {ok, _ResBody} -> ok;
-        {error, ResBody} ->
-            strava_repr:to_error(strava_json:decode(ResBody))
+    {Status, _ResHeaders, ResBody} =
+        strava_http:request(
+          _Method = post,
+          _Headers = [{<<"Authorization">>, [<<"Bearer ">>, Token]}],
+          _URL = url(<<"deauthorize">>),
+          _Query = #{},
+          _ContentType = <<>>,
+          _Body = <<>>
+         ),
+    case strava_http:status_atom(Status) of
+        ok -> ok;
+        error -> strava_repr:to_error(strava_json:decode(ResBody))
     end.
 
 %%--------------------------------------------------------------------
@@ -102,23 +102,23 @@ deauthorize(Token) ->
                    {ok, token(), strava_athlete:t()} | strava:error().
 
 token(ClientId, ClientSecret, Code) ->
-    case strava_http:request(
-           _Method = post,
-           _Headers = [],
-           _URL = url(<<"token">>),
-           _Query = #{},
-           _ContentType = <<"application/x-www-form-urlencoded">>,
-           _Body = strava_http:qs(#{client_id     => ClientId,
-                                    client_secret => ClientSecret,
-                                    code          => Code})
-          )
-    of
-        {ok, ResBody} ->
-            #{<<"access_token">> := Token, <<"athlete">> := Athlete} =
-                strava_json:decode(ResBody),
-            {ok, Token, strava_repr:to_athlete(Athlete)};
-        {error, ResBody} ->
-            strava_repr:to_error(strava_json:decode(ResBody))
+    {Status, _ResHeaders, ResBody} =
+        strava_http:request(
+          _Method = post,
+          _Headers = [],
+          _URL = url(<<"token">>),
+          _Query = #{},
+          _ContentType = <<"application/x-www-form-urlencoded">>,
+          _Body = strava_http:qs(#{client_id     => ClientId,
+                                   client_secret => ClientSecret,
+                                   code          => Code})
+         ),
+    case strava_http:status_atom(Status) of
+        ok -> #{<<"access_token">> := Token,
+                <<"athlete">> := Athlete} =
+                  strava_json:decode(ResBody),
+              {ok, Token, strava_repr:to_athlete(Athlete)};
+        error -> strava_repr:to_error(strava_json:decode(ResBody))
     end.
 
 %%%===================================================================

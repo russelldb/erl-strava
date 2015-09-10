@@ -1,10 +1,13 @@
 -module(strava_api).
 
 %% Types
--export_type([path/0]).
+-export_type([etag/0, path/0]).
 
 %% API
 -export([create/3, delete/2, read/2, read/3, update/3]).
+
+%% API
+-export([read_etag/3, read_etag/4]).
 
 %% API
 -export([convert/1, convert/2]).
@@ -14,6 +17,7 @@
 %%%===================================================================
 
 -type convert_fun() :: fun() | {list, fun()}.
+-type etag() :: binary().
 -type path() :: [atom() | integer() | iodata()].
 
 %%%===================================================================
@@ -38,10 +42,16 @@ create(Token, Path, Content) ->
             Form when is_list(Form) ->
                 strava_multipart:form_data(Form)
         end,
-    Options = #{},
-    case request(post, Token, Path, Options, ContentType, Body) of
-        {Ans, ResBody} -> {Ans, strava_json:decode(ResBody)}
-    end.
+    {Status, _ResHeaders, ResBody} =
+        strava_http:request(
+          _Method = post,
+          _Headers = headers(Token),
+          _URL = url(Path),
+          _Options = #{},
+          ContentType,
+          Body
+         ),
+    {strava_http:status_atom(Status), strava_json:decode(ResBody)}.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -51,12 +61,18 @@ create(Token, Path, Content) ->
 -spec delete(strava_auth:token(), path()) -> ok | {error, map()}.
 
 delete(Token, Path) ->
-    Options = #{},
-    ContentType = <<>>,
-    Body = <<>>,
-    case request(delete, Token, Path, Options, ContentType, Body) of
-        {ok, _ResBody} -> ok;
-        {error, ResBody} -> {error, strava_json:decode(ResBody)}
+    {Status, _ResHeaders, ResBody} =
+        strava_http:request(
+          _Method = delete,
+          _Headers = headers(Token),
+          _URL = url(Path),
+          _Options = #{},
+          _ContentType = <<>>,
+          _Body = <<>>
+         ),
+    case strava_http:status_atom(Status) of
+        ok -> ok;
+        error -> {error, strava_json:decode(ResBody)}
     end.
 
 %%--------------------------------------------------------------------
@@ -78,11 +94,16 @@ read(Token, Path) ->
                   {ok, map()} | {error, map()}.
 
 read(Token, Path, Options) ->
-    ContentType = <<>>,
-    Body = <<>>,
-    case request(get, Token, Path, Options, ContentType, Body) of
-        {Ans, ResBody} -> {Ans, strava_json:decode(ResBody)}
-    end.
+    {Status, _ResHeaders, ResBody} =
+        strava_http:request(
+          _Method = get,
+          _Headers = headers(Token),
+          _URL = url(Path),
+          Options,
+          _ContentType = <<>>,
+          _Body = <<>>
+         ),
+    {strava_http:status_atom(Status), strava_json:decode(ResBody)}.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -93,11 +114,59 @@ read(Token, Path, Options) ->
                     {ok, map()} | {error, map()}.
 
 update(Token, Path, Content) ->
-    Options = #{},
-    ContentType = "application/x-www-form-urlencoded",
-    Body = strava_http:qs(Content),
-    case request(put, Token, Path, Options, ContentType, Body) of
-        {Ans, ResBody} -> {Ans, strava_json:decode(ResBody)}
+    {Status, _ResHeaders, ResBody} =
+        strava_http:request(
+          _Method = put,
+          _Headers = headers(Token),
+          _URL = url(Path),
+          _Options = #{},
+          _ContentType = <<"application/x-www-form-urlencoded">>,
+          _Body = strava_http:qs(Content)
+         ),
+    {strava_http:status_atom(Status), strava_json:decode(ResBody)}.
+
+%%%===================================================================
+%%% API
+%%%===================================================================
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec read_etag(strava_auth:token(), etag() | undefined, path()) ->
+                       {ok, etag(), map() | undefined} |
+                       {error, map()}.
+
+read_etag(Token, ETag, Path) ->
+    read_etag(Token, ETag, Path, _Options = #{}).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec read_etag(strava_auth:token(), path(), strava_http:query(),
+                etag() | undefined) ->
+                       {ok, etag(), map() | undefined} |
+                       {error, map()}.
+
+read_etag(Token, ETag, Path, Options) ->
+    {Status, ResHeaders, ResBody} =
+        strava_http:request(
+          _Method = get,
+          _Headers = headers(Token, ETag),
+          _URL = url(Path),
+          Options,
+          _ContentType = <<>>,
+          _Body = <<>>
+         ),
+    case Status of
+        _ when Status >= 200, Status =< 299 ->
+            ETag1 = proplists:get_value("etag", ResHeaders),
+            {ok, ETag1, strava_json:decode(ResBody)};
+        304 ->
+            {ok, ETag, undefined};
+        _ ->
+            {error, strava_json:decode(ResBody)}
     end.
 
 %%%===================================================================
@@ -147,16 +216,22 @@ convert({error, JSON}, _Fun) ->
 %% @doc
 %% @end
 %%--------------------------------------------------------------------
--spec request(strava_http:method(), strava_auth:token(), path(),
-              strava_http:query(), strava_http:content_type(),
-              strava_http:body()) ->
-                     {ok, binary()} | {error, binary()}.
+-spec headers(strava_auth:token()) -> strava_http:headers().
 
-request(Method, Token, Path, Options, ContentType, Body) ->
-    URL = url(Path),
-    Headers = [{<<"Authorization">>, [<<"Bearer ">>, Token]}],
-    strava_http:request(Method, Headers, URL, Options,
-                        ContentType, Body).
+headers(Token) ->
+    [{<<"Authorization">>, [<<"Bearer ">>, Token]}].
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec headers(strava_auth:token(), binary() | undefined) -> strava_http:headers().
+
+headers(Token, _ETag = undefined) ->
+    headers(Token);
+
+headers(Token, ETag) ->
+    [{<<"If-None-Match">>, ETag} | headers(Token)].
 
 %%--------------------------------------------------------------------
 %% @doc

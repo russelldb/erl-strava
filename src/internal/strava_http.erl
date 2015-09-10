@@ -5,7 +5,7 @@
               url/0]).
 
 %% API
--export([qs/1, qs/2, request/4, request/6]).
+-export([qs/1, qs/2, request/4, request/6, status_atom/1]).
 
 -include_lib("eunit/include/eunit.hrl").
 
@@ -55,7 +55,7 @@ qs(Query, Prefix) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec request(method(), headers(), url(), query()) ->
-                     {ok, binary()} | {error, binary()}.
+                     {httpc:status_code(), httpc:headers(), binary()}.
 
 request(Method, Headers, URL, Query) ->
     request(Method, Headers, URL, Query,
@@ -66,7 +66,7 @@ request(Method, Headers, URL, Query) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec request(method(), headers(), url(), query(), content_type(),
-              body()) -> {ok, binary()} | {error, binary()}.
+              body()) -> {httpc:status_code(), httpc:headers(), binary()}.
 
 request(Method, Headers, URL, Query, ContentType, Body) ->
     URL1 = strava_util:to_string([URL, qs(Query, $?)]),
@@ -80,13 +80,18 @@ request(Method, Headers, URL, Query, ContentType, Body) ->
                                    strava_util:to_binary(Body)}
               end,
     ?debugVal(Request),
-    case httpc:request(Method, Request, _HTTPOptions = [],
-                       _Options = [{body_format, binary},
-                                   {full_result, false}],
-                       strava) of
-        {ok, {Status, ResBody}}
-          when Status >= 200, Status =< 299 ->
-            {ok, ResBody};
-        {ok, {Status, ResBody}} ->
-            {error, ResBody}
-    end.
+    {ok, {{_Vsn, Status, _Reason}, ResHeaders, ResBody}} =
+        httpc:request(Method, Request, _HTTPOptions = [],
+                      _Options = [{body_format, binary}],
+                      strava),
+    ?debugVal({Status, ResHeaders, ResBody}),
+    {Status, ResHeaders, ResBody}.
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec status_atom(httpc:status_code()) -> ok | error.
+
+status_atom(Status) when Status >= 200, Status =< 299 -> ok;
+status_atom(_Status) -> error.
