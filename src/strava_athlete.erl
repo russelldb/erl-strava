@@ -107,7 +107,7 @@ koms(Token, Id, Page, PerPage) ->
 stats(Token, Id) ->
     strava_api:convert(
       strava_api:read(Token, [<<"athletes">>, Id, <<"stats">>]),
-      fun strava_repr:to_athlete_stats(JSON)
+      fun strava_repr:to_athlete_stats/1
      ).
 
 %%--------------------------------------------------------------------
@@ -305,7 +305,7 @@ followers_args(Token, Id, Args) ->
            end,
     strava_api:convert(
       strava_api:read(Token, Path, Args),
-      {list, fun fun strava_repr:to_athlete/1}
+      {list, fun strava_repr:to_athlete/1}
      ).
 
 %%--------------------------------------------------------------------
