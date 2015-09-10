@@ -84,8 +84,10 @@ deauthorize(Token) ->
            _Body = <<>>
           )
     of
-        {ok, _ResHeaders, _ResBody} -> ok;
-        {error, _ResHeaders, ResBody} ->
+        {Status, _ResHeaders, _ResBody} when Status >= 200,
+                                             Status =< 299 ->
+            ok;
+        {_Status, _ResHeaders, ResBody} ->
             strava_repr:to_error(jsx:decode(ResBody, [return_maps]))
     end.
 
@@ -113,11 +115,12 @@ token(ClientId, ClientSecret, Code) ->
                                     code          => Code})
           )
     of
-        {ok, _ResHeaders, ResBody} ->
+        {Status, _ResHeaders, ResBody} when Status >= 200,
+                                            Status =< 299 ->
             #{<<"access_token">> := Token, <<"athlete">> := Athlete} =
                 jsx:decode(ResBody, [return_maps]),
             {ok, Token, strava_repr:to_athlete(Athlete)};
-        {error, _ResHeaders, ResBody} ->
+        {_Status, _ResHeaders, ResBody} ->
             strava_repr:to_error(jsx:decode(ResBody, [return_maps]))
     end.
 

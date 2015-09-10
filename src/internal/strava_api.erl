@@ -114,8 +114,12 @@ request(Method, Token, Path, Options, ContentType, Body) ->
     Headers = [{<<"Authorization">>, [<<"Bearer ">>, Token]}],
     case strava_http:request(Method, Headers, URL, Options,
                              ContentType, Body) of
-        {Ans, _ResHeaders, ResBody} ->
-            {Ans, ResBody}
+        {Status, _ResHeaders, ResBody} ->
+            {case Status of
+                 _ when Status >= 200,
+                        Status =< 299 -> ok;
+                 _ -> error
+             end, ResBody}
     end.
 
 %%--------------------------------------------------------------------
