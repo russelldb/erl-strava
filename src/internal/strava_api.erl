@@ -1,7 +1,7 @@
 -module(strava_api).
 
 %% Types
--export_type([path/0]).
+-export_type([etag/0, path/0]).
 
 %% API
 -export([create/3, delete/2, read/2, read/3, update/3]).
@@ -13,6 +13,7 @@
 %%% Types
 %%%===================================================================
 
+-type etag() :: binary().
 -type path() :: [atom() | integer() | iodata()].
 
 %%%===================================================================
