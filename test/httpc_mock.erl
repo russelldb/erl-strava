@@ -16,7 +16,7 @@ init_per_testcase(_TestCase, Config) ->
                     _HTTPOpts, _Opts, strava) ->
                         Body = httpc_request(Method, URL),
                         ct:pal("~p ~p", [Method, URL]),
-                        {ok, {200, Body}}
+                        {ok, {{"HTTP/1.1", 200, "OK"}, [], Body}}
                 end),
     Config.
 
