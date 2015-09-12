@@ -30,5 +30,5 @@ rebar:
 shell: app
 	$(ERL) $(ERL_FLAGS)
 
-test: $(APP) $(REBAR)
+test: app
 	$(REBAR) ct
