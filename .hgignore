@@ -1,6 +1,4 @@
-.rebar/
-^rebar$
-deps/
-ebin/
+^rebar3$
+_build/
 test/.*\.beam
 test/logs/
