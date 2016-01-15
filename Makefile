@@ -1,6 +1,5 @@
 PROJ = strava
 REBAR ?= ./rebar3
-RM ?= rm -rf
 
 .PHONY: all app clean distclean shell test
 
@@ -14,8 +13,7 @@ clean: $(REBAR)
 	$(REBAR) clean
 
 distclean: clean
-	$(RM) .eunit
-	$(RM) _build
+	rm -rf .eunit/ _build/
 
 doc: $(REBAR)
 	$(REBAR) edoc
