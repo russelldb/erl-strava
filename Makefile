@@ -13,7 +13,7 @@ clean: $(REBAR)
 	$(REBAR) clean
 
 distclean: clean
-	rm -rf .eunit/ _build/
+	rm -rf .eunit/ _build/ doc/ rebar3
 
 doc: $(REBAR)
 	$(REBAR) edoc
