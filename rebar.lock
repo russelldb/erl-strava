@@ -1,0 +1,5 @@
+[{<<"calendar_ext">>,
+  {git,"https://bitbucket.org/a12n/calendar_ext.git",
+       {ref,"2ff0eea2bf9994668626cad7a9aa078917ce4664"}},
+  0},
+ {<<"jsx">>,{pkg,<<"jsx">>,<<"2.8.0">>},0}].
