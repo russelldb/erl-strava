@@ -80,7 +80,7 @@ test_to_stream(Config) ->
 load_data(Config, Name) ->
     DataDir = ?config(data_dir, Config),
     JSONPath = filename:join(DataDir, <<Name/bytes, ".json">>),
-    TermPath = filename:join(DataDir, <<Name/bytes, ".erl">>),
+    TermPath = filename:join(DataDir, <<Name/bytes, ".term">>),
     ct:pal("Loading '~s' files:~n"
            "~s~n~s", [Name, JSONPath, TermPath]),
     {ok, JSON} = file:read_file(JSONPath),
