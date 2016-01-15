@@ -1,7 +1,5 @@
 PROJ = strava
-ERL ?= erl
-ERL_FLAGS ?= -pa ebin/ -pa deps/*/ebin/ -smp
-REBAR ?= ./rebar
+REBAR ?= ./rebar3
 RM ?= rm -rf
 
 .PHONY: all app clean distclean shell test
@@ -16,19 +14,19 @@ clean: $(REBAR)
 	$(REBAR) clean
 
 distclean: clean
-	$(REBAR) delete-deps
 	$(RM) .eunit
+	$(RM) _build
 
 doc: $(REBAR)
-	$(REBAR) doc
+	$(REBAR) edoc
 
-rebar:
-	wget "https://github.com/rebar/rebar/releases/download/2.6.0/rebar" -O $@-part
+rebar3:
+	wget "https://s3.amazonaws.com/rebar3/rebar3" -O $@-part
 	chmod +x $@-part
 	mv $@-part $@
 
-shell: app
-	$(ERL) $(ERL_FLAGS)
+shell: $(REBAR)
+	$(REBAR) shell
 
-test: app
+test: $(REBAR)
 	$(REBAR) ct
