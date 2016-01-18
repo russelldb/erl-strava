@@ -24,7 +24,7 @@ rebar3:
 	mv $@-part $@
 
 shell: $(REBAR)
-	$(REBAR) shell
+	$(REBAR) as test shell
 
 test: $(REBAR)
 	$(REBAR) ct
