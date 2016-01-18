@@ -69,6 +69,7 @@ to_activity(Map) ->
         name,
         photo_count,
         private,
+        suffer_score,
         timezone,
         total_elevation_gain,
         total_photo_count,
