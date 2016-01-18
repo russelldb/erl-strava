@@ -325,10 +325,13 @@ to_athlete_stats(Map) ->
         biggest_ride_distance,
         {all_ride_totals, fun to_athlete_totals/1},
         {all_run_totals, fun to_athlete_totals/1},
+        {all_swim_totals, fun to_athlete_totals/1},
         {recent_ride_totals, fun to_athlete_totals/1},
         {recent_run_totals, fun to_athlete_totals/1},
+        {recent_swim_totals, fun to_athlete_totals/1},
         {ytd_ride_totals, fun to_athlete_totals/1},
-        {ytd_run_totals, fun to_athlete_totals/1} ]
+        {ytd_run_totals, fun to_athlete_totals/1},
+        {ytd_swim_totals, fun to_athlete_totals/1} ]
      ).
 
 %%--------------------------------------------------------------------
