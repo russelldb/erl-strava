@@ -195,7 +195,6 @@ to_activity_photos_summary(Map) ->
 to_activity_type(<<"AlpineSki">>) -> alpine_ski;
 to_activity_type(<<"BackcountrySki">>) -> backcountry_ski;
 to_activity_type(<<"Canoeing">>) -> canoeing;
-to_activity_type(<<"CrossCountrySkiing">>) -> cross_country_skiing;
 to_activity_type(<<"Crossfit">>) -> crossfit;
 to_activity_type(<<"EBikeRide">>) -> ebike_ride;
 to_activity_type(<<"Elliptical">>) -> elliptical;
@@ -754,7 +753,6 @@ to_upload_status(Map) ->
 from_activity_type(alpine_ski) -> <<"AlpineSki">>;
 from_activity_type(backcountry_ski) -> <<"BackcountrySki">>;
 from_activity_type(canoeing) -> <<"Canoeing">>;
-from_activity_type(cross_country_skiing) -> <<"CrossCountrySkiing">>;
 from_activity_type(crossfit) -> <<"Crossfit">>;
 from_activity_type(ebike_ride) -> <<"EBikeRide">>;
 from_activity_type(elliptical) -> <<"Elliptical">>;
