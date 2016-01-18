@@ -37,8 +37,11 @@
 -spec athletes(strava_auth:token(), integer()) -> {ok, [t()]} | strava:error().
 
 athletes(Token, AthleteId) ->
-    %% TODO
-    {ok, []}.
+    strava_api:convert(
+      strava_api:read(
+        Token, [<<"athletes">>, AthleteId, <<"routes">>], _Args = #{}),
+      {list, fun strava_repr:to_route/1}
+     ).
 
 %%--------------------------------------------------------------------
 %% @doc
