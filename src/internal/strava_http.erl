@@ -79,7 +79,6 @@ request(Method, Headers, URL, Query, ContentType, Body) ->
                   ContentType1 -> {URL1, Headers1, ContentType1,
                                    strava_util:to_binary(Body)}
               end,
-    ?debugVal(Request),
     case httpc:request(Method, Request, _HTTPOptions = [],
                        _Options = [{body_format, binary},
                                    {full_result, false}],
