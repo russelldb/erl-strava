@@ -51,6 +51,7 @@ to_activity(Map) ->
         device_watts,
         distance,
         elapsed_time,
+        embed_token,
         external_id,
         flagged,
         gear_id,
