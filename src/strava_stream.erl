@@ -12,8 +12,8 @@
 -export_type([stream/0, t/0, type/0]).
 
 %% Streams functions
--export([activity/3, activity/4, effort/3, effort/4, segment/3,
-         segment/4]).
+-export([activity/3, activity/4, effort/3, effort/4, route/2,
+         segment/3, segment/4]).
 
 %%%===================================================================
 %%% Types
@@ -88,6 +88,20 @@ effort(Token, Id, Types) ->
 
 effort(Token, Id, Types, Options) ->
     streams(Token, [<<"segment_efforts">>, Id, <<"streams">>], Types, Options).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% Retrieve route streams. Only `distance`, `altitude` and `latlng`
+%% stream types are available and always returned. No options could be
+%% specified.
+%% @end
+%%--------------------------------------------------------------------
+-spec route(strava_auth:token(), integer()) ->
+                   {ok, [t()]} | strava:error().
+
+route(Token, Id) ->
+    streams(Token, [<<"routes">>, Id, <<"streams">>],
+            _Types = [], _Options = #{}).
 
 %%--------------------------------------------------------------------
 %% @doc
