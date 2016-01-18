@@ -53,5 +53,7 @@ athletes(Token, AthleteId) ->
 -spec route(strava_auth:token(), integer()) -> {ok, t()} | strava:error().
 
 route(Token, Id) ->
-    %% TODO
-    {ok, #{}}.
+    strava_api:convert(
+      strava_api:read(Token, [<<"routes">>, Id], _Args = #{}),
+      fun strava_repr:to_route/1
+     ).
