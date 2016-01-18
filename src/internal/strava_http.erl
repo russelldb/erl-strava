@@ -86,6 +86,6 @@ request(Method, Headers, URL, Query, ContentType, Body) ->
         {ok, {Status, ResBody}}
           when Status >= 200, Status =< 299 ->
             {ok, ResBody};
-        {ok, {Status, ResBody}} ->
+        {ok, {_Status, ResBody}} ->
             {error, ResBody}
     end.
