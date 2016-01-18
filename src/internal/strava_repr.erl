@@ -4,9 +4,10 @@
 -export([to_activity/1, to_activity_comment/1, to_activity_lap/1,
          to_activity_photo/1, to_activity_zones/1, to_athlete/1,
          to_athlete_stats/1, to_club/1, to_club_announcement/1,
-         to_club_group_event/1, to_error/1, to_gear/1, to_segment/1,
-         to_segment_climb_category/1, to_segment_effort/1,
-         to_segment_leaderboard/1, to_stream/1, to_upload_status/1]).
+         to_club_group_event/1, to_error/1, to_gear/1, to_route/1,
+         to_segment/1, to_segment_climb_category/1,
+         to_segment_effort/1, to_segment_leaderboard/1, to_stream/1,
+         to_upload_status/1]).
 
 %% To representation functions
 -export([from_activity_type/1, from_athlete/1, from_athlete_sex/1,
@@ -546,6 +547,36 @@ to_map(Map) ->
 to_resource_state(1) -> meta;
 to_resource_state(2) -> summary;
 to_resource_state(3) -> detailed.
+
+%%--------------------------------------------------------------------
+%% @doc
+%% @end
+%%--------------------------------------------------------------------
+-spec to_route(map()) -> strava_route:t().
+
+to_route(Map) ->
+    transform(
+      Map,
+      [ description,
+        distance,
+        elevation_gain,
+        id,
+        name,
+        private,
+        starred,
+        timestamp,
+        {athlete, fun to_athlete/1},
+        {map, fun to_map/1},
+        {resource_state, fun to_resource_state/1},
+        {segments, {list, fun to_segment/1}},
+        {sub_type, fun(1) -> road;
+                      (2) -> mtb;
+                      (3) -> cx;
+                      (4) -> trail;
+                      (5) -> mixed end},
+        {type, fun(1) -> ride;
+                  (2) -> run end} ]
+     ).
 
 %%--------------------------------------------------------------------
 %% @doc
