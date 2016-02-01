@@ -172,4 +172,4 @@ url(Suffix) ->
 
 url(Suffix, Query) ->
     [<<"https://www.strava.com/oauth/">>, Suffix,
-     strava_http:qs(Query, $?)].
+     strava_http:qs(Query, <<"?">>)].

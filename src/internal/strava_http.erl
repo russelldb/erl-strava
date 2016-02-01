@@ -69,7 +69,7 @@ request(Method, Headers, URL, Query) ->
               body()) -> {ok, binary()} | {error, binary()}.
 
 request(Method, Headers, URL, Query, ContentType, Body) ->
-    URL1 = strava_util:to_string([URL, qs(Query, $?)]),
+    URL1 = strava_util:to_string([URL, qs(Query, <<"?">>)]),
     Headers1 = lists:map(fun({K, V}) ->
                                  {strava_util:to_string(K),
                                   strava_util:to_string(V)}
