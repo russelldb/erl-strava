@@ -388,6 +388,9 @@ to_club(Map) ->
         profile_medium,
         state,
         {club_type, fun to_club_type/1},
+        %% TODO: handle unknown membership
+        {membership, fun(<<"member">>) -> member;
+                        (<<"pending">>) -> pending end},
         {resource_state, fun to_resource_state/1},
         {sport_type, fun to_club_sport_type/1} ]
      ).
