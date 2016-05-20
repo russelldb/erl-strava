@@ -96,10 +96,14 @@ to_activity(Map) ->
         {start_date_local, fun to_datetime/1},
         {start_latlng, fun to_latlng/1},
         {type, fun to_activity_type/1},
+        %% TODO: handle unknown workout_type
         {workout_type, fun(0) -> default;
                           (1) -> race;
                           (2) -> long_run;
-                          (3) -> intervals end} ]
+                          (3) -> intervals;     % workout
+                          (10) -> default;
+                          (11) -> race;
+                          (12) -> workout end} ]
      ).
 
 %%--------------------------------------------------------------------
