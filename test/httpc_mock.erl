@@ -253,6 +253,7 @@ httpc_request(get, "https://www.strava.com/api/v3/athlete/activities?page=1&per_
     \"weighted_average_watts\": 200,
     \"kilojoules\": 857.6,
     \"device_watts\": true,
+    \"has_heartrate\": true,
     \"average_heartrate\": 138.8,
     \"max_heartrate\": 179.0
   }

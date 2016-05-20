@@ -59,6 +59,7 @@ to_activity(Map) ->
         external_id,
         flagged,
         gear_id,
+        has_heartrate,
         has_kudoed,
         id,
         kilojoules,

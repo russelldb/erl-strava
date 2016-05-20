@@ -62,6 +62,7 @@ read_athletes(_Config) ->
              weighted_average_watts := 200,
              kilojoules := 857.6,
              device_watts := true,
+             has_heartrate := true,
              average_heartrate := 138.8,
              max_heartrate := 179.0} ]} =
         strava_activity:athletes(<<"xyzzy">>, 1, 1).
