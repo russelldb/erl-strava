@@ -374,12 +374,14 @@ to_athlete_type(1) -> runner.
 to_club(Map) ->
     transform(
       Map,
-      [ city,
+      [ admin,
+        city,
         country,
         description,
         id,
         member_count,
         name,
+        owner,
         private,
         profile,
         profile_medium,
