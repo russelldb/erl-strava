@@ -378,6 +378,7 @@ to_club(Map) ->
         city,
         country,
         description,
+        following_count,
         id,
         member_count,
         name,
