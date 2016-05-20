@@ -266,6 +266,7 @@ httpc_request(get, "https://www.strava.com/api/v3/activities/321934") ->
   \"resource_state\": 3,
   \"external_id\": \"2012-12-12_21-40-32-80-29011.fit\",
   \"upload_id\": 361720,
+  \"device_name\": \"FooBar 5000\",
   \"athlete\": {
     \"id\": 227615,
     \"resource_state\": 1
