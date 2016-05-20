@@ -145,6 +145,7 @@ group_events(Token, Id) ->
 %%--------------------------------------------------------------------
 -spec join(strava_auth:token(), integer()) -> ok | strava:error().
 
+%% TODO: parse response, return as a result
 join(Token, Id) ->
     strava_api:convert(
       strava_api:create(Token, [<<"clubs">>, Id, <<"join">>], #{})
@@ -185,6 +186,8 @@ members(Token, Id) ->
 members(Token, Id, Page, PerPage) ->
     members_args(Token, Id, _Args = #{page     => Page,
                                       per_page => PerPage}).
+
+%% TODO: functions to retrieve admins
 
 %%%===================================================================
 %%% Internal functions
