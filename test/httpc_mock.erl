@@ -464,4 +464,28 @@ httpc_request(get, "https://www.strava.com/api/v3/activities/321934") ->
     }
   ]
 }
+">>;
+
+httpc_request(get, "https://www.strava.com/api/v3/clubs/1") ->
+    <<"
+{
+  \"id\": 1,
+  \"resource_state\": 3,
+  \"name\": \"Team Strava Cycling\",
+  \"profile_medium\": \"http://pics.com/clubs/1/medium.jpg\",
+  \"profile\": \"http://pics.com/clubs/1/large.jpg\",
+  \"description\": \"From the people who brought you strava.com\",
+  \"club_type\": \"company\",
+  \"sport_type\": \"cycling\",
+  \"city\": \"San Francisco\",
+  \"state\": \"California\",
+  \"country\": \"United States\",
+  \"private\": false,
+  \"member_count\": 71,
+  \"featured\": false,
+  \"membership\": \"member\",
+  \"admin\": true,
+  \"owner\": false,
+  \"following_count\": 1
+}
 ">>.
