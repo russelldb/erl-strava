@@ -131,6 +131,14 @@ httpc_request(get, "https://www.strava.com/api/v3/athletes/227615/stats") ->
     \"elevation_gain\": 1564.9624166488647,
     \"achievement_count\": 41
   },
+  \"recent_swim_totals\": {
+    \"count\": 2,
+    \"distance\": 1117.2000122070312,
+    \"moving_time\": 1744,
+    \"elapsed_time\": 1942,
+    \"elevation_gain\": 0.0,
+    \"achievement_count\": 0
+  },
   \"ytd_ride_totals\": {
     \"count\": 45,
     \"distance\": 1586190,
@@ -145,6 +153,13 @@ httpc_request(get, "https://www.strava.com/api/v3/athletes/227615/stats") ->
     \"elapsed_time\": 25764,
     \"elevation_gain\": 1565
   },
+  \"ytd_swim_totals\": {
+    \"count\": 8,
+    \"distance\": 10372,
+    \"moving_time\": 8784,
+    \"elapsed_time\": 11123,
+    \"elevation_gain\": 0
+  },
   \"all_ride_totals\": {
     \"count\": 765,
     \"distance\": 42918079,
@@ -158,6 +173,13 @@ httpc_request(get, "https://www.strava.com/api/v3/athletes/227615/stats") ->
     \"moving_time\": 249542,
     \"elapsed_time\": 261434,
     \"elevation_gain\": 7520
+  },
+  \"all_swim_totals\": {
+    \"count\": 8,
+    \"distance\": 10372,
+    \"moving_time\": 8784,
+    \"elapsed_time\": 11123,
+    \"elevation_gain\": 0
   }
 }
 ">>;
