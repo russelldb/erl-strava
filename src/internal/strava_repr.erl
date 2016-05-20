@@ -49,6 +49,7 @@ to_activity(Map) ->
         comment_count,
         commute,
         description,
+        device_name,
         device_watts,
         distance,
         elapsed_time,
