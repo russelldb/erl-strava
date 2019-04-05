@@ -134,4 +134,4 @@ headers(Name, ContentType, ContentEncoding, FileName) ->
 -spec random_boundary() -> iodata().
 
 random_boundary() ->
-    base64:encode(crypto:rand_bytes(32)).
+    base64:encode(crypto:strong_rand_bytes(32)).
