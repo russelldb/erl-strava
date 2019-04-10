@@ -259,6 +259,7 @@ url(Suffix, Query) ->
                   strava_athlete:t()) ->
                          {ok, strava_token:token(), strava_athlete:t()}.
 migrate_new(ClientId, ClientSecret, ForeverToken, Athlete) ->
+    lager:info("auto-migrating athlete"),
     case migrate(ClientId, ClientSecret, ForeverToken) of
         {ok, Token} ->
             {ok, Token, Athlete};

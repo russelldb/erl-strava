@@ -10,7 +10,8 @@
 -export([token_from_response/1,
          refresh_token_from_response/1,
          is_forever_token/1,
-         get_refresh_token/1]).
+         get_refresh_token/1,
+         needs_refresh/2]).
 
 -opaque token() ::  forever_token() | refresh_token().
 -opaque forever_token() :: v1_token() | legacy_token().
@@ -76,3 +77,16 @@ get_refresh_token(#{version := v1, forever_token := Token}) ->
     Token;
 get_refresh_token(#{version := v2, refresh_token := Token}) ->
     Token.
+
+%% @doc pass in a StoredSecs time, from os:system_now(seconds) When
+%% the token was fetched. This is because strava docs say nothing
+%% about timezones of the token
+-spec needs_refresh(token(), StoreSecs::pos_integer()) ->
+                           boolean().
+needs_refresh(#{version := 1}, _) ->
+    false;
+needs_refresh(#{version := 2, expires_in := TTLSecs}, StoredSecs) ->
+    %% 3600 == an hour in seconds
+    ExpireSecs = TTLSecs + StoredSecs,
+    (ExpireSecs - os:system_time(seconds)) < 3600.
+
