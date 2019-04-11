@@ -84,7 +84,9 @@ get_refresh_token(#{version := v2, refresh_token := Token}) ->
 -spec needs_refresh(token(), StoreSecs::pos_integer()) ->
                            boolean().
 needs_refresh(#{version := 1}, _) ->
-    false;
+    %% NOTE: refresh == migrate for forever token, and we should
+    %% migrate all remaining forever tokens
+    true;
 needs_refresh(#{version := 2, expires_in := TTLSecs}, StoredSecs) ->
     %% 3600 == an hour in seconds
     ExpireSecs = TTLSecs + StoredSecs,
