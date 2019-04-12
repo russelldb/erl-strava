@@ -12,7 +12,7 @@
 
 %% API
 -export([authorize_url/2, authorize_url/3, authorize_url/5,
-         deauthorize/1, token/3, token/4, migrate/3]).
+         deauthorize/1, token/3, token/4, migrate/3, refresh/3]).
 
 %%%===================================================================
 %%% Types
@@ -20,13 +20,7 @@
 
 -type approval_prompt() :: auto | force.
 -type scope() :: public | write | view_private | view_private_write.
--type token() :: binary() | v2_token().
--type v2_token() :: #{version := v2,
-                      refresh := binary(),
-                      access := binary(),
-                      expires_at := pos_integer(),
-                      expires_in := pos_integer()
-                     }.
+-type token() :: binary(). %% backwards compatible used in API at large
 
 %%%===================================================================
 %%% API
@@ -78,12 +72,13 @@ authorize_url(ClientId, RedirectUri, Scope, ApprovalPrompt, State) ->
 %% data. This will invalidate all access token, including the `Token'.
 %% @end
 %%--------------------------------------------------------------------
--spec deauthorize(token()) -> ok | strava:error().
+-spec deauthorize(strava_token:token()) -> ok | strava:error().
 
 deauthorize(Token) ->
+    RefreshToken = strava_token:get_refresh_token(Token),
     case strava_http:request(
            _Method = post,
-           _Headers = [{<<"Authorization">>, [<<"Bearer ">>, Token]}],
+           _Headers = [{<<"Authorization">>, [<<"Bearer ">>, RefreshToken]}],
            _URL = url(<<"deauthorize">>),
            _Query = #{},
            _ContentType = <<>>,
@@ -106,7 +101,7 @@ deauthorize(Token) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec token(integer(), binary(), binary()) ->
-                   {ok, token(), strava_athlete:t()} | strava:error().
+                   {ok, strava_token:token(), strava_athlete:t()} | strava:error().
 
 token(ClientId, ClientSecret, Code) ->
     token(ClientId, ClientSecret, Code, _Migrate=false).
@@ -125,7 +120,7 @@ token(ClientId, ClientSecret, Code) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec token(integer(), binary(), binary(), boolean()) ->
-                   {ok, token(), strava_athlete:t()} | strava:error().
+                   {ok, strava_token:token(), strava_athlete:t()} | strava:error().
 
 token(ClientId, ClientSecret, Code, Migrate) ->
     case strava_http:request(
@@ -142,10 +137,10 @@ token(ClientId, ClientSecret, Code, Migrate) ->
     of
         {ok, ResBody} ->
             Decoded = strava_json:decode(ResBody),
-            Token = token_from_response(Decoded),
+            Token = strava_token:token_from_response(Decoded),
             #{<<"athlete">> := Athlete0} = Decoded,
             Athlete = strava_repr:to_athlete(Athlete0),
-            case (Migrate andalso v1_token(Token)) of
+            case (Migrate andalso strava_token:is_forever_token(Token)) of
                 false ->
                     {ok, Token, Athlete};
                 true ->
@@ -157,17 +152,28 @@ token(ClientId, ClientSecret, Code, Migrate) ->
 
 %%--------------------------------------------------------------------
 %% @doc
-%% Completing the token exchange. If the user accepts the request to
-%% share access to their Strava data, Strava will redirect back to
-%% redirect_uri with the authorization code. The application must now
-%% exchange the temporary authorization code for an access token,
-%% using its client ID and client secret.
+%% With the new strava short-lived access tokens, migrate a user's
+%% forever token to a refresh-token/access-token pair.
 %% @end
 %%--------------------------------------------------------------------
--spec migrate(integer(), binary(), binary()) ->
-                   {ok, token()} | strava:error().
+-spec migrate(integer(), binary(), strava_token:token()) ->
+                     %% actually we only want to accept forever
+                     %% tokens, dialyzer!
+                   {ok, strava_token:refresh_token()} | strava:error().
 
 migrate(ClientId, ClientSecret, ForeverToken) ->
+    refresh(ClientId, ClientSecret, ForeverToken).
+
+%%--------------------------------------------------------------------
+%% @doc
+%% Refresh an expired access token
+%% @end
+%%--------------------------------------------------------------------
+-spec refresh(integer(), binary(), strava_token:token()) ->
+                   {ok, strava_token:refresh_token()} | strava:error().
+
+refresh(ClientId, ClientSecret, Token) ->
+    RefreshToken = strava_token:get_refresh_token(Token),
     case strava_http:request(
            _Method = post,
            _Headers = [],
@@ -176,14 +182,14 @@ migrate(ClientId, ClientSecret, ForeverToken) ->
            _ContentType = <<"application/x-www-form-urlencoded">>,
            _Body = strava_http:qs(#{client_id     => ClientId,
                                     client_secret => ClientSecret,
-                                    refresh_token => ForeverToken,
+                                    refresh_token => RefreshToken,
                                     grant_type    => <<"refresh_token">>})
           )
     of
         {ok, ResBody} ->
             Decoded = strava_json:decode(ResBody),
-            Token = token_from_response(Decoded),
-            {ok, Token};
+            NewToken = strava_token:refresh_token_from_response(Decoded),
+            {ok, NewToken};
         {error, ResBody} ->
             strava_repr:to_error(strava_json:decode(ResBody))
     end.
@@ -241,44 +247,19 @@ url(Suffix, Query) ->
     [<<"https://www.strava.com/oauth/">>, Suffix,
      strava_http:qs(Query, <<"?">>)].
 
-%% decide on the token version type, returning backwards compatible
-%% plain binary for v1, or a map for refresh etc for v2
--spec token_from_response(map()) -> token().
-token_from_response(TokenMap) ->
-    Token =
-        case maps:is_key(<<"refresh_token">>, TokenMap) of
-            true ->
-                %% This is a 'v2' map
-            #{<<"refresh_token">> := RefreshToken,
-              <<"access_token">> := AccessToken,
-              <<"expires_in">> := ExpiresIn,
-              <<"expires_at">> := ExpiresAt} = TokenMap,
-            #{version => v2,
-              refresh => RefreshToken,
-              access => AccessToken,
-              expires_at => ExpiresAt,
-              expires_in => ExpiresIn};
-            false ->
-                %% this is an old forever token
-                #{<<"access_token">> := ForeverToken} = TokenMap,
-                ForeverToken
-        end,
-    Token.
-
--spec v1_token(token()) -> boolean().
-v1_token(Token) when is_binary(Token) ->
-    true;
-v1_token(Token) when is_map(Token) ->
-    false.
 
 %%--------------------------------------------------------------------
 %% @doc
 %% Migrate a newly acquired `ForeverToken' for `Athlete' to a v2
-%% refresh token. If migration fails, an error is logegd and the
+%% refresh token. If migration fails, an error is logged and the
 %% forever token returned
 %% @end
 %%--------------------------------------------------------------------
+-spec migrate_new(pos_integer(), binary(), strava_token:token(),
+                  strava_athlete:t()) ->
+                         {ok, strava_token:token(), strava_athlete:t()}.
 migrate_new(ClientId, ClientSecret, ForeverToken, Athlete) ->
+    lager:info("auto-migrating athlete"),
     case migrate(ClientId, ClientSecret, ForeverToken) of
         {ok, Token} ->
             {ok, Token, Athlete};
