@@ -32,8 +32,9 @@
                       expires_at := pos_integer(),
                       expires_in := pos_integer()
                      }.
+-type t() :: token().
 
--export_type([token/0, forever_token/0, refresh_token/0]).
+-export_type([t/0, token/0, forever_token/0, refresh_token/0]).
 
 
 -spec refresh_token_from_response(map()) -> refresh_token().
